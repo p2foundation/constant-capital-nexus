@@ -26,7 +26,8 @@ const AdminDashboard = () => {
       <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-cc-navy/95">
         <AdminNavbar />
         
-        <div className="container mx-auto px-4 py-8 flex-grow">
+        {/* Add padding-top to account for fixed navbar */}
+        <div className="container mx-auto px-4 py-8 flex-grow pt-20">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-cc-navy dark:text-white">Research Admin Dashboard</h1>
             <p className="text-gray-500 dark:text-gray-300 mt-2">

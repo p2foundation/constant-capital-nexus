@@ -1,6 +1,7 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from "@/contexts/AuthContext";
 import {
   DropdownMenu,
@@ -8,8 +9,8 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
   DropdownMenuGroup,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
   Popover,
@@ -21,6 +22,12 @@ import ThemeToggler from '../ThemeToggler';
 
 const AuthButtons = () => {
   const { session, user, profile, signOut, isAdmin } = useAuth();
+  const navigate = useNavigate();
+  
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/login');
+  };
   
   if (session && user) {
     return (
@@ -32,7 +39,7 @@ const AuthButtons = () => {
                 {profile?.first_name?.charAt(0) || user.email?.charAt(0) || 'U'}
               </div>
               <span className="text-cc-navy dark:text-white font-medium text-sm">
-                {profile?.first_name || user.email?.split('@')[0] || 'Account'}
+                {profile?.first_name || 'Account'}
               </span>
             </Button>
           </DropdownMenuTrigger>
@@ -94,7 +101,7 @@ const AuthButtons = () => {
               <Button 
                 variant="destructive" 
                 size="sm"
-                onClick={() => signOut()}
+                onClick={handleSignOut}
                 className="w-full mt-2"
               >
                 <LogOut className="mr-2 h-4 w-4" />

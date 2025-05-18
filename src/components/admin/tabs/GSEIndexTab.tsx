@@ -13,11 +13,13 @@ const GSEIndexTab: React.FC = () => {
     marketData.gse.map(item => ({
       name: new Date(item.date).toLocaleDateString('en-GB'),
       value: item.value,
-      change_percent: item.change_percent || 0
+      change_percent: item.change_percent || 0,
+      is_positive: (item.change_percent || 0) >= 0
     })) : 
     gseData.map(item => ({
       ...item,
-      change_percent: 0
+      change_percent: 0,
+      is_positive: true
     }));
 
   return (
@@ -27,7 +29,8 @@ const GSEIndexTab: React.FC = () => {
       dataFields={[
         { name: 'name', label: 'Date/Period', type: 'text' },
         { name: 'value', label: 'Index Value', type: 'number' },
-        { name: 'change_percent', label: 'Change %', type: 'number' }
+        { name: 'change_percent', label: 'Change %', type: 'number' },
+        { name: 'is_positive', label: 'Change Direction', type: 'hidden' }
       ]}
       fetchFn={async () => {
         // If we have real data, use it; otherwise use mock
@@ -38,10 +41,12 @@ const GSEIndexTab: React.FC = () => {
           data ? data.map((item: any) => ({
             name: item.name,
             value: item.value,
-            change_percent: item.change_percent || 0
+            change_percent: item.change_percent || 0,
+            is_positive: (item.change_percent || 0) >= 0
           })) : gseData.map(item => ({
             ...item,
-            change_percent: 0
+            change_percent: 0,
+            is_positive: true
           }))
         );
       }}
@@ -50,6 +55,8 @@ const GSEIndexTab: React.FC = () => {
         refreshMarketData();
         return data;
       }}
+      showDatePicker={true}
+      showChangeColors={true}
     />
   );
 };

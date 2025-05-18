@@ -1,117 +1,117 @@
 
-// Functions to process market data for API requests
-export const processMarketDataForDB = (data: any[], type: string) => {
-  // This function converts the UI format to DB format
-  switch(type) {
-    case 'gse':
-      return data.map(item => ({
-        date: new Date(item.name).toISOString().split('T')[0],
-        data_type: 'gse',
-        value: parseFloat(item.value),
-        change_percent: parseFloat(item.change_percent || '0'), 
-      }));
+// Data processing utilities
+
+// Process market data for database storage
+export const processMarketDataForDB = (data: any[], dataType: string, selectedItems?: string[]) => {
+  // For debugging
+  console.log(`Processing ${dataType} data for DB:`, data);
+  
+  const processedData: any[] = [];
+  
+  // Get today's date in YYYY-MM-DD format
+  const today = new Date().toISOString().split('T')[0];
+
+  if (dataType === 'gse') {
+    // Process GSE data - simple format with single entry per date
+    data.forEach(item => {
+      processedData.push({
+        data_type: dataType,
+        date: item.date || today,
+        value: Number(item.value) || 0,
+        change_percent: Number(item.change_percent) || 0
+      });
+    });
+  } else if (dataType === 'equity') {
+    // Process equities data - multiple ticker symbols
+    const symbols = selectedItems || ['MTNGH', 'GOIL', 'GCB', 'SCB', 'EGL', 'FML'];
     
-    case 'equities':
-      const equitiesData = [];
-      for (const item of data) {
-        const date = new Date(item.name).toISOString().split('T')[0];
-        if (item.ggb) equitiesData.push({
-          date,
-          data_type: 'equity',
-          ticker_symbol: 'GCB',
-          value: parseFloat(item.ggb),
-        });
-        if (item.scc) equitiesData.push({
-          date,
-          data_type: 'equity',
-          ticker_symbol: 'SCB',
-          value: parseFloat(item.scc),
-        });
-        if (item.eti) equitiesData.push({
-          date,
-          data_type: 'equity',
-          ticker_symbol: 'ETI',
-          value: parseFloat(item.eti),
-        });
-      }
-      return equitiesData;
-      
-    case 'fixed_income':
-      const fiData = [];
-      for (const item of data) {
-        const date = new Date(item.name).toISOString().split('T')[0];
-        if (item.yield91) fiData.push({
-          date,
-          data_type: 'fixed_income',
-          ticker_symbol: '91-day',
-          value: parseFloat(item.yield91),
-        });
-        if (item.yield182) fiData.push({
-          date,
-          data_type: 'fixed_income',
-          ticker_symbol: '182-day',
-          value: parseFloat(item.yield182),
-        });
-        if (item.yield1yr) fiData.push({
-          date,
-          data_type: 'fixed_income',
-          ticker_symbol: '1-year',
-          value: parseFloat(item.yield1yr),
-        });
-      }
-      return fiData;
-      
-    case 'eurobonds':
-      const euroData = [];
-      for (const item of data) {
-        const date = new Date(item.name).toISOString().split('T')[0];
-        if (item.ghana29) euroData.push({
-          date,
-          data_type: 'eurobond',
-          ticker_symbol: 'Ghana-2029',
-          value: parseFloat(item.ghana29),
-        });
-        if (item.nigeria32) euroData.push({
-          date,
-          data_type: 'eurobond',
-          ticker_symbol: 'Nigeria-2032',
-          value: parseFloat(item.nigeria32),
-        });
-        if (item.kenya31) euroData.push({
-          date,
-          data_type: 'eurobond',
-          ticker_symbol: 'Kenya-2031',
-          value: parseFloat(item.kenya31),
-        });
-      }
-      return euroData;
-      
-    case 'fx':
-      const fxData = [];
-      for (const item of data) {
-        const date = new Date(item.name).toISOString().split('T')[0];
-        if (item.usd) fxData.push({
-          date,
-          data_type: 'fx',
-          ticker_symbol: 'USD',
-          value: parseFloat(item.usd),
-        });
-        if (item.eur) fxData.push({
-          date,
-          data_type: 'fx',
-          ticker_symbol: 'EUR',
-          value: parseFloat(item.eur),
-        });
-        if (item.gbp) fxData.push({
-          date,
-          data_type: 'fx',
-          ticker_symbol: 'GBP',
-          value: parseFloat(item.gbp),
-        });
-      }
-      return fxData;
-      
-    default:
-      return data;
+    data.forEach(item => {
+      symbols.forEach(symbol => {
+        // Check if item has data for this symbol
+        if (item[symbol.toLowerCase()] !== undefined) {
+          processedData.push({
+            data_type: dataType,
+            ticker_symbol: symbol,
+            date: item.date || today,
+            value: Number(item[symbol.toLowerCase()]) || 0,
+            change_percent: Number(item[`${symbol.toLowerCase()}_change`]) || 0
+          });
+        }
+      });
+    });
+  } else if (dataType === 'fixed_income') {
+    // Process fixed income data - multiple terms/tenors
+    const fixedIncomeTerms = [
+      { key: '91-day', field: '91-day' }, 
+      { key: '182-day', field: '182-day' },
+      { key: '364-day', field: '364-day' },
+      { key: '1-year', field: '1-year' },
+      { key: '2-year', field: '2-year' },
+      { key: '3-year', field: '3-year' },
+      { key: '5-year', field: '5-year' },
+      { key: '7-year', field: '7-year' },
+      { key: '10-year', field: '10-year' }
+    ];
+    
+    data.forEach(item => {
+      fixedIncomeTerms.forEach(term => {
+        // Use field mapping to access the data for this term
+        if (item[term.field] !== undefined) {
+          processedData.push({
+            data_type: dataType,
+            ticker_symbol: term.key, // Use the standard term name as ticker
+            date: item.date || today,
+            value: Number(item[term.field]) || 0,
+            change_percent: Number(item[`${term.field}_change`]) || 0
+          });
+        }
+      });
+    });
+  } else if (dataType === 'eurobond') {
+    // Process eurobond data
+    const eurobondTypes = [
+      { key: 'Ghana-2029', field: 'Ghana-2029' },
+      { key: 'Nigeria-2032', field: 'Nigeria-2032' },
+      { key: 'Kenya-2031', field: 'Kenya-2031' },
+      { key: 'Ghana-2030', field: 'Ghana-2030' }
+    ];
+    
+    data.forEach(item => {
+      eurobondTypes.forEach(bond => {
+        if (item[bond.field] !== undefined) {
+          processedData.push({
+            data_type: dataType,
+            ticker_symbol: bond.key,
+            date: item.date || today,
+            value: Number(item[bond.field]) || 0,
+            change_percent: Number(item[`${bond.field}_change`]) || 0
+          });
+        }
+      });
+    });
+  } else if (dataType === 'fx') {
+    // Process fx data
+    const fxTypes = [
+      { key: 'USD', field: 'USD' },
+      { key: 'EUR', field: 'EUR' },
+      { key: 'GBP', field: 'GBP' }
+    ];
+    
+    data.forEach(item => {
+      fxTypes.forEach(currency => {
+        if (item[currency.field] !== undefined) {
+          processedData.push({
+            data_type: dataType,
+            ticker_symbol: currency.key,
+            date: item.date || today,
+            value: Number(item[currency.field]) || 0,
+            change_percent: Number(item[`${currency.field}_change`]) || 0
+          });
+        }
+      });
+    });
   }
+  
+  console.log(`Processed ${processedData.length} ${dataType} records for DB:`, processedData);
+  return processedData;
 };

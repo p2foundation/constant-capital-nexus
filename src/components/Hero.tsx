@@ -17,6 +17,18 @@ const Hero = () => {
     equities: latestData.equities
   });
 
+  // Log the data for debugging
+  React.useEffect(() => {
+    if (!isLoading) {
+      console.log("Hero - Latest market data:", latestData);
+      console.log("Hero - Processed market summary:", marketSummaryData);
+      
+      // Additional debug info for troubleshooting
+      console.log("Hero - Eurobonds data:", latestData.eurobonds);
+      console.log("Hero - FX data:", latestData.fx);
+    }
+  }, [latestData, isLoading]);
+
   return (
     <div className="relative overflow-hidden">
       {/* Background with pattern */}

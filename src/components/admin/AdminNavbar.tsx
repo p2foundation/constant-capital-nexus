@@ -5,18 +5,20 @@ import { Button } from "@/components/ui/button";
 import { LogOut } from 'lucide-react';
 import { toast } from "sonner";
 import ThemeToggler from '@/components/ThemeToggler';
+import { useAuth } from '@/contexts/AuthContext';
 
 const AdminNavbar = () => {
   const navigate = useNavigate();
+  const { signOut } = useAuth();
   
-  const handleLogout = () => {
-    // In a real application, this would clear authentication state
-    toast.success("Logged out successfully");
+  const handleLogout = async () => {
+    await signOut();
+    // Redirect to login page after signOut
     navigate("/login");
   };
   
   return (
-    <nav className="bg-white border-b border-gray-200 dark:bg-cc-navy dark:border-gray-700">
+    <nav className="bg-white border-b border-gray-200 dark:bg-cc-navy dark:border-gray-700 fixed top-0 left-0 right-0 z-50">
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           <div className="flex items-center">

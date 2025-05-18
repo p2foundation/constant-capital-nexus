@@ -1,4 +1,3 @@
-
 // Mock data for demonstration
 export const gseData = [
   { name: 'Jan', value: 2950 },
@@ -77,20 +76,20 @@ export const equitiesData = [
 ];
 
 export const eurobondsData = [
-  { name: 'Jan', ghana29: 8.5, nigeria32: 7.2, kenya31: 6.8 },
-  { name: 'Feb', ghana29: 8.6, nigeria32: 7.3, kenya31: 6.9 },
-  { name: 'Mar', ghana29: 8.8, nigeria32: 7.4, kenya31: 7.0 },
-  { name: 'Apr', ghana29: 8.9, nigeria32: 7.5, kenya31: 7.1 },
-  { name: 'May', ghana29: 9.1, nigeria32: 7.6, kenya31: 7.2 },
-  { name: 'Jun', ghana29: 9.3, nigeria32: 7.7, kenya31: 7.3 },
-  { name: 'Jul', ghana29: 9.5, nigeria32: 7.8, kenya31: 7.4 },
-  { name: 'Aug', ghana29: 9.7, nigeria32: 7.9, kenya31: 7.5 },
-  { name: 'Sep', ghana29: 9.9, nigeria32: 8.0, kenya31: 7.6 },
-  { name: 'Oct', ghana29: 10.1, nigeria32: 8.1, kenya31: 7.7 },
-  { name: 'Nov', ghana29: 10.3, nigeria32: 8.2, kenya31: 7.8 },
-  { name: 'Dec', ghana29: 10.5, nigeria32: 8.3, kenya31: 7.9 },
-  { name: 'Jan', ghana29: 10.2, nigeria32: 8.2, kenya31: 7.8 },
-  { name: 'Feb', ghana29: 10.0, nigeria32: 8.1, kenya31: 7.7 },
-  { name: 'Mar', ghana29: 9.8, nigeria32: 8.0, kenya31: 7.6 },
-  { name: 'Apr', ghana29: 9.6, nigeria32: 7.9, kenya31: 7.5 },
+  { name: 'Jan', ghana29: 8.5, nigeria32: 7.2, kenya31: 6.8, ghana30: 8.7 },
+  { name: 'Feb', ghana29: 8.6, nigeria32: 7.3, kenya31: 6.9, ghana30: 8.8 },
+  { name: 'Mar', ghana29: 8.8, nigeria32: 7.4, kenya31: 7.0, ghana30: 8.9 },
+  { name: 'Apr', ghana29: 8.9, nigeria32: 7.5, kenya31: 7.1, ghana30: 9.0 },
+  { name: 'May', ghana29: 9.1, nigeria32: 7.6, kenya31: 7.2, ghana30: 9.1 },
+  { name: 'Jun', ghana29: 9.3, nigeria32: 7.7, kenya31: 7.3, ghana30: 9.2 },
+  { name: 'Jul', ghana29: 9.5, nigeria32: 7.8, kenya31: 7.4, ghana30: 9.3 },
+  { name: 'Aug', ghana29: 9.7, nigeria32: 7.9, kenya31: 7.5, ghana30: 9.4 },
+  { name: 'Sep', ghana29: 9.9, nigeria32: 8.0, kenya31: 7.6, ghana30: 9.5 },
+  { name: 'Oct', ghana29: 10.1, nigeria32: 8.1, kenya31: 7.7, ghana30: 9.6 },
+  { name: 'Nov', ghana29: 10.3, nigeria32: 8.2, kenya31: 7.8, ghana30: 9.7 },
+  { name: 'Dec', ghana29: 10.5, nigeria32: 8.3, kenya31: 7.9, ghana30: 9.8 },
+  { name: 'Jan', ghana29: 10.2, nigeria32: 8.2, kenya31: 7.8, ghana30: 9.7 },
+  { name: 'Feb', ghana29: 10.0, nigeria32: 8.1, kenya31: 7.7, ghana30: 9.6 },
+  { name: 'Mar', ghana29: 9.8, nigeria32: 8.0, kenya31: 7.6, ghana30: 9.5 },
+  { name: 'Apr', ghana29: 9.6, nigeria32: 7.9, kenya31: 7.5, ghana30: 9.4 },
 ];

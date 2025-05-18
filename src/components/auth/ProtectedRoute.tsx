@@ -7,11 +7,13 @@ import { Loader2 } from 'lucide-react';
 interface ProtectedRouteProps {
   children: React.ReactNode;
   requiredRole?: string | string[]; // Can be a single role or array of roles
+  adminOnly?: boolean; // Added this property to match how it's used in App.tsx
 }
 
 const ProtectedRoute = ({ 
   children, 
-  requiredRole 
+  requiredRole,
+  adminOnly = false // Default to false
 }: ProtectedRouteProps) => {
   const { session, user, profile, isLoading } = useAuth();
   const location = useLocation();
@@ -29,6 +31,11 @@ const ProtectedRoute = ({
   // If not authenticated, redirect to login
   if (!session || !user) {
     return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  // For adminOnly routes, check if user is Admin or Developer
+  if (adminOnly && !(profile?.role === 'Admin' || profile?.role === 'Developer')) {
+    return <Navigate to="/" replace />;
   }
 
   // If no specific role is required, allow access

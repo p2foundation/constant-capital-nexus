@@ -71,9 +71,3 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
-
-## push an existing repository from the command line
-
-git remote add origin https://github.com/p2foundation/constant-capital-nexus.git
-git branch -M main
-git push -u origin main

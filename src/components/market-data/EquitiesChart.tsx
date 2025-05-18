@@ -8,19 +8,35 @@ const EquitiesChart: React.FC = () => {
   const { marketData } = useMarketData();
   
   // Process market data for charting or use mock data
-  const chartData = marketData.equities.length > 0 ? 
-    [...new Set(marketData.equities.map(item => item.date))].map(date => {
-      const dateItems = marketData.equities.filter(d => d.date === date);
-      return {
-        name: new Date(date).toLocaleDateString('en-GB', { month: 'short', day: 'numeric' }),
-        ggb: dateItems.find(i => i.ticker_symbol === 'GCB')?.value,
-        scc: dateItems.find(i => i.ticker_symbol === 'SCB')?.value,
-        eti: dateItems.find(i => i.ticker_symbol === 'ETI')?.value
-      };
-    }) : equitiesData;
+  const chartData = React.useMemo(() => {
+    if (marketData.equities.length === 0) return equitiesData;
+    
+    const dateMap = new Map<string, any>();
+    
+    // Group by date
+    marketData.equities.forEach(item => {
+      if (!item.date || !item.ticker_symbol) return;
+      
+      const dateStr = new Date(item.date).toLocaleDateString('en-GB', { month: 'short', day: 'numeric' });
+      if (!dateMap.has(dateStr)) {
+        dateMap.set(dateStr, { name: dateStr });
+      }
+      
+      const entry = dateMap.get(dateStr);
+      const symbol = item.ticker_symbol.toLowerCase();
+      entry[symbol] = parseFloat(item.value.toString()); // Convert value to string before parsing
+    });
+    
+    // Convert to array and sort by date
+    return Array.from(dateMap.values()).sort((a, b) => {
+      const dateA = new Date(a.name.split(' ')[1] + ' ' + a.name.split(' ')[0]);
+      const dateB = new Date(b.name.split(' ')[1] + ' ' + b.name.split(' ')[0]);
+      return dateA.getTime() - dateB.getTime();
+    });
+  }, [marketData.equities]);
   
   // Calculate min and max for the Y axis domain
-  const allValues = chartData.flatMap(item => [item.ggb, item.scc, item.eti].filter(Boolean));
+  const allValues = chartData.flatMap(item => ['gcb', 'scb', 'eti'].map(key => item[key]).filter(Boolean));
   const minValue = allValues.length ? Math.min(...allValues) * 0.98 : 0;
   const maxValue = allValues.length ? Math.max(...allValues) * 1.02 : 20;
   
@@ -54,7 +70,7 @@ const EquitiesChart: React.FC = () => {
           />
           <Area 
             type="monotone" 
-            dataKey="ggb" 
+            dataKey="gcb" 
             name="GCB Bank" 
             stroke="#0A2342" 
             fillOpacity={1} 
@@ -62,7 +78,7 @@ const EquitiesChart: React.FC = () => {
           />
           <Area 
             type="monotone" 
-            dataKey="scc" 
+            dataKey="scb" 
             name="Standard Chartered" 
             stroke="#126872" 
             fillOpacity={1} 

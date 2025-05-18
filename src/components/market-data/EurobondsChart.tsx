@@ -4,23 +4,41 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { eurobondsData } from './mock-data';
 import { useMarketData } from '@/contexts/MarketDataContext';
 
+// Define an interface for our chart data to ensure all properties are properly typed
+interface EurobondChartDataPoint {
+  name: string;
+  ghana29: number | undefined;
+  nigeria32: number | undefined;
+  kenya31: number | undefined;
+  ghana30: number | undefined;
+}
+
 const EurobondsChart: React.FC = () => {
   const { marketData } = useMarketData();
   
   // Process market data for charting or use mock data
-  const chartData = marketData.eurobonds.length > 0 ? 
+  const chartData: EurobondChartDataPoint[] = marketData.eurobonds.length > 0 ? 
     [...new Set(marketData.eurobonds.map(item => item.date))].map(date => {
       const dateItems = marketData.eurobonds.filter(d => d.date === date);
       return {
         name: new Date(date).toLocaleDateString('en-GB', { month: 'short', day: 'numeric' }),
         ghana29: dateItems.find(i => i.ticker_symbol === 'Ghana-2029')?.value,
         nigeria32: dateItems.find(i => i.ticker_symbol === 'Nigeria-2032')?.value,
-        kenya31: dateItems.find(i => i.ticker_symbol === 'Kenya-2031')?.value
+        kenya31: dateItems.find(i => i.ticker_symbol === 'Kenya-2031')?.value,
+        ghana30: dateItems.find(i => i.ticker_symbol === 'Ghana-2030')?.value
       };
-    }) : eurobondsData;
+    }) : 
+    // Make sure mock data includes ghana30 property
+    eurobondsData.map(item => ({
+      ...item,
+      // Ensure ghana30 exists with a default value if not present
+      ghana30: item.ghana30 !== undefined ? item.ghana30 : 0
+    }));
   
-  // Calculate min and max for the Y axis domain
-  const allValues = chartData.flatMap(item => [item.ghana29, item.nigeria32, item.kenya31].filter(Boolean));
+  // Calculate min and max for the Y axis domain with all values including ghana30
+  const allValues = chartData.flatMap(item => 
+    [item.ghana29, item.nigeria32, item.kenya31, item.ghana30].filter(Boolean)
+  );
   const minValue = allValues.length ? Math.min(...allValues) * 0.9 : 0;
   const maxValue = allValues.length ? Math.max(...allValues) * 1.1 : 12;
   
@@ -60,6 +78,14 @@ const EurobondsChart: React.FC = () => {
             dataKey="kenya31" 
             name="Kenya 2031" 
             stroke="#F2981D" 
+            activeDot={{ r: 8 }}
+            strokeWidth={2}
+          />
+          <Line 
+            type="monotone" 
+            dataKey="ghana30" 
+            name="Ghana 2030" 
+            stroke="#E63946" 
             activeDot={{ r: 8 }}
             strokeWidth={2}
           />

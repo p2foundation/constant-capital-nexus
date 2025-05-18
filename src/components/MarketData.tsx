@@ -11,7 +11,18 @@ import { useMarketData } from '@/contexts/MarketDataContext';
 import { Loader2 } from 'lucide-react';
 
 const MarketData = () => {
-  const { isLoading } = useMarketData();
+  const { isLoading, error, latestData } = useMarketData();
+
+  // Log any errors or data for debugging
+  React.useEffect(() => {
+    if (error) {
+      console.error("Market data error:", error);
+    }
+    
+    console.log("MarketData component - latest data:", latestData);
+    console.log("MarketData component - Eurobonds:", latestData?.eurobonds);
+    console.log("MarketData component - FX rates:", latestData?.fx);
+  }, [error, latestData]);
 
   return (
     <div className="bg-white dark:bg-cc-navy/90 py-20">
@@ -35,6 +46,11 @@ const MarketData = () => {
               <div className="flex flex-col items-center justify-center py-16">
                 <Loader2 className="h-8 w-8 animate-spin text-cc-navy dark:text-white" />
                 <p className="mt-4 text-gray-600 dark:text-gray-300">Loading market data...</p>
+              </div>
+            ) : error ? (
+              <div className="flex flex-col items-center justify-center py-16">
+                <p className="text-red-500">Error loading market data</p>
+                <p className="mt-2 text-gray-600 dark:text-gray-300">{error.message}</p>
               </div>
             ) : (
               <Tabs defaultValue="gse" className="w-full">
