@@ -1,141 +1,212 @@
 
-import React, { useState } from 'react';
-import { CalendarIcon, PlusCircle } from "lucide-react";
+import React, { useState, useEffect } from 'react';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { format } from 'date-fns';
+import { Calendar as CalendarIcon } from 'lucide-react';
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
-import { toast } from "sonner";
-import { 
-  Popover, PopoverContent, PopoverTrigger 
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from "@/components/ui/popover";
-import { LISTED_COMPANIES, EquitiesDataPoint } from './types';
+
+import { cn } from "@/lib/utils";
+import { EquitiesDataPoint, LISTED_COMPANIES } from './types';
+import { useMarketData } from '@/contexts/MarketDataContext';
+import { processEquitiesData } from './utils';
 
 interface EquitiesDataFormProps {
   onAddDataPoint: (dataPoint: EquitiesDataPoint) => void;
 }
 
-const EquitiesDataForm: React.FC<EquitiesDataFormProps> = ({ onAddDataPoint }) => {
-  const [selectedCompany, setSelectedCompany] = useState<string>("GCB");
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-  const [value, setValue] = useState<string>("");
-  const [changePercent, setChangePercent] = useState<string>("");
+const formSchema = z.object({
+  date: z.date({ required_error: "Date is required" }),
+  symbol: z.string({ required_error: "Symbol is required" }),
+  value: z.coerce.number().positive("Value must be a positive number"),
+});
 
-  const handleAddDataPoint = () => {
-    if (!selectedDate) {
-      toast.error("Please select a date");
-      return;
+const EquitiesDataForm: React.FC<EquitiesDataFormProps> = ({ onAddDataPoint }) => {
+  const { marketData } = useMarketData();
+  const [processedExistingData, setProcessedExistingData] = useState<any[]>([]);
+  
+  // Process existing data for previous value lookup
+  useEffect(() => {
+    const processedData = processEquitiesData(marketData.equities);
+    setProcessedExistingData(processedData);
+  }, [marketData.equities]);
+  
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      date: new Date(),
+    },
+  });
+
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    try {
+      console.log("Form submitted:", values);
+      const dateStr = format(values.date, 'dd/MM/yyyy');
+      
+      // Find previous value for this symbol to calculate change
+      let previousValue: number | undefined;
+      let prevDate: string | undefined;
+      
+      for (const entry of processedExistingData) {
+        if (entry[values.symbol.toLowerCase()] !== undefined) {
+          previousValue = entry[values.symbol.toLowerCase()];
+          prevDate = entry.date;
+          break;
+        }
+      }
+      
+      if (previousValue !== undefined) {
+        console.log(`Found previous value for ${values.symbol}: ${previousValue} from ${prevDate}`);
+      }
+      
+      const dataPoint: EquitiesDataPoint = {
+        date: dateStr,
+        symbol: values.symbol,
+        value: values.value,
+        change_percent: 0, // Will be calculated in the hook if previous value exists
+        previousValue: previousValue, // Store the previous value for change calculation
+      };
+      
+      onAddDataPoint(dataPoint);
+      
+      // Reset form fields except date
+      form.resetField('symbol');
+      form.resetField('value');
+    } catch (error) {
+      console.error("Error submitting form:", error);
     }
-    
-    if (!value || value.trim() === '') {
-      toast.error("Please enter a value");
-      return;
-    }
-    
-    const dateString = format(selectedDate, 'dd/MM/yyyy');
-    const numValue = parseFloat(value);
-    const numChangePercent = parseFloat(changePercent || '0');
-    
-    // Create new data point
-    const newDataPoint: EquitiesDataPoint = {
-      date: dateString,
-      symbol: selectedCompany,
-      value: numValue,
-      change_percent: numChangePercent,
-      isNew: true
-    };
-    
-    onAddDataPoint(newDataPoint);
-    
-    // Reset form
-    setValue("");
-    setChangePercent("");
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-4 rounded-md shadow-sm border border-gray-200 dark:border-gray-700">
-      <h3 className="text-lg font-semibold mb-4">Add New Equities Data Point</h3>
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border">
+      <h3 className="text-lg font-semibold mb-4">Add Equities Data Point</h3>
       
-      <div className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <Label className="block mb-2 text-sm font-medium">Date</Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant={"outline"}
-                  className={cn(
-                    "w-full justify-start text-left font-normal",
-                    !selectedDate && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {selectedDate ? format(selectedDate, "PPP") : <span>Pick a date</span>}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={selectedDate}
-                  onSelect={setSelectedDate}
-                  initialFocus
-                  className={cn("p-3 pointer-events-auto")}
-                />
-              </PopoverContent>
-            </Popover>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <FormField
+              control={form.control}
+              name="date"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Date</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) =>
+                          date > new Date() || date < new Date("1900-01-01")
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="symbol"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Symbol</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select company" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {LISTED_COMPANIES.map((company) => (
+                        <SelectItem key={company.symbol} value={company.symbol}>
+                          {company.symbol} - {company.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="value"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Value (GHS)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      placeholder="Enter value"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Current stock price in GHS
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
           
-          <div>
-            <Label className="block mb-2 text-sm font-medium">Company</Label>
-            <select
-              value={selectedCompany}
-              onChange={(e) => setSelectedCompany(e.target.value)}
-              className="w-full p-2 border rounded-md text-base bg-background"
-            >
-              {LISTED_COMPANIES.map((company) => (
-                <option key={company.symbol} value={company.symbol}>
-                  {company.symbol} - {company.name}
-                </option>
-              ))}
-            </select>
+          <div className="flex justify-end">
+            <Button type="submit">Add Data Point</Button>
           </div>
-          
-          <div className="grid grid-cols-2 gap-2">
-            <div>
-              <Label className="block mb-2 text-sm font-medium">Value (GHS)</Label>
-              <Input
-                type="number"
-                step="0.01"
-                placeholder="e.g. 7.50"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-              />
-            </div>
-            <div>
-              <Label className="block mb-2 text-sm font-medium">Change %</Label>
-              <Input
-                type="number"
-                step="0.01"
-                placeholder="e.g. 2.5"
-                value={changePercent}
-                onChange={(e) => setChangePercent(e.target.value)}
-              />
-            </div>
-          </div>
-        </div>
-        
-        <div className="flex justify-end">
-          <Button 
-            onClick={handleAddDataPoint}
-            className="flex items-center gap-1"
-          >
-            <PlusCircle size={16} />
-            Add Data Point
-          </Button>
-        </div>
-      </div>
+        </form>
+      </Form>
     </div>
   );
 };

@@ -24,6 +24,11 @@ const EquityTableRow: React.FC<EquityTableRowProps> = ({
   dateRowSpan,
   onDelete
 }) => {
+  // Format the change value with the appropriate sign
+  const formattedChange = typeof change === 'number' 
+    ? (change > 0 ? '+' : change < 0 ? '' : '') + change.toFixed(2) 
+    : change;
+
   return (
     <TableRow key={`${date}-${symbol}`}>
       {isFirstInDate && (
@@ -35,8 +40,8 @@ const EquityTableRow: React.FC<EquityTableRowProps> = ({
         {symbol}
       </TableCell>
       <TableCell>{typeof value === 'number' ? value.toFixed(2) : value}</TableCell>
-      <TableCell className={getChangeColorClass(change)}>
-        {change >= 0 ? '+' : ''}{typeof change === 'number' ? change.toFixed(2) : change}%
+      <TableCell className={getChangeColorClass(typeof change === 'number' ? change : 0)}>
+        {formattedChange}%
       </TableCell>
       <TableCell className="text-right">
         <Button

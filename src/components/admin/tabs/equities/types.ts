@@ -3,6 +3,8 @@ export interface EquitiesDataPoint {
   date: string;
   symbol: string;
   value: number;
+  previousValue?: number; // Added for change calculation
+  change?: number; // Added for storing calculated change
   change_percent: number;
   isNew?: boolean;
 }
