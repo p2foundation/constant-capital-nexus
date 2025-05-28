@@ -1,8 +1,7 @@
-
 import React from 'react';
 import MarketDataEditor from '../MarketDataEditor';
 import { marketDataAPI } from '@/services/api';
-import { eurobondsData } from '@/components/market-data/mock-data';
+import { eurobondData } from '@/components/market-data/mock-data';
 import { useMarketData } from '@/contexts/MarketDataContext';
 
 const EurobondsTab: React.FC = () => {
@@ -24,7 +23,7 @@ const EurobondsTab: React.FC = () => {
         ghana30_change: dateItems.find(i => i.ticker_symbol === 'Ghana-2030')?.change_percent || 0
       };
     }) : 
-    eurobondsData.map(item => ({
+    eurobondData.map(item => ({
       ...item,
       ghana29_change: 0,
       nigeria32_change: 0,
@@ -51,7 +50,7 @@ const EurobondsTab: React.FC = () => {
         if (marketData.eurobonds.length > 0) {
           return formattedData;
         }
-        return marketDataAPI.getEurobondsData().then(data => data || eurobondsData);
+        return marketDataAPI.getEurobondsData().then(data => data || eurobondData);
       }}
       updateFn={async (data) => {
         await marketDataAPI.updateEurobondsData(data);

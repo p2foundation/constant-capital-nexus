@@ -15,12 +15,12 @@ const FixedIncomeChart: React.FC = () => {
         name: new Date(date).toLocaleDateString('en-GB', { month: 'short', day: 'numeric' }),
         yield91: dateItems.find(i => i.ticker_symbol === '91-day')?.value,
         yield182: dateItems.find(i => i.ticker_symbol === '182-day')?.value,
-        yield1yr: dateItems.find(i => i.ticker_symbol === '1-year')?.value
+        yield364: dateItems.find(i => i.ticker_symbol === '364-day')?.value
       };
     }) : fixedIncomeData;
   
   // Calculate min and max for the Y axis domain
-  const allValues = chartData.flatMap(item => [item.yield91, item.yield182, item.yield1yr].filter(Boolean));
+  const allValues = chartData.flatMap(item => [item.yield91, item.yield182, item.yield364].filter(Boolean));
   const minValue = allValues.length ? Math.min(...allValues) * 0.98 : 18;
   const maxValue = allValues.length ? Math.max(...allValues) * 1.02 : 25;
   
@@ -40,7 +40,7 @@ const FixedIncomeChart: React.FC = () => {
               <stop offset="5%" stopColor="#126872" stopOpacity={0.8} />
               <stop offset="95%" stopColor="#126872" stopOpacity={0.1} />
             </linearGradient>
-            <linearGradient id="color1yr" x1="0" y1="0" x2="0" y2="1">
+            <linearGradient id="color364" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#D4AF37" stopOpacity={0.8} />
               <stop offset="95%" stopColor="#D4AF37" stopOpacity={0.1} />
             </linearGradient>
@@ -70,11 +70,11 @@ const FixedIncomeChart: React.FC = () => {
           />
           <Area 
             type="monotone" 
-            dataKey="yield1yr" 
-            name="1-Year Note" 
+            dataKey="yield364" 
+            name="364-Day Note" 
             stroke="#D4AF37" 
             fillOpacity={1} 
-            fill="url(#color1yr)" 
+            fill="url(#color364)" 
           />
         </AreaChart>
       </ResponsiveContainer>

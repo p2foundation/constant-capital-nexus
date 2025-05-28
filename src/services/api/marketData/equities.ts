@@ -36,7 +36,7 @@ export const equitiesAPI = {
   
   updateData: async (data: any, selectedCompanies?: string[]) => {
     try {
-      console.log("Processing equities data for update:", data);
+      console.log("Equities API: Processing equities data for update:", data);
       if (!data || data.length === 0) {
         throw new Error("No data provided for update");
       }
@@ -54,9 +54,13 @@ export const equitiesAPI = {
         throw new Error("No valid company data found to update");
       }
       
+      console.log("Calling updateMarketData with processed data");
+      // Pass the selected companies to the processor
       const result = await updateMarketData('equity', data, 
         (data, type) => processMarketDataForDB(data, 'equities', selectedCompanies)
       );
+      
+      console.log("Equities API: Update result:", result);
       return result;
     } catch (error) {
       console.error("Failed to update equities data:", error);

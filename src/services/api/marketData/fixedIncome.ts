@@ -25,18 +25,6 @@ export const fixedIncomeAPI = {
           dateMap[dateStr].yield182 = item.value; 
           dateMap[dateStr].yield182_change = item.change_percent || 0;
           break;
-        case '1-year': 
-          dateMap[dateStr].yield1yr = item.value; 
-          dateMap[dateStr].yield1yr_change = item.change_percent || 0;
-          break;
-        case '3-year': 
-          dateMap[dateStr].yield3yr = item.value; 
-          dateMap[dateStr].yield3yr_change = item.change_percent || 0;
-          break;
-        case '5-year': 
-          dateMap[dateStr].yield5yr = item.value; 
-          dateMap[dateStr].yield5yr_change = item.change_percent || 0;
-          break;
         case '364-day': 
           dateMap[dateStr].yield364 = item.value; 
           dateMap[dateStr].yield364_change = item.change_percent || 0;
@@ -59,13 +47,6 @@ export const fixedIncomeAPI = {
         '91-day_change': item.yield91_change || 0,
         '182-day': item.yield182 || 0,
         '182-day_change': item.yield182_change || 0,
-        '1-year': item.yield1yr || 0,
-        '1-year_change': item.yield1yr_change || 0,
-        // Additional terms if present
-        '3-year': item.yield3yr || 0,
-        '3-year_change': item.yield3yr_change || 0,
-        '5-year': item.yield5yr || 0,
-        '5-year_change': item.yield5yr_change || 0,
         '364-day': item.yield364 || 0,
         '364-day_change': item.yield364_change || 0,
       };

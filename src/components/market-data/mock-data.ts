@@ -1,95 +1,86 @@
-// Mock data for demonstration
-export const gseData = [
-  { name: 'Jan', value: 2950 },
-  { name: 'Feb', value: 3020 },
-  { name: 'Mar', value: 2980 },
-  { name: 'Apr', value: 3050 },
-  { name: 'May', value: 3100 },
-  { name: 'Jun', value: 3080 },
-  { name: 'Jul', value: 3150 },
-  { name: 'Aug', value: 3130 },
-  { name: 'Sep', value: 3180 },
-  { name: 'Oct', value: 3220 },
-  { name: 'Nov', value: 3160 },
-  { name: 'Dec', value: 3240 },
-  { name: 'Jan', value: 3290 },
-  { name: 'Feb', value: 3250 },
-  { name: 'Mar', value: 3300 },
-  { name: 'Apr', value: 3142 },
-];
 
-export const fixedIncomeData = [
-  { name: 'Jan', yield91: 18.5, yield182: 19.8, yield1yr: 20.9 },
-  { name: 'Feb', yield91: 18.8, yield182: 20.1, yield1yr: 21.2 },
-  { name: 'Mar', yield91: 19.2, yield182: 20.5, yield1yr: 21.8 },
-  { name: 'Apr', yield91: 19.9, yield182: 20.9, yield1yr: 22.1 },
-  { name: 'May', yield91: 20.3, yield182: 21.2, yield1yr: 22.6 },
-  { name: 'Jun', yield91: 20.8, yield182: 21.7, yield1yr: 23.1 },
-  { name: 'Jul', yield91: 21.1, yield182: 22.0, yield1yr: 23.4 },
-  { name: 'Aug', yield91: 21.3, yield182: 22.2, yield1yr: 23.6 },
-  { name: 'Sep', yield91: 21.5, yield182: 22.4, yield1yr: 23.8 },
-  { name: 'Oct', yield91: 21.8, yield182: 22.6, yield1yr: 24.0 },
-  { name: 'Nov', yield91: 22.0, yield182: 22.9, yield1yr: 24.2 },
-  { name: 'Dec', yield91: 22.2, yield182: 23.1, yield1yr: 24.5 },
-  { name: 'Jan', yield91: 22.1, yield182: 23.0, yield1yr: 24.3 },
-  { name: 'Feb', yield91: 21.9, yield182: 22.8, yield1yr: 24.1 },
-  { name: 'Mar', yield91: 21.7, yield182: 22.6, yield1yr: 23.9 },
-  { name: 'Apr', yield91: 21.5, yield182: 22.4, yield1yr: 23.7 },
+export const gseData = [
+  { name: 'Jan', value: 2400 },
+  { name: 'Feb', value: 1398 },
+  { name: 'Mar', value: 9800 },
+  { name: 'Apr', value: 3908 },
+  { name: 'May', value: 4800 },
+  { name: 'Jun', value: 3800 },
+  { name: 'Jul', value: 4300 },
+  { name: 'Aug', value: 9398 },
+  { name: 'Sep', value: 5900 },
+  { name: 'Oct', value: 2800 },
+  { name: 'Nov', value: 4800 },
+  { name: 'Dec', value: 3800 },
 ];
 
 export const fxData = [
-  { name: 'Jan', usd: 11.2, eur: 12.1, gbp: 13.9 },
-  { name: 'Feb', usd: 11.3, eur: 12.3, gbp: 14.1 },
-  { name: 'Mar', usd: 11.5, eur: 12.4, gbp: 14.3 },
-  { name: 'Apr', usd: 11.6, eur: 12.6, gbp: 14.5 },
-  { name: 'May', usd: 11.7, eur: 12.7, gbp: 14.6 },
-  { name: 'Jun', usd: 11.9, eur: 12.9, gbp: 14.8 },
-  { name: 'Jul', usd: 12.0, eur: 13.1, gbp: 15.0 },
-  { name: 'Aug', usd: 12.2, eur: 13.3, gbp: 15.2 },
-  { name: 'Sep', usd: 12.3, eur: 13.4, gbp: 15.3 },
-  { name: 'Oct', usd: 12.4, eur: 13.5, gbp: 15.5 },
-  { name: 'Nov', usd: 12.6, eur: 13.7, gbp: 15.7 },
-  { name: 'Dec', usd: 12.7, eur: 13.8, gbp: 15.8 },
-  { name: 'Jan', usd: 12.6, eur: 13.7, gbp: 15.7 },
-  { name: 'Feb', usd: 12.5, eur: 13.6, gbp: 15.6 },
-  { name: 'Mar', usd: 12.4, eur: 13.5, gbp: 15.5 },
-  { name: 'Apr', usd: 12.2, eur: 13.4, gbp: 15.4 },
+  { name: 'Jan', uv: 4000, pv: 2400, amt: 2400 },
+  { name: 'Feb', uv: 3000, pv: 1398, amt: 2210 },
+  { name: 'Mar', uv: 2000, pv: 9800, amt: 2290 },
+  { name: 'Apr', uv: 2780, pv: 3908, amt: 2000 },
+  { name: 'May', uv: 1890, pv: 4800, amt: 2181 },
+  { name: 'Jun', uv: 2390, pv: 3800, amt: 2500 },
+  { name: 'Jul', uv: 3490, pv: 4300, amt: 2100 },
 ];
 
+// Updated eurobondData to match the EurobondChartDataPoint interface
+export const eurobondData = [
+  { name: 'Jan', ghana29: 10.5, nigeria32: 9.8, kenya31: 11.2, ghana30: 10.8 },
+  { name: 'Feb', ghana29: 10.7, nigeria32: 9.9, kenya31: 11.4, ghana30: 11.0 },
+  { name: 'Mar', ghana29: 10.9, nigeria32: 10.1, kenya31: 11.6, ghana30: 11.2 },
+  { name: 'Apr', ghana29: 11.2, nigeria32: 10.3, kenya31: 11.8, ghana30: 11.5 },
+  { name: 'May', ghana29: 11.4, nigeria32: 10.5, kenya31: 12.0, ghana30: 11.7 },
+  { name: 'Jun', ghana29: 11.6, nigeria32: 10.7, kenya31: 12.2, ghana30: 11.9 },
+  { name: 'Jul', ghana29: 11.8, nigeria32: 10.9, kenya31: 12.4, ghana30: 12.1 },
+];
+
+// Sample equities data
 export const equitiesData = [
-  { name: 'Jan', ggb: 5.2, scc: 18.4, eti: 7.5 },
-  { name: 'Feb', ggb: 5.3, scc: 18.7, eti: 7.6 },
-  { name: 'Mar', ggb: 5.4, scc: 18.9, eti: 7.8 },
-  { name: 'Apr', ggb: 5.3, scc: 19.1, eti: 7.9 },
-  { name: 'May', ggb: 5.5, scc: 19.3, eti: 8.0 },
-  { name: 'Jun', ggb: 5.7, scc: 19.5, eti: 8.1 },
-  { name: 'Jul', ggb: 5.8, scc: 19.7, eti: 8.3 },
-  { name: 'Aug', ggb: 5.9, scc: 19.8, eti: 8.5 },
-  { name: 'Sep', ggb: 6.0, scc: 19.9, eti: 8.7 },
-  { name: 'Oct', ggb: 6.1, scc: 19.8, eti: 8.8 },
-  { name: 'Nov', ggb: 6.2, scc: 19.7, eti: 8.9 },
-  { name: 'Dec', ggb: 6.3, scc: 19.9, eti: 9.0 },
-  { name: 'Jan', ggb: 6.4, scc: 20.1, eti: 9.1 },
-  { name: 'Feb', ggb: 6.5, scc: 20.3, eti: 9.2 },
-  { name: 'Mar', ggb: 6.6, scc: 20.5, eti: 9.3 },
-  { name: 'Apr', ggb: 6.7, scc: 20.4, eti: 9.4 },
+  { name: 'Jan', value: 2400 },
+  { name: 'Feb', value: 1398 },
+  { name: 'Mar', value: 9800 },
+  { name: 'Apr', value: 3908 },
+  { name: 'May', value: 4800 },
+  { name: 'Jun', value: 3800 },
+  { name: 'Jul', value: 4300 },
+  { name: 'Aug', value: 9398 },
+  { name: 'Sep', value: 5900 },
+  { name: 'Oct', value: 2800 },
+  { name: 'Nov', value: 4800 },
+  { name: 'Dec', value: 3800 },
 ];
 
-export const eurobondsData = [
-  { name: 'Jan', ghana29: 8.5, nigeria32: 7.2, kenya31: 6.8, ghana30: 8.7 },
-  { name: 'Feb', ghana29: 8.6, nigeria32: 7.3, kenya31: 6.9, ghana30: 8.8 },
-  { name: 'Mar', ghana29: 8.8, nigeria32: 7.4, kenya31: 7.0, ghana30: 8.9 },
-  { name: 'Apr', ghana29: 8.9, nigeria32: 7.5, kenya31: 7.1, ghana30: 9.0 },
-  { name: 'May', ghana29: 9.1, nigeria32: 7.6, kenya31: 7.2, ghana30: 9.1 },
-  { name: 'Jun', ghana29: 9.3, nigeria32: 7.7, kenya31: 7.3, ghana30: 9.2 },
-  { name: 'Jul', ghana29: 9.5, nigeria32: 7.8, kenya31: 7.4, ghana30: 9.3 },
-  { name: 'Aug', ghana29: 9.7, nigeria32: 7.9, kenya31: 7.5, ghana30: 9.4 },
-  { name: 'Sep', ghana29: 9.9, nigeria32: 8.0, kenya31: 7.6, ghana30: 9.5 },
-  { name: 'Oct', ghana29: 10.1, nigeria32: 8.1, kenya31: 7.7, ghana30: 9.6 },
-  { name: 'Nov', ghana29: 10.3, nigeria32: 8.2, kenya31: 7.8, ghana30: 9.7 },
-  { name: 'Dec', ghana29: 10.5, nigeria32: 8.3, kenya31: 7.9, ghana30: 9.8 },
-  { name: 'Jan', ghana29: 10.2, nigeria32: 8.2, kenya31: 7.8, ghana30: 9.7 },
-  { name: 'Feb', ghana29: 10.0, nigeria32: 8.1, kenya31: 7.7, ghana30: 9.6 },
-  { name: 'Mar', ghana29: 9.8, nigeria32: 8.0, kenya31: 7.6, ghana30: 9.5 },
-  { name: 'Apr', ghana29: 9.6, nigeria32: 7.9, kenya31: 7.5, ghana30: 9.4 },
+// Fixed Income Data - Updated to match Ghana's actual fixed income instruments
+export const fixedIncomeData = [
+  { 
+    name: '01/05/2023', 
+    yield91: 23.85, 
+    yield182: 24.87,
+    yield364: 26.43
+  },
+  { 
+    name: '08/05/2023', 
+    yield91: 23.92, 
+    yield182: 24.93,
+    yield364: 26.51
+  },
+  { 
+    name: '15/05/2023', 
+    yield91: 24.04, 
+    yield182: 25.12,
+    yield364: 26.74
+  },
+  { 
+    name: '22/05/2023', 
+    yield91: 24.18, 
+    yield182: 25.26,
+    yield364: 26.89
+  },
+  { 
+    name: '29/05/2023', 
+    yield91: 24.25, 
+    yield182: 25.31,
+    yield364: 27.02
+  }
 ];

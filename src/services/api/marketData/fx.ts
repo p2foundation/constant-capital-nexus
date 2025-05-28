@@ -72,7 +72,9 @@ export const fxAPI = {
       });
       
       console.log("Processed FX data for update:", processedData);
-      return await updateMarketData('fx', processedData, processMarketDataForDB);
+      const result = await updateMarketData('fx', processedData, processMarketDataForDB);
+      console.log("FX update completed successfully");
+      return result;
     } catch (error) {
       console.error("Error updating FX data:", error);
       throw error; // Re-throw to be handled by the caller

@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { MarketDataProvider } from "@/contexts/MarketDataContext";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { HelmetProvider } from 'react-helmet-async';
 
 // Pages
 import Index from "@/pages/Index";
@@ -27,83 +28,101 @@ import Leadership from "@/pages/Leadership";
 import LeadershipDetail from "@/pages/LeadershipDetail";
 import UserProfile from "@/pages/UserProfile";
 import CapitalMarkets from "@/pages/CapitalMarkets";
+import FullMarketReport from "@/pages/FullMarketReport";
 import NotFound from "@/pages/NotFound";
 import TermsOfService from "@/pages/TermsOfService";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import CookiePolicy from "@/pages/CookiePolicy";
+import AccountOpening from "@/pages/AccountOpening";
 
 // Components
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { Toaster } from "@/components/ui/toaster";
+import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 
 function App() {
   return (
     <BrowserRouter>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        <AuthProvider>
-          <MarketDataProvider>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
+        <HelmetProvider>
+          <AuthProvider>
+            <MarketDataProvider>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                
+                {/* Account Opening Route */}
+                <Route path="/account-opening" element={<AccountOpening />} />
+                
+                {/* Services Routes */}
+                <Route path="/securities-trading" element={<SecuritiesTrading />} />
+                <Route path="/private-equity" element={<PrivateEquity />} />
+                <Route path="/strategic-advisory" element={<StrategicAdvisory />} />
+                <Route path="/capital-markets" element={<CapitalMarkets />} />
+                <Route path="/financings-capital-markets" element={<FinancingsCapitalMarkets />} />
+                <Route path="/investment-advisory" element={<InvestmentAdvisory />} />
+                
+                {/* Research Routes */}
+                <Route path="/research" element={<Research />} />
+                <Route path="/research/:id" element={<ResearchDetail />} />
+                <Route path="/research-services" element={<ResearchServices />} />
+                <Route path="/full-market-report" element={<FullMarketReport />} />
+                
+                {/* Legal Pages */}
+                <Route path="/terms-of-service" element={<TermsOfService />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/cookie-policy" element={<CookiePolicy />} />
+                
+                {/* Auth Routes */}
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                
+                {/* User Routes */}
+                <Route path="/profile" element={
+                  <ProtectedRoute>
+                    <UserProfile />
+                  </ProtectedRoute>
+                } />
+                
+                {/* Calculator Routes - Now Protected */}
+                <Route path="/t-bill-calculator" element={
+                  <ProtectedRoute>
+                    <TBillCalculator />
+                  </ProtectedRoute>
+                } />
+                <Route path="/equity-calculator" element={
+                  <ProtectedRoute>
+                    <EquityCalculator />
+                  </ProtectedRoute>
+                } />
+                
+                {/* About Routes */}
+                <Route path="/leadership" element={<Leadership />} />
+                <Route path="/leadership/:id" element={<LeadershipDetail />} />
+                
+                {/* Admin Routes */}
+                <Route path="/admin/*" element={
+                  <ProtectedRoute adminOnly>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                } />
+                
+                <Route path="/settings" element={
+                  <ProtectedRoute>
+                    <Settings />
+                  </ProtectedRoute>
+                } />
+                
+                {/* 404 Route */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
               
-              {/* Services Routes */}
-              <Route path="/securities-trading" element={<SecuritiesTrading />} />
-              <Route path="/private-equity" element={<PrivateEquity />} />
-              <Route path="/strategic-advisory" element={<StrategicAdvisory />} />
-              <Route path="/capital-markets" element={<CapitalMarkets />} />
-              <Route path="/financings-capital-markets" element={<FinancingsCapitalMarkets />} />
-              <Route path="/investment-advisory" element={<InvestmentAdvisory />} />
-              
-              {/* Research Routes */}
-              <Route path="/research" element={<Research />} />
-              <Route path="/research/:id" element={<ResearchDetail />} />
-              <Route path="/research-services" element={<ResearchServices />} />
-              
-              {/* Legal Pages */}
-              <Route path="/terms-of-service" element={<TermsOfService />} />
-              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-              <Route path="/cookie-policy" element={<CookiePolicy />} />
-              
-              {/* Auth Routes */}
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              
-              {/* User Routes */}
-              <Route path="/profile" element={
-                <ProtectedRoute>
-                  <UserProfile />
-                </ProtectedRoute>
-              } />
-              
-              {/* Calculator Routes */}
-              <Route path="/t-bill-calculator" element={<TBillCalculator />} />
-              <Route path="/equity-calculator" element={<EquityCalculator />} />
-              
-              {/* About Routes */}
-              <Route path="/leadership" element={<Leadership />} />
-              <Route path="/leadership/:id" element={<LeadershipDetail />} />
-              
-              {/* Admin Routes */}
-              <Route path="/admin/*" element={
-                <ProtectedRoute adminOnly>
-                  <AdminDashboard />
-                </ProtectedRoute>
-              } />
-              
-              <Route path="/settings" element={
-                <ProtectedRoute>
-                  <Settings />
-                </ProtectedRoute>
-              } />
-              
-              {/* 404 Route */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-            
-            <Toaster />
-          </MarketDataProvider>
-        </AuthProvider>
+              <Toaster />
+              <SonnerToaster />
+            </MarketDataProvider>
+          </AuthProvider>
+        </HelmetProvider>
       </ThemeProvider>
     </BrowserRouter>
   );

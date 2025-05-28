@@ -40,8 +40,16 @@ const MarketDataEditor: React.FC<MarketDataEditorProps> = ({
     toast.success(`${title} data point deleted`);
   };
   
-  const handleSaveData = () => {
-    saveData(data);
+  const handleSaveData = async () => {
+    try {
+      console.log(`Saving ${title} data...`);
+      await saveData(data);
+      console.log(`${title} data saved successfully`);
+      toast.success(`${title} data saved successfully`);
+    } catch (error) {
+      console.error(`Error saving ${title} data:`, error);
+      toast.error(`Failed to save ${title} data`);
+    }
   };
 
   if (isLoading) {

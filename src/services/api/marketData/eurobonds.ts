@@ -1,6 +1,7 @@
 
 import { fetchMarketData, updateMarketData } from './base';
 import { processMarketDataForDB } from '../dataProcessors';
+import { toast } from "sonner";
 
 // Eurobonds API methods
 export const eurobondsAPI = {
@@ -80,9 +81,16 @@ export const eurobondsAPI = {
       });
       
       console.log("Processed Eurobond data for update:", processedData);
-      return await updateMarketData('eurobond', processedData, processMarketDataForDB);
+      const result = await updateMarketData('eurobond', processedData, processMarketDataForDB);
+      
+      // Display success toast notification
+      toast.success("Eurobonds data updated successfully");
+      
+      return result;
     } catch (error) {
       console.error("Error updating Eurobond data:", error);
+      // Display error toast notification
+      toast.error(`Failed to update Eurobonds data: ${(error as Error).message}`);
       throw error;
     }
   }

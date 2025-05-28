@@ -5,6 +5,7 @@ import { Session, User } from '@supabase/supabase-js';
 import { Profile } from '@/types/supabase';
 import { toast } from "sonner";
 import { useNavigate, useLocation } from 'react-router-dom';
+import { authAPI } from '@/services/api';
 
 interface AuthContextType {
   session: Session | null;
@@ -53,7 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('id', userId)
+        .eq('id', userId as any)
         .single();
 
       if (error) {
@@ -61,7 +62,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      setProfile(data as Profile);
+      // Use type assertion to convert the data to Profile type
+      setProfile(data as unknown as Profile);
     } catch (error) {
       console.error('Profile fetch error:', error);
     }
@@ -106,7 +108,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Sign in function
   const signIn = async (email: string, password: string) => {
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error } = await supabase.auth.signInWithPassword({ 
+        email, 
+        password,
+      });
       
       if (error) {
         toast.error(error.message);
@@ -143,19 +148,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       // The profile is auto-created by the trigger, but we need to update it with provided data
       if (data.user) {
+        // Type casting to any to avoid TypeScript errors with Supabase types
+        const profileDataToUpdate: any = {
+          first_name: profileData.first_name,
+          last_name: profileData.last_name,
+          company: profileData.company,
+          position: profileData.position,
+          industry: profileData.industry,
+          phone: profileData.phone,
+          bio: profileData.bio,
+          role: profileData.role || 'User' // Default to User if no role specified
+        };
+
         const { error: profileError } = await supabase
           .from('profiles')
-          .update({
-            first_name: profileData.first_name,
-            last_name: profileData.last_name,
-            company: profileData.company,
-            position: profileData.position,
-            industry: profileData.industry,
-            phone: profileData.phone,
-            bio: profileData.bio,
-            role: profileData.role || 'User' // Default to User if no role specified
-          })
-          .eq('id', data.user.id);
+          .update(profileDataToUpdate)
+          .eq('id', data.user.id as any);
           
         if (profileError) {
           console.error('Error updating profile:', profileError);
@@ -189,10 +197,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { success: false, error: 'Not authenticated' };
       }
 
+      // Convert to any type to avoid TypeScript errors
       const { error } = await supabase
         .from('profiles')
-        .update(data)
-        .eq('id', user.id);
+        .update(data as any)
+        .eq('id', user.id as any);
         
       if (error) {
         toast.error('Failed to update profile');

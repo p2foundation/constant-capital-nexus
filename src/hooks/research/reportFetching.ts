@@ -20,12 +20,12 @@ export async function fetchReportsList(
     
     // Apply filters
     if (reportType) {
-      countQuery = countQuery.eq('type', reportType);
+      countQuery = countQuery.eq('type', reportType as any);
     }
     
     // If not fetching premium content or user doesn't have access
     if (!fetchPremiumContent) {
-      countQuery = countQuery.eq('is_premium', false);
+      countQuery = countQuery.eq('is_premium', false as any);
     }
     
     // Add search filter if provided
@@ -48,12 +48,12 @@ export async function fetchReportsList(
     
     // Filter by type if provided
     if (reportType) {
-      query = query.eq('type', reportType);
+      query = query.eq('type', reportType as any);
     }
     
     // If not fetching premium content
     if (!fetchPremiumContent) {
-      query = query.eq('is_premium', false);
+      query = query.eq('is_premium', false as any);
     }
     
     // Add search filter if provided
@@ -68,7 +68,7 @@ export async function fetchReportsList(
     }
     
     return { 
-      reports: data as ResearchReport[], 
+      reports: (data || []) as unknown as ResearchReport[], 
       totalCount: count || 0 
     };
   } catch (err: any) {
@@ -85,7 +85,7 @@ export async function getReportById(id: string): Promise<ReportResult> {
     const { data: reportData, error: reportError } = await supabase
       .from('research_reports')
       .select('*')
-      .eq('id', id)
+      .eq('id', id as any)
       .single();
     
     if (reportError) {
@@ -96,7 +96,7 @@ export async function getReportById(id: string): Promise<ReportResult> {
     const { data: filesData, error: filesError } = await supabase
       .from('report_files')
       .select('*')
-      .eq('report_id', id);
+      .eq('report_id', id as any);
     
     if (filesError) {
       throw filesError;
@@ -106,16 +106,16 @@ export async function getReportById(id: string): Promise<ReportResult> {
     const { data: imagesData, error: imagesError } = await supabase
       .from('report_images')
       .select('*')
-      .eq('report_id', id);
+      .eq('report_id', id as any);
     
     if (imagesError) {
       throw imagesError;
     }
     
     return {
-      report: reportData as ResearchReport,
-      files: filesData || [],
-      images: imagesData || []
+      report: reportData as unknown as ResearchReport,
+      files: filesData as any || [],
+      images: imagesData as any || []
     };
   } catch (err: any) {
     console.error('Error fetching report details:', err);

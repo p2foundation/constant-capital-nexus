@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { eurobondsData } from './mock-data';
+import { eurobondData } from './mock-data';
 import { useMarketData } from '@/contexts/MarketDataContext';
 
 // Define an interface for our chart data to ensure all properties are properly typed
@@ -28,12 +28,8 @@ const EurobondsChart: React.FC = () => {
         ghana30: dateItems.find(i => i.ticker_symbol === 'Ghana-2030')?.value
       };
     }) : 
-    // Make sure mock data includes ghana30 property
-    eurobondsData.map(item => ({
-      ...item,
-      // Ensure ghana30 exists with a default value if not present
-      ghana30: item.ghana30 !== undefined ? item.ghana30 : 0
-    }));
+    // Cast mock data to match our interface
+    eurobondData as EurobondChartDataPoint[];
   
   // Calculate min and max for the Y axis domain with all values including ghana30
   const allValues = chartData.flatMap(item => 
@@ -51,7 +47,14 @@ const EurobondsChart: React.FC = () => {
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
           <XAxis dataKey="name" />
-          <YAxis domain={[minValue, maxValue]} />
+          <YAxis 
+            domain={[minValue, maxValue]} 
+            tickFormatter={(value) => value.toFixed(2)}
+            width={50}
+            tickCount={6}
+            allowDecimals={true}
+            scale="auto"
+          />
           <Tooltip 
             formatter={(value) => [`${value}%`, '']}
             labelFormatter={(label) => `${label}`}

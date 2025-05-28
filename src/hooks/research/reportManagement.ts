@@ -22,7 +22,7 @@ export async function createReport(
         content: reportData.content,
         author: reportData.author,
         is_premium: reportData.is_premium || false
-      })
+      } as any)
       .select()
       .single();
     
@@ -30,7 +30,7 @@ export async function createReport(
       throw error;
     }
     
-    const reportId = data.id;
+    const reportId = (data as any).id;
     
     // Upload files if provided
     if (files && files.length > 0) {
@@ -53,7 +53,7 @@ export async function createReport(
               file_path: fileData.path,
               file_name: file.name,
               file_size: file.size
-            });
+            } as any);
           
           if (fileRefError) {
             throw fileRefError;
@@ -80,7 +80,7 @@ export async function createReport(
           image_path: imageData.path,
           image_name: coverImage.name,
           is_featured: true
-        });
+        } as any);
       
       if (imageRefError) {
         throw imageRefError;
@@ -116,8 +116,8 @@ export async function updateReport(
         content: reportData.content,
         author: reportData.author,
         is_premium: reportData.is_premium
-      })
-      .eq('id', id);
+      } as any)
+      .eq('id', id as any);
     
     if (error) {
       throw error;
@@ -143,7 +143,7 @@ export async function deleteReport(id: string): Promise<boolean> {
     const { error } = await supabase
       .from('research_reports')
       .delete()
-      .eq('id', id);
+      .eq('id', id as any);
     
     if (error) {
       throw error;

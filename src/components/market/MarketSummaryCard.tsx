@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { ChartLine, TrendingUp, TrendingDown, Loader2 } from 'lucide-react';
+import { ChartLine, TrendingUp, TrendingDown, Loader2, ExternalLink } from 'lucide-react';
 import {
   Carousel,
   CarouselContent,
@@ -67,7 +67,10 @@ const MarketSummaryCard = ({ isLoading, marketSummaryData }: MarketSummaryCardPr
                         ))}
                       </div>
                       <Button variant="outline" asChild className="w-full mt-6 text-cc-blue border-cc-blue dark:text-cc-gold dark:border-cc-gold hover:bg-cc-light-blue dark:hover:bg-cc-navy/70">
-                        <Link to="/research">Full Market Report</Link>
+                        <Link to="/full-market-report" className="flex items-center justify-center">
+                          <ExternalLink className="h-4 w-4 mr-2" />
+                          Full Market Report
+                        </Link>
                       </Button>
                     </div>
                   </div>

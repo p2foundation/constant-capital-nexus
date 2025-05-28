@@ -1,67 +1,99 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
 import {
-  NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import { Link } from 'react-router-dom';
 
 const ServicesDropdown = () => {
   return (
-    <div className="relative z-10">
-      <NavigationMenu>
-        <NavigationMenuList>
-          <NavigationMenuItem>
-            <NavigationMenuTrigger className="bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent">
-              <span className="text-sm font-medium text-cc-navy dark:text-white">Services</span>
-            </NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <div className="grid gap-3 p-4 w-[400px] md:w-[500px] lg:w-[600px] lg:grid-cols-2">
-                <Link to="/securities-trading" className="flex items-start p-3 rounded-md hover:bg-cc-light-blue dark:hover:bg-cc-navy/80">
-                  <div className="font-medium text-cc-navy dark:text-white">Securities Trading</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
-                    Execute trades across equities and fixed income markets.
-                  </div>
-                </Link>
-                <Link to="/financings-capital-markets" className="flex items-start p-3 rounded-md hover:bg-cc-light-blue dark:hover:bg-cc-navy/80">
-                  <div className="font-medium text-cc-navy dark:text-white">Financings & Capital Markets</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
-                    Raise capital through debt and equity offerings.
-                  </div>
-                </Link>
-                <Link to="/research-services" className="flex items-start p-3 rounded-md hover:bg-cc-light-blue dark:hover:bg-cc-navy/80">
-                  <div className="font-medium text-cc-navy dark:text-white">Research Services</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
-                    Comprehensive analysis of markets and securities.
-                  </div>
-                </Link>
-                <Link to="/investment-advisory" className="flex items-start p-3 rounded-md hover:bg-cc-light-blue dark:hover:bg-cc-navy/80">
-                  <div className="font-medium text-cc-navy dark:text-white">Investment Advisory</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
-                    Tailored investment strategies for your financial goals.
-                  </div>
-                </Link>
-                <Link to="/strategic-advisory" className="flex items-start p-3 rounded-md hover:bg-cc-light-blue dark:hover:bg-cc-navy/80">
-                  <div className="font-medium text-cc-navy dark:text-white">Strategic Advisory</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
-                    Expert guidance for complex business decisions.
-                  </div>
-                </Link>
-                <Link to="/private-equity" className="flex items-start p-3 rounded-md hover:bg-cc-light-blue dark:hover:bg-cc-navy/80">
-                  <div className="font-medium text-cc-navy dark:text-white">Private Equity</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
-                    Private capital investment opportunities.
-                  </div>
-                </Link>
+    <NavigationMenuItem>
+      <NavigationMenuTrigger className="text-cc-navy dark:text-white hover:text-cc-blue dark:hover:text-cc-gold">
+        Services
+      </NavigationMenuTrigger>
+      <NavigationMenuContent>
+        <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+          <li className="row-span-3">
+            <div className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-cc-navy/50 to-cc-blue p-6 no-underline outline-none focus:shadow-md">
+              <div className="mb-2 mt-4 text-lg font-medium text-white">
+                Our Services
               </div>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-      </NavigationMenu>
-    </div>
+              <p className="text-sm leading-tight text-gray-200">
+                Comprehensive financial services tailored to your investment needs.
+              </p>
+            </div>
+          </li>
+          <li>
+            <Link
+              to="/securities-trading"
+              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+            >
+              <div className="text-sm font-medium leading-none">Securities Trading</div>
+              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                Professional trading services for equities and fixed income securities
+              </p>
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/private-equity"
+              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+            >
+              <div className="text-sm font-medium leading-none">Private Equity</div>
+              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                Strategic investments in private companies and growth opportunities
+              </p>
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/strategic-advisory"
+              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+            >
+              <div className="text-sm font-medium leading-none">Strategic Advisory</div>
+              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                Expert financial advisory services for corporate clients
+              </p>
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/capital-markets"
+              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+            >
+              <div className="text-sm font-medium leading-none">Capital Markets</div>
+              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                Capital raising and market making services
+              </p>
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/investment-advisory"
+              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+            >
+              <div className="text-sm font-medium leading-none">Investment Advisory</div>
+              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                Personalized investment advice and portfolio management
+              </p>
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/account-opening"
+              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground bg-cc-gold/10 border border-cc-gold/20"
+            >
+              <div className="text-sm font-medium leading-none text-cc-navy dark:text-cc-gold">Open Account</div>
+              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                Start your investment journey with our digital account opening
+              </p>
+            </Link>
+          </li>
+        </ul>
+      </NavigationMenuContent>
+    </NavigationMenuItem>
   );
 };
 

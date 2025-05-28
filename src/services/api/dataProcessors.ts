@@ -5,13 +5,43 @@
 export const processMarketDataForDB = (data: any[], dataType: string, selectedItems?: string[]) => {
   // For debugging
   console.log(`Processing ${dataType} data for DB:`, data);
+  console.log("Selected items:", selectedItems);
   
   const processedData: any[] = [];
   
   // Get today's date in YYYY-MM-DD format
   const today = new Date().toISOString().split('T')[0];
 
-  if (dataType === 'gse') {
+  if (dataType === 'equities' || dataType === 'equity') {
+    // Process equities data - multiple ticker symbols
+    const symbols = selectedItems || ['MTNGH', 'GOIL', 'GCB', 'SCB', 'EGL', 'FML'];
+    console.log("Processing with symbols:", symbols);
+    
+    data.forEach(item => {
+      // Ensure we have a valid date (should already be in YYYY-MM-DD format)
+      const itemDate = item.date || today;
+      console.log("Processing item:", item, "for date:", itemDate);
+      
+      symbols.forEach(symbol => {
+        const symbolLower = symbol.toLowerCase();
+        // Check if item has data for this symbol
+        if (item[symbolLower] !== undefined) {
+          // Make sure to use the actual change_percent value, not just its sign
+          const changePercent = Number(item[`${symbolLower}_change`]) || 0;
+          
+          processedData.push({
+            data_type: 'equity',
+            ticker_symbol: symbol,
+            date: itemDate,  // Already formatted in base.ts
+            value: Number(item[symbolLower]) || 0,
+            change_percent: changePercent
+          });
+        }
+      });
+    });
+    
+    console.log("Processed equities data:", processedData);
+  } else if (dataType === 'gse') {
     // Process GSE data - simple format with single entry per date
     data.forEach(item => {
       processedData.push({
@@ -19,24 +49,6 @@ export const processMarketDataForDB = (data: any[], dataType: string, selectedIt
         date: item.date || today,
         value: Number(item.value) || 0,
         change_percent: Number(item.change_percent) || 0
-      });
-    });
-  } else if (dataType === 'equity') {
-    // Process equities data - multiple ticker symbols
-    const symbols = selectedItems || ['MTNGH', 'GOIL', 'GCB', 'SCB', 'EGL', 'FML'];
-    
-    data.forEach(item => {
-      symbols.forEach(symbol => {
-        // Check if item has data for this symbol
-        if (item[symbol.toLowerCase()] !== undefined) {
-          processedData.push({
-            data_type: dataType,
-            ticker_symbol: symbol,
-            date: item.date || today,
-            value: Number(item[symbol.toLowerCase()]) || 0,
-            change_percent: Number(item[`${symbol.toLowerCase()}_change`]) || 0
-          });
-        }
       });
     });
   } else if (dataType === 'fixed_income') {

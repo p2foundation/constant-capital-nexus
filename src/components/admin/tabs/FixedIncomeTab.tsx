@@ -20,18 +20,9 @@ const FixedIncomeTab: React.FC = () => {
         yield182: dateItems.find(i => i.ticker_symbol === '182-day')?.value || 0,
         yield182_change: dateItems.find(i => i.ticker_symbol === '182-day')?.change_percent || 0,
         yield182_positive: (dateItems.find(i => i.ticker_symbol === '182-day')?.change_percent || 0) >= 0,
-        yield1yr: dateItems.find(i => i.ticker_symbol === '1-year')?.value || 0,
-        yield1yr_change: dateItems.find(i => i.ticker_symbol === '1-year')?.change_percent || 0,
-        yield1yr_positive: (dateItems.find(i => i.ticker_symbol === '1-year')?.change_percent || 0) >= 0,
         yield364: dateItems.find(i => i.ticker_symbol === '364-day')?.value || 0,
         yield364_change: dateItems.find(i => i.ticker_symbol === '364-day')?.change_percent || 0,
-        yield364_positive: (dateItems.find(i => i.ticker_symbol === '364-day')?.change_percent || 0) >= 0,
-        yield3yr: dateItems.find(i => i.ticker_symbol === '3-year')?.value || 0, 
-        yield3yr_change: dateItems.find(i => i.ticker_symbol === '3-year')?.change_percent || 0,
-        yield3yr_positive: (dateItems.find(i => i.ticker_symbol === '3-year')?.change_percent || 0) >= 0,
-        yield5yr: dateItems.find(i => i.ticker_symbol === '5-year')?.value || 0,
-        yield5yr_change: dateItems.find(i => i.ticker_symbol === '5-year')?.change_percent || 0,
-        yield5yr_positive: (dateItems.find(i => i.ticker_symbol === '5-year')?.change_percent || 0) >= 0
+        yield364_positive: (dateItems.find(i => i.ticker_symbol === '364-day')?.change_percent || 0) >= 0
       };
     }) : 
     fixedIncomeData.map(item => ({
@@ -40,14 +31,8 @@ const FixedIncomeTab: React.FC = () => {
       yield91_positive: true,
       yield182_change: 0,
       yield182_positive: true,
-      yield1yr_change: 0,
-      yield1yr_positive: true,
       yield364_change: 0,
-      yield364_positive: true,
-      yield3yr_change: 0,
-      yield3yr_positive: true,
-      yield5yr_change: 0,
-      yield5yr_positive: true
+      yield364_positive: true
     }));
 
   return (
@@ -62,18 +47,9 @@ const FixedIncomeTab: React.FC = () => {
         { name: 'yield182', label: '182-Day (%)', type: 'number' },
         { name: 'yield182_change', label: '182-Day Change %', type: 'number' },
         { name: 'yield182_positive', label: '182-Day Change Direction', type: 'hidden' },
-        { name: 'yield1yr', label: '1-Year (%)', type: 'number' },
-        { name: 'yield1yr_change', label: '1-Year Change %', type: 'number' },
-        { name: 'yield1yr_positive', label: '1-Year Change Direction', type: 'hidden' },
         { name: 'yield364', label: '364-Day (%)', type: 'number' },
         { name: 'yield364_change', label: '364-Day Change %', type: 'number' },
-        { name: 'yield364_positive', label: '364-Day Change Direction', type: 'hidden' },
-        { name: 'yield3yr', label: '3-Year (%)', type: 'number' },
-        { name: 'yield3yr_change', label: '3-Year Change %', type: 'number' },
-        { name: 'yield3yr_positive', label: '3-Year Change Direction', type: 'hidden' },
-        { name: 'yield5yr', label: '5-Year (%)', type: 'number' },
-        { name: 'yield5yr_change', label: '5-Year Change %', type: 'number' },
-        { name: 'yield5yr_positive', label: '5-Year Change Direction', type: 'hidden' }
+        { name: 'yield364_positive', label: '364-Day Change Direction', type: 'hidden' }
       ]}
       fetchFn={async () => {
         if (marketData.fixedIncome.length > 0) {

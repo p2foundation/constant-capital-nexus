@@ -1,4 +1,3 @@
-
 // Market Summary API service
 import { apiRequest } from './utils';
 
@@ -21,7 +20,7 @@ export const marketSummaryAPI = {
   
   updateSummary: (data: any) => apiRequest("/market-summary", "POST", data),
   
-  // Process raw market data into formatted market summary with isPositive flags
+  // Process raw market data into a formatted market summary with isPositive flags
   processMarketDataToSummary: (marketData: any) => {
     // Helper to format change percentage
     const formatChangePercent = (percent: number | null | undefined) => {
@@ -80,17 +79,11 @@ export const marketSummaryAPI = {
             isPositive: (marketData.fixedIncome?.['182-day']?.change_percent ?? 0) >= 0
           },
           { 
-            label: '1-Year Note', 
-            value: (marketData.fixedIncome?.['1-year']?.value?.toFixed(2) || '0.00') + '%',
-            change: formatChangePercent(marketData.fixedIncome?.['1-year']?.change_percent),
-            isPositive: (marketData.fixedIncome?.['1-year']?.change_percent ?? 0) >= 0
-          },
-          { 
-            label: '3-Year Bond', 
-            value: (marketData.fixedIncome?.['3-year']?.value?.toFixed(2) || '0.00') + '%',
-            change: formatChangePercent(marketData.fixedIncome?.['3-year']?.change_percent),
-            isPositive: (marketData.fixedIncome?.['3-year']?.change_percent ?? 0) >= 0
-          },
+            label: '364-Day T-Bill', 
+            value: (marketData.fixedIncome?.['364-day']?.value?.toFixed(2) || '0.00') + '%',
+            change: formatChangePercent(marketData.fixedIncome?.['364-day']?.change_percent),
+            isPositive: (marketData.fixedIncome?.['364-day']?.change_percent ?? 0) >= 0
+          }
         ]
       },
       {
