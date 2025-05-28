@@ -23,7 +23,7 @@ const DesktopNavigation = () => {
       </NavigationMenu>
       
       <NavigationItem to="/research">Research</NavigationItem>
-      <NavigationItem to="/contact">Contact</NavigationItem>
+      <NavigationItem to="/contact">Contact Us</NavigationItem>
     </div>
   );
 };
