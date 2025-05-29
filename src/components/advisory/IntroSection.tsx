@@ -10,22 +10,22 @@ const IntroSection = () => {
       <div>
         <h2 className="text-3xl font-bold mb-6 text-cc-navy dark:text-white">Strategic Investment Solutions</h2>
         <p className="mb-6 dark:text-gray-300">
-          Our Investment Advisory practice offers comprehensive, personalized strategies designed to meet your specific financial objectives. Whether you're an institutional client or a high-net-worth individual, our team of experienced advisors combines deep market knowledge with sophisticated analytics to develop solutions tailored to your unique needs.
+          Our Investment Advisory team provides comprehensive wealth management and investment solutions tailored to meet the unique needs of our clients. We combine deep market expertise with personalized service to help you achieve your financial objectives.
         </p>
         <p className="mb-8 dark:text-gray-300">
-          We take a holistic approach to wealth management, considering your complete financial picture including growth targets, risk tolerance, time horizon, and liquidity requirements. Our advisors maintain close relationships with clients, providing ongoing support and adjusting strategies as market conditions and personal circumstances evolve.
+          Whether you're planning for retirement, building wealth, or managing institutional assets, our experienced advisors work closely with you to develop and implement strategies that align with your risk tolerance and investment goals.
         </p>
-        <Button className="bg-cc-navy hover:bg-blue-900 dark:bg-cc-gold dark:text-cc-navy dark:hover:bg-cc-gold/90">
+        <Button className="bg-cc-navy hover:bg-blue-900 dark:bg-cc-gold dark:text-cc-navy dark:hover:bg-cc-gold/80">
           <Link to="/contact" className="flex items-center">
-            Schedule a Consultation <ArrowRight className="ml-2 h-5 w-5" />
+            Start Your Investment Journey <ArrowRight className="ml-2 h-5 w-5" />
           </Link>
         </Button>
       </div>
       <div className="bg-gray-100 p-8 rounded-lg dark:bg-gray-800">
         <img 
-          src="/lovable-uploads/d6c6d4c9-dd0e-488b-a267-64e2fe8ca8a6.png" 
-          alt="Investment Advisory Meeting" 
-          className="rounded-lg shadow-lg"
+          src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&q=80" 
+          alt="Investment Advisory Consultation" 
+          className="rounded-lg shadow-lg w-full h-auto"
         />
       </div>
     </div>

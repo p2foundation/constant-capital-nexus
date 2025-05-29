@@ -17,7 +17,7 @@ const HeroContent = () => {
       
       <div className="flex flex-col sm:flex-row gap-4">
         <Button asChild className="bg-cc-navy hover:bg-cc-blue text-white dark:bg-cc-gold dark:hover:bg-cc-gold/90 px-6 py-6 rounded-md flex items-center justify-center">
-          <Link to="/account-opening">
+          <Link to="/register">
             Open an Account
             <ArrowRight className="ml-2 h-5 w-5" />
           </Link>

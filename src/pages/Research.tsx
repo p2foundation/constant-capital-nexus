@@ -4,6 +4,7 @@ import Footer from '@/components/Footer';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ResearchContent from '@/components/research/ResearchContent';
 import ResearchSidebar from '@/components/research/ResearchSidebar';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 const ResearchPage: React.FC = () => {
   const location = useLocation();
@@ -11,6 +12,8 @@ const ResearchPage: React.FC = () => {
   const queryParams = new URLSearchParams(location.search);
   const defaultTab = queryParams.get('tab') || 'featured';
   const currentPage = parseInt(queryParams.get('page') || '1', 10);
+  
+  useAnalytics(); // Track page views
 
   useEffect(() => {
     const tab = queryParams.get('tab');

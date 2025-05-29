@@ -20,7 +20,7 @@ export const marketSummaryAPI = {
   
   updateSummary: (data: any) => apiRequest("/market-summary", "POST", data),
   
-  // Process raw market data into a formatted market summary with isPositive flags
+  // Process raw market data into formatted market summary with isPositive flags
   processMarketDataToSummary: (marketData: any) => {
     // Helper to format change percentage
     const formatChangePercent = (percent: number | null | undefined) => {

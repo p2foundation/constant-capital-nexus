@@ -1,10 +1,11 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { MarketDataProvider } from "@/contexts/MarketDataContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { HelmetProvider } from 'react-helmet-async';
+import { initGA } from "@/utils/analytics";
 
 // Pages
 import Index from "@/pages/Index";
@@ -41,6 +42,11 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 
 function App() {
+  useEffect(() => {
+    // Initialize Google Analytics on app load
+    initGA();
+  }, []);
+
   return (
     <BrowserRouter>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>

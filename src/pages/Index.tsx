@@ -10,8 +10,11 @@ import ClientsCarousel from '@/components/ClientsCarousel';
 import Footer from '@/components/Footer';
 import ThemeToggler from '@/components/ThemeToggler';
 import ChatBot from '@/components/ChatBot';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 const Index = () => {
+  useAnalytics(); // Track page views
+
   return (
     <div className="flex flex-col min-h-screen dark:bg-gray-950">
       <Navbar />

@@ -1,116 +1,138 @@
-import React from 'react';
-import {Link} from 'react-router-dom';
-import {Facebook} from 'lucide-react';
+import React from "react";
+import { Link } from "react-router-dom";
+import { Facebook } from "lucide-react";
 
 const Footer = () => {
-    return (
-        <footer className="bg-cc-navy text-white">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <div>
-                        <div className="text-2xl font-serif font-bold mb-6">
-                            Constant<span className="text-cc-gold">Capital</span>
-                        </div>
-                        <p className="text-gray-300 mb-6 text-sm">
-                            Constant Capital (Ghana) Limited is a licensed broker-dealer
-                            regulated by the Securities and Exchange Commission of Ghana.
-                        </p>
-                        <div className="flex items-center">
-                            <div className="text-sm text-gray-300 mr-4">SEC License: <span
-                                className="text-white">SD-001/15</span></div>
-                        </div>
-                    </div>
+  return (
+    <footer className="bg-cc-navy text-white">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div>
+            <div className="mb-6">
+              {/* Use the orange logo for footer since it's always on dark background */}
+              <img
+                src="/lovable-uploads/c05b6b3d-673c-43cd-92c1-ce160b898d22.png"
+                alt="Constant Capital"
+                className="h-12 w-auto"
+              />
+            </div>
+            <p className="text-gray-300 mb-6 text-sm">
+              Constant Capital (Ghana) Limited is a licensed broker-dealer
+              regulated by the Securities and Exchange Commission of Ghana.
+            </p>
+            <div className="flex items-center">
+              <div className="text-sm text-gray-300 mr-4">
+                SEC License: <span className="text-white">SD-001/15</span>
+              </div>
+            </div>
+          </div>
 
-                    <div>
-                        <h3 className="font-medium text-lg mb-4">Quick Links</h3>
-                        <ul className="space-y-2 text-gray-300">
-                            <li>
-                                <Link to="/" className="hover:text-cc-gold transition-colors">
-                                    Home
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/about" className="hover:text-cc-gold transition-colors">
-                                    About Us
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/securities-trading" className="hover:text-cc-gold transition-colors">
-                                    Services
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/research" className="hover:text-cc-gold transition-colors">
-                                    Research
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/login" className="hover:text-cc-gold transition-colors">
-                                    Research Team Login
-                                </Link>
-                            </li>
-                        </ul>
-                    </div>
+          <div>
+            <h3 className="font-medium text-lg mb-4">Quick Links</h3>
+            <ul className="space-y-2 text-gray-300">
+              <li>
+                <Link to="/" className="hover:text-cc-gold transition-colors">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/about"
+                  className="hover:text-cc-gold transition-colors"
+                >
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/securities-trading"
+                  className="hover:text-cc-gold transition-colors"
+                >
+                  Services
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/research"
+                  className="hover:text-cc-gold transition-colors"
+                >
+                  Research
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/login"
+                  className="hover:text-cc-gold transition-colors"
+                >
+                  Research Team Login
+                </Link>
+              </li>
+            </ul>
+          </div>
 
-                    <div>
-                        <h3 className="font-medium text-lg mb-4">Services</h3>
-                        <ul className="space-y-2 text-gray-300">
-                            <li>
-                                <Link to="/securities-trading" className="hover:text-cc-gold transition-colors">
-                                    Equities Trading
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="#" className="hover:text-cc-gold transition-colors">
-                                    Fixed Income
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="#" className="hover:text-cc-gold transition-colors">
-                                    Eurobonds
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="#" className="hover:text-cc-gold transition-colors">
-                                    SSA Bonds
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="#" className="hover:text-cc-gold transition-colors">
-                                    Wealth Management
-                                </Link>
-                            </li>
-                        </ul>
-                    </div>
+          <div>
+            <h3 className="font-medium text-lg mb-4">Services</h3>
+            <ul className="space-y-2 text-gray-300">
+              <li>
+                <Link
+                  to="/securities-trading"
+                  className="hover:text-cc-gold transition-colors"
+                >
+                  Equities Trading
+                </Link>
+              </li>
+              <li>
+                <Link to="#" className="hover:text-cc-gold transition-colors">
+                  Fixed Income
+                </Link>
+              </li>
+              <li>
+                <Link to="#" className="hover:text-cc-gold transition-colors">
+                  Eurobonds
+                </Link>
+              </li>
+              <li>
+                <Link to="#" className="hover:text-cc-gold transition-colors">
+                  SSA Bonds
+                </Link>
+              </li>
+              <li>
+                <Link to="#" className="hover:text-cc-gold transition-colors">
+                  Wealth Management
+                </Link>
+              </li>
+            </ul>
+          </div>
 
-                    <div>
-                        <h3 className="font-medium text-lg mb-4">Contact Us</h3>
-                        <ul className="space-y-2 text-gray-300">
-                            <li className="flex items-start">
-                                <span className="mr-2">📍</span>
-                                <span>6 Tanbu Link, East Legon, Accra, Ghana</span>
-                            </li>
-                            <li className="flex items-center">
-                                <span className="mr-2">📞</span>
-                                <a
-                                    href="tel:+233302738242"
-                                    className="hover:text-cc-gold transition-colors duration-300"
-                                >
-                                    +233 302 738 242
-                                </a>
-                            </li>
-                            <li className="flex items-center">
-                                <span className="mr-2">📧</span>
-                                <a
-                                    href="mailto:info@constantcapital.com.gh?subject=Inquiry from Website"
-                                    className="hover:text-cc-gold transition-colors duration-300"
-                                >
-                                    info@constantcapital.com.gh
-                                </a>
-                            </li>
-                        </ul>
-                        {/*Social Media Links*/}
-                        <div className="mt-6">
+          <div>
+            <h3 className="font-medium text-lg mb-4">Contact Us</h3>
+            <ul className="space-y-2 text-gray-300">
+              <li className="flex items-start">
+                <span className="mr-2">📍</span>
+                <span>6 Tanbu Lane, East Legon, Accra, Ghana</span>
+              </li>
+              <li className="flex items-center">
+                <span className="mr-2">📞</span>
+                <a
+                  href="tel:+233302738242"
+                  className="hover:text-cc-gold transition-colors duration-300"
+                >
+                  +233 302 738 242
+                </a>
+              </li>
+              <li className="flex items-center">
+                <span className="mr-2">📧</span>
+                <a
+                  href="mailto:info@constantcapital.com.gh?subject=Inquiry from Website"
+                  className="hover:text-cc-gold transition-colors duration-300"
+                >
+                  info@constantcapital.com.gh
+                </a>
+              </li>
+            </ul>
+
+              {/*Social Media Links*/}
+              <div className="mt-6">
                             <h4 className="font-medium mb-2">Follow Us</h4>
                             <div className="flex space-x-4">
                                 <a href="https://web.facebook.com/people/Constant-Capital-Ghana-Ltd/100077083761348/"
@@ -148,30 +170,41 @@ const Footer = () => {
                                 </a>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <div
-                    className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-                    <div className="text-sm text-gray-400 mb-4 md:mb-0">
-                        &copy; {new Date().getFullYear()} Constant Capital (Ghana) Limited. All rights reserved.
-                    </div>
+            
+          </div>
+        </div>
 
-                    <div className="flex space-x-6 text-sm text-gray-400">
-                        <Link to="/terms-of-service" className="hover:text-white transition-colors">
-                            Terms of Service
-                        </Link>
-                        <Link to="/privacy-policy" className="hover:text-white transition-colors">
-                            Privacy Policy
-                        </Link>
-                        <Link to="/cookie-policy" className="hover:text-white transition-colors">
-                            Cookie Policy
-                        </Link>
-                    </div>
-                </div>
-            </div>
-        </footer>
-    );
+        <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+          <div className="text-sm text-gray-400 mb-4 md:mb-0">
+            &copy; {new Date().getFullYear()} Constant Capital (Ghana) Limited.
+            All rights reserved.
+          </div>
+
+          <div className="flex space-x-6 text-sm text-gray-400">
+            <Link
+              to="/terms-of-service"
+              className="hover:text-white transition-colors"
+            >
+              Terms of Service
+            </Link>
+            <Link
+              to="/privacy-policy"
+              className="hover:text-white transition-colors"
+            >
+              Privacy Policy
+            </Link>
+            <Link
+              to="/cookie-policy"
+              className="hover:text-white transition-colors"
+            >
+              Cookie Policy
+            </Link>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
 };
 
 export default Footer;

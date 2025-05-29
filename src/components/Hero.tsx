@@ -27,11 +27,11 @@ const Hero = () => {
       console.log("Hero - Eurobonds data:", latestData.eurobonds);
       console.log("Hero - FX data:", latestData.fx);
     }
-  }, [latestData, isLoading, marketSummaryData]);
+  }, [latestData, isLoading]);
 
   return (
     <div className="relative overflow-hidden">
-      {/* Background with a pattern */}
+      {/* Background with pattern */}
       <div className="absolute inset-0 bg-pattern opacity-40 dark:opacity-20"></div>
       
       <div className="relative pt-24 pb-20 sm:pt-32 sm:pb-24 lg:pb-32 container mx-auto px-4 sm:px-6 lg:px-8">
