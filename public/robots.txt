@@ -1,3 +1,8 @@
+
+User-agent: *
+Allow: /
+
+# Specific bot permissions
 User-agent: Googlebot
 Allow: /
 
@@ -10,5 +15,13 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-User-agent: *
-Allow: /
+# Sitemap location
+Sitemap: https://constantcap.com.gh/sitemap.xml
+
+# Crawl-delay for general bots
+Crawl-delay: 1
+
+# Disallow admin areas
+Disallow: /admin
+Disallow: /api/
+Disallow: /settings

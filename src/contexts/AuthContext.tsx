@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { Session, User } from '@supabase/supabase-js';
@@ -39,13 +38,59 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const getRedirectPath = () => {
     if (!profile) return '/';
     
-    // Redirect to admin dashboard for users with management roles
-    if (profile.role === 'Admin' || profile.role === 'Developer' || profile.role === 'Analyst') {
+    // Redirect to admin dashboard for users with management roles first (Admin/Developer)
+    if (profile.role === 'Admin' || profile.role === 'Developer') {
       return '/admin';
+    }
+    
+    // Then redirect Analysts to research admin
+    if (profile.role === 'Analyst') {
+      return '/research-admin';
     }
     
     // Regular users go to the main site
     return '/';
+  };
+
+  // Function to clean up auth state
+  const cleanupAuthState = () => {
+    // Clear all Supabase auth keys from localStorage
+    Object.keys(localStorage).forEach((key) => {
+      if (key.startsWith('supabase.auth.') || key.includes('sb-')) {
+        localStorage.removeItem(key);
+      }
+    });
+    
+    // Clear from sessionStorage as well
+    Object.keys(sessionStorage || {}).forEach((key) => {
+      if (key.startsWith('supabase.auth.') || key.includes('sb-')) {
+        sessionStorage.removeItem(key);
+      }
+    });
+  };
+
+  // Function to log user activity
+  const logActivity = async (activityType: 'login' | 'logout' | 'profile_update' | 'account_access', userId: string) => {
+    try {
+      // Get user's IP address (in a real app, you'd get this from the server)
+      const ipResponse = await fetch('https://api.ipify.org?format=json').catch(() => null);
+      const ipData = ipResponse ? await ipResponse.json() : null;
+
+      const { error } = await supabase
+        .from('user_activities')
+        .insert({
+          user_id: userId,
+          activity_type: activityType,
+          ip_address: ipData?.ip || null,
+          user_agent: navigator.userAgent
+        });
+
+      if (error) {
+        console.error('Error logging activity:', error);
+      }
+    } catch (error) {
+      console.error('Error logging activity:', error);
+    }
   };
 
   // Function to fetch user profile
@@ -73,9 +118,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // First set up the auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, currentSession) => {
+      async (event, currentSession) => {
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
+        
+        // Log activity for sign in events
+        if (event === 'SIGNED_IN' && currentSession?.user) {
+          setTimeout(() => {
+            logActivity('login', currentSession.user.id);
+          }, 1000);
+        }
+        
+        // Log activity for sign out events
+        if (event === 'SIGNED_OUT') {
+          // Clear profile when signed out
+          setProfile(null);
+          console.log('User signed out');
+        }
         
         // Fetch profile for the user if session exists
         if (currentSession?.user) {
@@ -108,6 +167,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Sign in function
   const signIn = async (email: string, password: string) => {
     try {
+      // Clean up existing state before signing in
+      cleanupAuthState();
+      
+      // Attempt to sign out any existing session
+      try {
+        await supabase.auth.signOut({ scope: 'global' });
+      } catch (err) {
+        // Continue even if this fails
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({ 
         email, 
         password,
@@ -179,14 +248,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Sign out function
+  // Sign out function with improved cleanup
   const signOut = async () => {
     try {
-      await supabase.auth.signOut();
+      // Log logout activity before signing out
+      if (user) {
+        await logActivity('logout', user.id);
+      }
+      
+      // Clean up auth state first
+      cleanupAuthState();
+      
+      // Attempt global sign out
+      try {
+        await supabase.auth.signOut({ scope: 'global' });
+      } catch (err) {
+        console.log('Global signout failed, continuing with local cleanup');
+      }
+      
+      // Force clear local state
+      setSession(null);
+      setUser(null);
+      setProfile(null);
+      
       toast.info('Signed out successfully');
+      
+      // Force page reload to ensure complete cleanup
+      window.location.href = '/login';
     } catch (error) {
       console.error('Error signing out:', error);
-      toast.error('Error signing out');
+      // Even if there's an error, clear local state and redirect
+      cleanupAuthState();
+      setSession(null);
+      setUser(null);
+      setProfile(null);
+      toast.error('Signed out (with errors)');
+      window.location.href = '/login';
     }
   };
 
@@ -207,6 +304,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         toast.error('Failed to update profile');
         return { success: false, error: error.message };
       }
+
+      // Log profile update activity
+      await logActivity('profile_update', user.id);
 
       // Refresh profile data
       await fetchProfile(user.id);

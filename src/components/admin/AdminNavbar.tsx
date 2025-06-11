@@ -8,13 +8,11 @@ import ThemeToggler from '@/components/ThemeToggler';
 import { useAuth } from '@/contexts/AuthContext';
 
 const AdminNavbar = () => {
-  const navigate = useNavigate();
   const { signOut } = useAuth();
   
   const handleLogout = async () => {
     await signOut();
-    // Redirect to login page after signOut
-    navigate("/login");
+    // signOut function now handles the redirect internally
   };
   
   return (

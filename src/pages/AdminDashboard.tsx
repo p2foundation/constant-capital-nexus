@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 import AdminNavbar from '@/components/admin/AdminNavbar';
 import AdminFooter from '@/components/admin/AdminFooter';
 import MarketSummaryManager from '@/components/admin/MarketSummaryManager';
-import ResearchReportManager from '@/components/admin/ResearchReportManager';
 import MarketDataManager from '@/components/admin/MarketDataManager';
 import ContentManager from '@/components/admin/ContentManager';
+import ContactInbox from '@/components/admin/ContactInbox';
 import { AdminProvider } from '@/contexts/AdminContext';
-import { FileText, ChartBar, Book, Settings, Layout, Database, Calendar, TrendingUp } from 'lucide-react';
+import { FileText, ChartBar, Settings, Layout, Database, Calendar, TrendingUp, Mail } from 'lucide-react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 
 const AdminDashboard = () => {
@@ -29,9 +29,9 @@ const AdminDashboard = () => {
         {/* Add padding-top to account for fixed navbar */}
         <div className="container mx-auto px-4 py-8 flex-grow pt-20">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-cc-navy dark:text-white">Research Admin Dashboard</h1>
+            <h1 className="text-3xl font-bold text-cc-navy dark:text-white">Admin Dashboard</h1>
             <p className="text-gray-500 dark:text-gray-300 mt-2">
-              Manage market data, research reports, and website content
+              Manage market data and website content
             </p>
           </div>
           
@@ -41,6 +41,10 @@ const AdminDashboard = () => {
                 <Layout className="h-4 w-4" />
                 <span>Content</span>
               </TabsTrigger>
+              <TabsTrigger value="contact-inbox" className="flex items-center gap-2">
+                <Mail className="h-4 w-4" />
+                <span>Contact Inbox</span>
+              </TabsTrigger>
               <TabsTrigger value="market-summary" className="flex items-center gap-2">
                 <TrendingUp className="h-4 w-4" />
                 <span>Market Summary</span>
@@ -48,10 +52,6 @@ const AdminDashboard = () => {
               <TabsTrigger value="market-data" className="flex items-center gap-2">
                 <ChartBar className="h-4 w-4" />
                 <span>Market Data</span>
-              </TabsTrigger>
-              <TabsTrigger value="research-reports" className="flex items-center gap-2">
-                <Book className="h-4 w-4" />
-                <span>Research Reports</span>
               </TabsTrigger>
               <TabsTrigger value="events" className="flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
@@ -66,6 +66,10 @@ const AdminDashboard = () => {
             <TabsContent value="content" className="mt-0">
               <ContentManager />
             </TabsContent>
+
+            <TabsContent value="contact-inbox" className="mt-0">
+              <ContactInbox />
+            </TabsContent>
             
             <TabsContent value="market-summary" className="mt-0">
               <MarketSummaryManager />
@@ -73,10 +77,6 @@ const AdminDashboard = () => {
             
             <TabsContent value="market-data" className="mt-0">
               <MarketDataManager />
-            </TabsContent>
-            
-            <TabsContent value="research-reports" className="mt-0">
-              <ResearchReportManager />
             </TabsContent>
             
             <TabsContent value="events" className="mt-0">

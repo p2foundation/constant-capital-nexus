@@ -47,6 +47,45 @@ export type Database = {
           },
         ]
       }
+      contact_messages: {
+        Row: {
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          message: string
+          phone: string | null
+          status: string | null
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          first_name: string
+          id?: string
+          last_name: string
+          message: string
+          phone?: string | null
+          status?: string | null
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          message?: string
+          phone?: string | null
+          status?: string | null
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       content_blocks: {
         Row: {
           content: string | null
@@ -468,6 +507,36 @@ export type Database = {
           },
         ]
       }
+      user_activities: {
+        Row: {
+          activity_type: string
+          created_at: string
+          id: string
+          ip_address: unknown | null
+          timestamp: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          activity_type: string
+          created_at?: string
+          id?: string
+          ip_address?: unknown | null
+          timestamp?: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          activity_type?: string
+          created_at?: string
+          id?: string
+          ip_address?: unknown | null
+          timestamp?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -488,6 +557,32 @@ export type Database = {
       get_user_role: {
         Args: { user_id?: string }
         Returns: string
+      }
+      get_user_statistics: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          total_users: number
+          pending_activations: number
+          activated_users: number
+        }[]
+      }
+      get_users_with_profiles: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          email: string
+          first_name: string
+          last_name: string
+          role: string
+          company: string
+          job_position: string
+          phone: string
+          industry: string
+          created_at: string
+          last_sign_in_at: string
+          is_active: boolean
+          email_confirmed_at: string
+        }[]
       }
     }
     Enums: {

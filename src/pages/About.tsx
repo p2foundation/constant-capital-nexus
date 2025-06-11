@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -16,13 +15,12 @@ const About = () => {
         <section className="bg-cc-navy text-white py-24 relative overflow-hidden">
           <div className="absolute inset-0 opacity-10 bg-pattern dark:opacity-5"></div>
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="max-w-4xl mx-auto text-center">
+            <div className="max-w-4xl mx-auto text-left">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 font-serif">
                 About Constant Capital
               </h1>
-              <p className="text-lg md:text-xl text-gray-300 mb-10 max-w-3xl mx-auto">
-                Leading investment banking and securities trading firm with a focus on West African markets, 
-                delivering exceptional financial services to our clients since 2007.
+              <p className="text-lg md:text-xl text-gray-300 mb-10 max-w-3xl">
+                Constant Capital (Ghana) Limited is a registered broker-dealer and investment advisor, licensed and regulated by the Securities and Exchange Commission (SEC). We are a licensed dealing member of the Ghana Stock Exchange (GSE) and a depository participant (DP) at the Central Securities Depository (CSD). We are committed to meeting the diverse needs of our clients through the provision of a full array of innovative and customized financial solutions to international standards.
               </p>
               <Link to="/leadership">
                 <Button className="bg-cc-gold hover:bg-cc-gold/90 text-white text-base">
@@ -66,9 +64,9 @@ const About = () => {
         {/* Values Section */}
         <section className="py-16 md:py-24 bg-cc-light-blue dark:bg-cc-navy/70">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
+            <div className="text-left mb-12">
               <h2 className="text-3xl font-bold text-cc-navy dark:text-white mb-4 font-serif">Our Core Values</h2>
-              <p className="text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
+              <p className="text-gray-700 dark:text-gray-300 max-w-3xl">
                 These principles guide everything we do as we strive to be the premier investment banking firm in West Africa.
               </p>
             </div>

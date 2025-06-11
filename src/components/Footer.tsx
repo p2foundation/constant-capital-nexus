@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
 import { Facebook } from "lucide-react";
@@ -6,11 +7,8 @@ const Footer = () => {
   return (
     <footer className="bg-cc-navy text-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
           <div>
-            {/* <div className="text-2xl font-serif font-bold mb-6">
-              Constant<span className="text-cc-gold">Capital</span>
-            </div> */}
             <div className="mb-6">
               {/* Use the orange logo for footer since it's always on dark background */}
               <img
@@ -25,7 +23,7 @@ const Footer = () => {
             </p>
             <div className="flex items-center">
               <div className="text-sm text-gray-300 mr-4">
-                SEC License: <span className="text-white">SD-001/15</span>
+                SEC License: <span className="text-white">SEC/B-DL 026/24</span>
               </div>
             </div>
           </div>
@@ -48,10 +46,10 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  to="/securities-trading"
+                  to="/full-market-report"
                   className="hover:text-cc-gold transition-colors"
                 >
-                  Services
+                  Market Report
                 </Link>
               </li>
               <li>
@@ -64,10 +62,10 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  to="/login"
+                  to="/t-bill-calculator"
                   className="hover:text-cc-gold transition-colors"
                 >
-                  Research Team Login
+                  T-Bill Calculator
                 </Link>
               </li>
             </ul>
@@ -81,27 +79,28 @@ const Footer = () => {
                   to="/securities-trading"
                   className="hover:text-cc-gold transition-colors"
                 >
-                  Equities Trading
+                  Securities Trading
                 </Link>
               </li>
               <li>
-                <Link to="#" className="hover:text-cc-gold transition-colors">
-                  Fixed Income
+                <Link to="/capital-markets" className="hover:text-cc-gold transition-colors">
+                Financings & Capital Markets
                 </Link>
               </li>
               <li>
-                <Link to="#" className="hover:text-cc-gold transition-colors">
-                  Eurobonds
+                <Link to="/investment-advisory" className="hover:text-cc-gold transition-colors">
+                  Investment Advisory
+                </Link>
+              </li>
+             
+              <li>
+                <Link to="/private-equity" className="hover:text-cc-gold transition-colors">
+                  Private Equity
                 </Link>
               </li>
               <li>
-                <Link to="#" className="hover:text-cc-gold transition-colors">
-                  SSA Bonds
-                </Link>
-              </li>
-              <li>
-                <Link to="#" className="hover:text-cc-gold transition-colors">
-                  Wealth Management
+                <Link to="/account-opening" className="hover:text-cc-gold transition-colors">
+                  Account Opening
                 </Link>
               </li>
             </ul>
@@ -109,10 +108,10 @@ const Footer = () => {
 
           <div>
             <h3 className="font-medium text-lg mb-4">Contact Us</h3>
-            <ul className="space-y-2 text-gray-300">
+            <ul className="space-y-2 text-gray-300 mb-6">
               <li className="flex items-start">
                 <span className="mr-2">📍</span>
-                <span>6 Tanbu Lane, East Legon, Accra, Ghana</span>
+                <span>6 Tanbu Link, East Legon, Accra, Ghana</span>
               </li>
               <li className="flex items-center">
                 <span className="mr-2">📞</span>
@@ -120,7 +119,7 @@ const Footer = () => {
                   href="tel:+233302738242"
                   className="hover:text-cc-gold transition-colors duration-300"
                 >
-                  +233 302 738 242
+                  +233 302 500 386
                 </a>
               </li>
               <li className="flex items-center">
@@ -133,9 +132,8 @@ const Footer = () => {
                 </a>
               </li>
             </ul>
-
             {/*Social Media Links*/}
-            <div className="mt-6">
+            <div>
               <h4 className="font-medium mb-2">Follow Us</h4>
               <div className="flex space-x-4">
                 <a

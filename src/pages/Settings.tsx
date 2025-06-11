@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -43,7 +42,7 @@ const Settings = () => {
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-cc-navy/95">
       <Navbar />
       
-      <div className="container mx-auto px-4 py-10 flex-grow">
+      <div className="container mx-auto px-4 py-10 flex-grow mt-20">
         <h1 className="text-3xl font-bold text-cc-navy dark:text-white mb-8">Account Settings</h1>
         
         <Tabs defaultValue="profile" className="w-full">

@@ -1,118 +1,93 @@
-
 import React, { useEffect } from 'react';
-import { 
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
-import { Card } from "@/components/ui/card";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { cn } from "@/lib/utils";
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
-
-interface Client {
+interface Partner {
   name: string;
   logo: string;
   alt: string;
 }
-
-const clients: Client[] = [
-  {
-    name: "Ghana Stock Exchange",
-    logo: "/lovable-uploads/a028936c-4eb7-490c-baf1-39fbdaaf1fd8.png", 
-    alt: "Ghana Stock Exchange Logo"
-  },
-  {
-    name: "Databank",
-    logo: "/lovable-uploads/97cd490f-4616-42b4-bb49-576791280973.png",
-    alt: "Databank Logo"
-  },
-  {
-    name: "Security and Exchange Commission",
-    logo: "/lovable-uploads/cc8b89a0-9ae7-4c1e-95ee-534ba55c6e10.png", 
-    alt: "Security and Exchange Commission Logo"
-  },
-  {
-    name: "Petra Trust",
-    logo: "/lovable-uploads/2a3d1aff-a189-43f3-81aa-f33300a33566.png",
-    alt: "Petra Trust Logo"
-  },
-  {
-    name: "Xtellus Capital",
-    logo: "/lovable-uploads/5758fa9a-4e77-4490-aeb9-29d8a7611a15.png",
-    alt: "Xtellus Capital Logo"
-  }
-];
-
+const partners: Partner[] = [{
+  name: "Securities and Exchange Commission",
+  logo: "/lovable-uploads/cc8b89a0-9ae7-4c1e-95ee-534ba55c6e10.png",
+  alt: "Securities and Exchange Commission Logo"
+}, {
+  name: "Ghana Stock Exchange",
+  logo: "/lovable-uploads/a028936c-4eb7-490c-baf1-39fbdaaf1fd8.png",
+  alt: "Ghana Stock Exchange Logo"
+}, {
+  name: "Central Securities Depository",
+  logo: "/lovable-uploads/6b658321-aa10-4753-883f-344ac3884071.png",
+  alt: "Central Securities Depository Logo"
+}, {
+  name: "Ghana Securities Industry Association",
+  logo: "/lovable-uploads/7cf3de7a-45d0-4f2c-b42c-6b8cabcbc9b5.png",
+  alt: "Ghana Securities Industry Association Logo"
+}];
 const ClientsCarousel = () => {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ 
+  const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
     align: 'start',
-    dragFree: true
-  }, [
-    Autoplay({ delay: 3000, stopOnInteraction: false })
-  ]);
-
+    dragFree: true,
+    slidesToScroll: 1
+  }, [Autoplay({
+    delay: 4000,
+    stopOnInteraction: false
+  })]);
   useEffect(() => {
     if (emblaApi) {
       console.log("Embla carousel initialized");
     }
   }, [emblaApi]);
-
-  return (
-    <section className="py-16 bg-gray-50 dark:bg-cc-navy/80">
+  return <section className="py-20 bg-gray-50 dark:bg-cc-navy/80 overflow-hidden">
       <div className="container mx-auto px-4">
-        <div className="text-left mb-10">
-          <div className="text-cc-gold uppercase tracking-wide font-medium mb-2">OUR PARTNERS</div>
-          <h2 className="text-3xl md:text-4xl font-bold text-cc-navy dark:text-white mb-4">We Partner With Industry Leaders</h2>
-          <p className="max-w-2xl text-gray-600 dark:text-gray-300">
-            Constant Capital has established strong partnerships with leading financial institutions across Ghana
-            to provide comprehensive solutions for our clients.
+        <div className="text-left mb-16">
+          <div className="text-cc-gold uppercase tracking-wide font-medium mb-4">OUR REGULATORS</div>
+          <h2 className="text-4xl md:text-5xl font-bold text-cc-navy dark:text-white mb-6">We Work With Industry Partners</h2>
+          <p className="max-w-3xl text-lg text-gray-600 dark:text-gray-300">
+            Constant Capital collaborates with key regulatory and industry bodies in Ghana's financial sector,
+            ensuring compliance and maintaining the highest standards of financial services.
           </p>
         </div>
 
-        <div className="mt-12">
+        <div className="mt-16">
           <div className="overflow-hidden" ref={emblaRef}>
-            <Carousel
-              opts={{
-                align: "start",
-                loop: true,
-              }}
-              plugins={[
-                Autoplay({ delay: 3000, stopOnInteraction: false }),
-              ]}
-              className="w-full"
-            >
-              <CarouselContent className="-ml-4">
-                {clients.map((client, index) => (
-                  <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                    <div className="p-1">
-                      <Card className={cn(
-                        "overflow-hidden bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-all p-8 h-48",
-                        "flex items-center justify-center"
-                      )}>
-                        <div className="w-full h-full flex items-center justify-center p-4">
-                          {client.logo ? (
-                            <img 
-                              src={client.logo} 
-                              alt={client.alt} 
-                              className="max-h-32 max-w-full object-contain transition-all duration-300"
-                            />
-                          ) : (
-                            <div className="text-cc-navy dark:text-white text-lg font-medium">{client.name}</div>
-                          )}
-                        </div>
-                      </Card>
+            <Carousel opts={{
+            align: "center",
+            loop: true,
+            skipSnaps: false,
+            dragFree: true
+          }} plugins={[Autoplay({
+            delay: 4000,
+            stopOnInteraction: false,
+            stopOnMouseEnter: true,
+            playOnInit: true
+          })]} className="w-full">
+              <CarouselContent className="-ml-8 md:-ml-12">
+                {[...partners, ...partners].map((partner, index) => <CarouselItem key={`${partner.name}-${index}`} className="pl-8 md:pl-12 basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                    <div className="p-4">
+                      <div className={cn("flex items-center justify-center p-6 md:p-8", "h-32 md:h-40 lg:h-48", "transition-all duration-500 ease-in-out", "transform hover:scale-105")}>
+                        <img src={partner.logo} alt={partner.alt} className="max-h-full max-w-full object-contain transition-all duration-500 ease-in-out filter grayscale hover:grayscale-0 opacity-70 hover:opacity-100" style={{
+                      filter: 'grayscale(0.5) brightness(0.9)',
+                      transition: 'all 0.5s ease-in-out'
+                    }} onMouseEnter={e => {
+                      e.currentTarget.style.filter = 'grayscale(0) brightness(1)';
+                    }} onMouseLeave={e => {
+                      e.currentTarget.style.filter = 'grayscale(0.5) brightness(0.9)';
+                    }} />
+                      </div>
                     </div>
-                  </CarouselItem>
-                ))}
+                  </CarouselItem>)}
               </CarouselContent>
             </Carousel>
           </div>
         </div>
-      </div>
-    </section>
-  );
-};
 
+        {/* Subtle gradient overlays for infinite scroll effect */}
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-16 h-full bg-gradient-to-r from-gray-50 to-transparent dark:from-cc-navy/80 pointer-events-none"></div>
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-16 h-full bg-gradient-to-l from-gray-50 to-transparent dark:from-cc-navy/80 pointer-events-none"></div>
+      </div>
+    </section>;
+};
 export default ClientsCarousel;

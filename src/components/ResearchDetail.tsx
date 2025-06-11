@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import ResearchDetailHeader from '@/components/research/ResearchDetailHeader';
@@ -75,7 +74,8 @@ const ResearchDetail = ({
             
             <ResearchDetailFiles 
               pdfUrl={pdfUrl} 
-              files={files} 
+              files={files}
+              isPremium={isPremium}
             />
           </div>
           

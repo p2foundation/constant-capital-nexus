@@ -1,16 +1,50 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import OfficeStatus from "@/components/contact/OfficeStatus";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Navigation, Mail, Phone } from "lucide-react";
-import { toast } from "sonner";
+import { useContactForm } from "@/hooks/useContactForm";
 
 const Contact = () => {
-  const handleSubmit = (e: React.FormEvent) => {
+  const { submitContactForm, isSubmitting } = useContactForm();
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: "",
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Thank you for your message. We'll get back to you soon!");
-    // In a real app, this would connect to your backend
+
+    const success = await submitContactForm(formData);
+    if (success) {
+      // Reset form on success
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        subject: "",
+        message: "",
+      });
+    }
+  };
+
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   return (
@@ -43,10 +77,8 @@ const Contact = () => {
                       <div>
                         <h4 className="font-medium mb-1">Office Address</h4>
                         <p className="text-sm text-gray-600 dark:text-gray-300">
-                          6 Tanbu Link
-                          <br />
-                          East Legon
-                          <br />
+                          #6 Tanbu Link, <br />
+                          East Legon, <br />
                           Accra, Ghana
                         </p>
                       </div>
@@ -84,12 +116,18 @@ const Contact = () => {
                     <div className="space-y-1 text-sm text-gray-600 dark:text-gray-300">
                       <div className="flex justify-between">
                         <span>Monday - Friday</span>
-                        <span>8:00 AM - 5:00 PM</span>
+                        <span>8:30 AM - 5:00 PM</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Saturday - Sunday</span>
                         <span>Closed</span>
                       </div>
+                    </div>
+
+                    {/* Office Status */}
+                    <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                      <h4 className="font-medium mb-2">Current Status</h4>
+                      <OfficeStatus />
                     </div>
                   </div>
                 </CardContent>
@@ -111,6 +149,9 @@ const Contact = () => {
                         </label>
                         <input
                           type="text"
+                          name="firstName"
+                          value={formData.firstName}
+                          onChange={handleInputChange}
                           className="w-full px-3 py-2 border border-gray-300 rounded text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                           required
                         />
@@ -121,6 +162,9 @@ const Contact = () => {
                         </label>
                         <input
                           type="text"
+                          name="lastName"
+                          value={formData.lastName}
+                          onChange={handleInputChange}
                           className="w-full px-3 py-2 border border-gray-300 rounded text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                           required
                         />
@@ -133,6 +177,9 @@ const Contact = () => {
                       </label>
                       <input
                         type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
                         className="w-full px-3 py-2 border border-gray-300 rounded text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                         required
                       />
@@ -144,6 +191,9 @@ const Contact = () => {
                       </label>
                       <input
                         type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
                         className="w-full px-3 py-2 border border-gray-300 rounded text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                       />
                     </div>
@@ -153,6 +203,9 @@ const Contact = () => {
                         Subject
                       </label>
                       <select
+                        name="subject"
+                        value={formData.subject}
+                        onChange={handleInputChange}
                         className="w-full px-3 py-2 border border-gray-300 rounded text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                         required
                       >
@@ -173,14 +226,21 @@ const Contact = () => {
                       </label>
                       <textarea
                         rows={5}
+                        name="message"
+                        value={formData.message}
+                        onChange={handleInputChange}
                         className="w-full px-3 py-2 border border-gray-300 rounded text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                         required
                       ></textarea>
                     </div>
 
                     <div className="pt-2">
-                      <Button type="submit" className="w-full">
-                        Send Message
+                      <Button
+                        type="submit"
+                        className="w-full"
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? "Sending..." : "Send Message"}
                       </Button>
                     </div>
                   </form>
@@ -196,7 +256,7 @@ const Contact = () => {
             <div className="h-80 w-full rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
               <iframe
                 title="Constant Capital Ghana Office Location"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3970.821531096331!2d-0.1682459!3d5.6356599!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfdf9bbdee889c45%3A0x8e53d3fafcda8d87!2sEast%20Legon%2C%20Accra!5e0!3m2!1sen!2sgh!4v1651260000000!5m2!1sen!2sgh"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3970.821531096331!2d-0.1682459!3d5.6356599!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfdf9bbdee889c45%3A0x8e53d3fafcda8d87!2s6%20Tanbu%20Lane%2C%20East%20Legon%2C%20Accra!5e0!3m2!1sen!2sgh!4v1651260000000!5m2!1sen!2sgh"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}

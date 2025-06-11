@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { 
@@ -9,27 +9,42 @@ import {
   CarouselNext, 
   CarouselPrevious 
 } from '@/components/ui/carousel';
+import ImageGenerator from '@/components/ImageGenerator';
 
 // Service card component for the Goldman Sachs style design
 const ServiceCard = ({ 
   title, 
   description,
   imageUrl,
-  link = "#"
+  link = "#",
+  onImageGenerated,
+  showImageGenerator = false
 }: { 
   title: string; 
   description: string;
   imageUrl: string;
   link?: string;
+  onImageGenerated?: (imageUrl: string) => void;
+  showImageGenerator?: boolean;
 }) => {
   return (
     <div className="bg-white dark:bg-cc-navy/60 h-full shadow-md rounded-sm overflow-hidden border border-transparent dark:border-cc-gold/20">
-      <div className="h-[300px] overflow-hidden">
+      <div className="h-[300px] overflow-hidden relative">
         <img 
           src={imageUrl} 
           alt={title} 
           className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
         />
+        {showImageGenerator && onImageGenerated && (
+          <div className="absolute bottom-2 right-2">
+            <ImageGenerator
+              onImageGenerated={onImageGenerated}
+              buttonText="New Image"
+              imageType="strategic-advisory"
+              className="text-xs bg-white/90 hover:bg-white"
+            />
+          </div>
+        )}
       </div>
       <div className="p-8">
         <h3 className="text-xl font-bold mb-4 dark:text-white">{title}</h3>
@@ -48,6 +63,12 @@ const ServiceCard = ({
 };
 
 const Services = () => {
+  const [strategicAdvisoryImage, setStrategicAdvisoryImage] = useState("https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&w=800&q=80");
+
+  const handleStrategicAdvisoryImageGenerated = (imageUrl: string) => {
+    setStrategicAdvisoryImage(imageUrl);
+  };
+
   // Define service items with the new uploaded images
   const services = [
     {
@@ -57,16 +78,16 @@ const Services = () => {
       link: "/securities-trading"
     },
     {
+      title: "Investment Research",
+      description: "Comprehensive market intelligence and analysis to guide your investment decisions across Ghana and African markets.",
+      imageUrl: "/lovable-uploads/749a8bb6-9f9d-4731-8233-2a3459f75e84.png",
+      link: "/investment-research"
+    },
+    {
       title: "Financings & Capital Markets",
       description: "Providing capital raising solutions through debt and equity offerings, with specialized expertise in African capital markets.",
       imageUrl: "/lovable-uploads/5d82ecc8-34e0-4284-9c90-434650eaf740.png",
       link: "/capital-markets"
-    },
-    {
-      title: "Investment Research",
-      description: "In-depth analysis and insights into market trends, equity performance, and economic developments across Ghana and Africa.",
-      imageUrl: "/lovable-uploads/749a8bb6-9f9d-4731-8233-2a3459f75e84.png",
-      link: "/research"
     },
     {
       title: "Investment Advisory",
@@ -77,11 +98,13 @@ const Services = () => {
     {
       title: "Strategic Advisory",
       description: "Expert guidance on mergers, acquisitions, corporate restructuring, and strategic business initiatives.",
-      imageUrl: "/lovable-uploads/3722b840-57e0-4fc4-8378-9ee194fd4491.png",
-      link: "/strategic-advisory"
+      imageUrl: strategicAdvisoryImage,
+      link: "/strategic-advisory",
+      showImageGenerator: true,
+      onImageGenerated: handleStrategicAdvisoryImageGenerated
     },
     {
-      title: "Equity Capital",
+      title: "Private Equity",
       description: "Alternative investment solutions focusing on growth capital for promising businesses across key sectors in Ghana and Africa.",
       imageUrl: "/lovable-uploads/3722b840-57e0-4fc4-8378-9ee194fd4491.png",
       link: "/private-equity"
@@ -111,6 +134,8 @@ const Services = () => {
                   description={service.description}
                   imageUrl={service.imageUrl}
                   link={service.link}
+                  showImageGenerator={service.showImageGenerator}
+                  onImageGenerated={service.onImageGenerated}
                 />
               </CarouselItem>
             ))}

@@ -50,17 +50,15 @@ const ResearchReportForm = ({
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null);
   
-  // Set the author field to the logged-in user's name when opening the form
+  // Auto-populate author field when form opens for new reports
   useEffect(() => {
-    if (isOpen && !editingReport) {
-      // Only auto-populate if this is a new report (not editing) and the author field is empty
-      if (!author) {
-        const userName = profile ? 
-          `${profile.first_name || ''} ${profile.last_name || ''}`.trim() : '';
+    if (isOpen && !editingReport && profile) {
+      const userName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim();
+      if (userName) {
         setAuthor(userName);
       }
     }
-  }, [isOpen, profile, editingReport, author]);
+  }, [isOpen, editingReport, profile]);
 
   // Set form values when editing a report
   useEffect(() => {
@@ -105,6 +103,7 @@ const ResearchReportForm = ({
     setDate(new Date().toISOString().split('T')[0]);
     setPreview("");
     setContent("");
+    // Don't reset author here - it will be set by the useEffect above
     setAuthor("");
     setIsPremium(false);
     setFiles([]);

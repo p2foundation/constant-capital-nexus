@@ -2,26 +2,41 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Download, RefreshCw } from 'lucide-react';
-import { generateFinancialServicesImage } from '@/utils/imageGeneration';
+import { generateImage, generateStrategicAdvisoryImage } from '@/utils/imageGeneration';
 import { toast } from 'sonner';
 
 interface ImageGeneratorProps {
   onImageGenerated: (imageUrl: string) => void;
   buttonText?: string;
   className?: string;
+  imageType?: 'financial-services' | 'strategic-advisory' | 'custom';
+  customPrompt?: string;
 }
 
 const ImageGenerator: React.FC<ImageGeneratorProps> = ({ 
   onImageGenerated, 
   buttonText = "Generate New Image",
-  className = ""
+  className = "",
+  imageType = 'financial-services',
+  customPrompt
 }) => {
   const [isGenerating, setIsGenerating] = useState(false);
 
   const handleGenerateImage = async () => {
     setIsGenerating(true);
     try {
-      const imageUrl = await generateFinancialServicesImage();
+      let imageUrl: string;
+      
+      if (imageType === 'strategic-advisory') {
+        imageUrl = await generateStrategicAdvisoryImage();
+      } else if (imageType === 'custom' && customPrompt) {
+        imageUrl = await generateImage({ prompt: customPrompt });
+      } else {
+        // Default financial services image
+        const prompt = "Professional business meeting in a modern conference room with diverse financial advisors discussing investment strategies with clients, charts and graphs on screens in background, corporate atmosphere, high quality photography, natural lighting, business professional attire";
+        imageUrl = await generateImage({ prompt });
+      }
+      
       onImageGenerated(imageUrl);
       toast.success('New image generated successfully!');
     } catch (error) {

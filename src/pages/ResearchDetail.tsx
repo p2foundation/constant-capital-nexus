@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
@@ -233,7 +234,7 @@ const ResearchDetailPage = () => {
                 author={research.author}
                 pdfUrl={research.pdfUrl}
                 imageUrl={research.imageUrl}
-                isPremium={research.is_premium}
+                isPremium={research.is_premium || research.isPremium}
                 files={files}
               />
             </div>

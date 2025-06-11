@@ -16,12 +16,15 @@ import PrivateEquity from "@/pages/PrivateEquity";
 import StrategicAdvisory from "@/pages/StrategicAdvisory";
 import FinancingsCapitalMarkets from "@/pages/FinancingsCapitalMarkets";
 import InvestmentAdvisory from "@/pages/InvestmentAdvisory";
+import InvestmentResearch from "@/pages/InvestmentResearch";
 import Research from "@/pages/Research";
 import ResearchDetail from "@/pages/ResearchDetail";
 import ResearchServices from "@/pages/ResearchServices";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import AdminDashboard from "@/pages/AdminDashboard";
+import ResearchAdmin from "@/pages/ResearchAdmin";
+import UserManagement from "@/pages/UserManagement";
 import Settings from "@/pages/Settings";
 import TBillCalculator from "@/pages/TBillCalculator";
 import EquityCalculator from "@/pages/EquityCalculator";
@@ -35,6 +38,7 @@ import TermsOfService from "@/pages/TermsOfService";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import CookiePolicy from "@/pages/CookiePolicy";
 import AccountOpening from "@/pages/AccountOpening";
+import FAQs from "@/pages/FAQs";
 
 // Components
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
@@ -57,6 +61,7 @@ function App() {
                 <Route path="/" element={<Index />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/faqs" element={<FAQs />} />
                 
                 {/* Account Opening Route */}
                 <Route path="/account-opening" element={<AccountOpening />} />
@@ -68,6 +73,7 @@ function App() {
                 <Route path="/capital-markets" element={<CapitalMarkets />} />
                 <Route path="/financings-capital-markets" element={<FinancingsCapitalMarkets />} />
                 <Route path="/investment-advisory" element={<InvestmentAdvisory />} />
+                <Route path="/investment-research" element={<InvestmentResearch />} />
                 
                 {/* Research Routes */}
                 <Route path="/research" element={<Research />} />
@@ -111,6 +117,20 @@ function App() {
                 <Route path="/admin/*" element={
                   <ProtectedRoute adminOnly>
                     <AdminDashboard />
+                  </ProtectedRoute>
+                } />
+                
+                {/* Research Admin Route - For Analysts, Admins, and Developers */}
+                <Route path="/research-admin" element={
+                  <ProtectedRoute requiredRole={['Analyst', 'Admin', 'Developer']}>
+                    <ResearchAdmin />
+                  </ProtectedRoute>
+                } />
+                
+                {/* User Management Route - Admin Only */}
+                <Route path="/user-management" element={
+                  <ProtectedRoute adminOnly>
+                    <UserManagement />
                   </ProtectedRoute>
                 } />
                 
