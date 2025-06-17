@@ -43,7 +43,10 @@ interface EquitiesDataFormProps {
 const formSchema = z.object({
   date: z.date({ required_error: "Date is required" }),
   symbol: z.string({ required_error: "Symbol is required" }),
-  value: z.coerce.number().positive("Value must be a positive number"),
+  value: z.coerce.number({ required_error: "Value is required" }).refine(
+    (val) => !isNaN(val), 
+    { message: "Value must be a valid number (positive or negative)" }
+  ),
 });
 
 const EquitiesDataForm: React.FC<EquitiesDataFormProps> = ({ onAddDataPoint }) => {
@@ -87,7 +90,7 @@ const EquitiesDataForm: React.FC<EquitiesDataFormProps> = ({ onAddDataPoint }) =
       const dataPoint: EquitiesDataPoint = {
         date: dateStr,
         symbol: values.symbol,
-        value: values.value,
+        value: values.value, // This now accepts both positive and negative values
         change_percent: 0, // Will be calculated in the hook if previous value exists
         previousValue: previousValue, // Store the previous value for change calculation
       };
@@ -108,7 +111,7 @@ const EquitiesDataForm: React.FC<EquitiesDataFormProps> = ({ onAddDataPoint }) =
       
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
             <FormField
               control={form.control}
               name="date"
@@ -121,12 +124,12 @@ const EquitiesDataForm: React.FC<EquitiesDataFormProps> = ({ onAddDataPoint }) =
                         <Button
                           variant="outline"
                           className={cn(
-                            "pl-3 text-left font-normal",
+                            "pl-3 text-left font-normal h-10",
                             !field.value && "text-muted-foreground"
                           )}
                         >
                           {field.value ? (
-                            format(field.value, "PPP")
+                            format(field.value, "dd/MM/yyyy")
                           ) : (
                             <span>Pick a date</span>
                           )}
@@ -143,6 +146,7 @@ const EquitiesDataForm: React.FC<EquitiesDataFormProps> = ({ onAddDataPoint }) =
                           date > new Date() || date < new Date("1900-01-01")
                         }
                         initialFocus
+                        className={cn("p-3 pointer-events-auto")}
                       />
                     </PopoverContent>
                   </Popover>
@@ -162,7 +166,7 @@ const EquitiesDataForm: React.FC<EquitiesDataFormProps> = ({ onAddDataPoint }) =
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="h-10">
                         <SelectValue placeholder="Select company" />
                       </SelectTrigger>
                     </FormControl>
@@ -189,21 +193,24 @@ const EquitiesDataForm: React.FC<EquitiesDataFormProps> = ({ onAddDataPoint }) =
                     <Input
                       type="number"
                       step="0.01"
-                      placeholder="Enter value"
+                      placeholder="e.g. 2.98 or -0.04"
+                      className="h-10"
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Current stock price in GHS
+                  <FormDescription className="text-xs">
+                    Stock price in GHS (+ or -)
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-          </div>
-          
-          <div className="flex justify-end">
-            <Button type="submit">Add Data Point</Button>
+            
+            <div className="flex items-end">
+              <Button type="submit" className="w-full h-10 text-sm px-3">
+                Add Data
+              </Button>
+            </div>
           </div>
         </form>
       </Form>

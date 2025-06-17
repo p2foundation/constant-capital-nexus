@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,13 +18,15 @@ import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { Building2, User, Phone, Briefcase, Layers } from 'lucide-react';
+import PasswordChangeModal from '@/components/profile/PasswordChangeModal';
+import { Building2, User, Phone, Briefcase, Layers, AlertCircle, Mail } from 'lucide-react';
+import { toast } from "sonner";
 
 const profileFormSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
   lastName: z.string().min(2, "Last name must be at least 2 characters"),
-  company: z.string().min(2, "Company name must be at least 2 characters"),
-  position: z.string().min(2, "Position must be at least 2 characters"),
+  company: z.string().min(1, "Company name is required"),
+  position: z.string().min(1, "Position is required"),
   industry: z.string().optional(),
   phone: z.string().optional(),
   bio: z.string().optional(),
@@ -34,8 +35,9 @@ const profileFormSchema = z.object({
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 const UserProfile = () => {
-  const { profile, updateProfile, isLoading: authLoading } = useAuth();
+  const { profile, updateProfile, isLoading: authLoading, user } = useAuth();
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
@@ -60,10 +62,15 @@ const UserProfile = () => {
   });
 
   const onSubmit = async (data: ProfileFormValues) => {
+    if (!user) {
+      toast.error('You must be logged in to update your profile');
+      return;
+    }
+
     setIsUpdating(true);
     
     try {
-      await updateProfile({
+      const result = await updateProfile({
         first_name: data.firstName,
         last_name: data.lastName,
         company: data.company,
@@ -72,15 +79,46 @@ const UserProfile = () => {
         phone: data.phone || null,
         bio: data.bio || null,
       });
+
+      if (result.success) {
+        toast.success('Profile updated successfully');
+      } else {
+        toast.error(result.error || 'Failed to update profile');
+      }
+    } catch (error) {
+      console.error('Profile update error:', error);
+      toast.error('An unexpected error occurred');
     } finally {
       setIsUpdating(false);
     }
+  };
+
+  const handleChangePassword = () => {
+    setIsPasswordModalOpen(true);
   };
 
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cc-blue"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex flex-col dark:bg-gray-950">
+        <Navbar />
+        <main className="flex-1 pt-16 container mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto mt-12 text-center">
+            <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
+            <h1 className="text-2xl font-bold text-cc-navy dark:text-white mb-2">Access Denied</h1>
+            <p className="text-gray-500 dark:text-gray-400">
+              You must be logged in to view your profile.
+            </p>
+          </div>
+        </main>
+        <Footer />
       </div>
     );
   }
@@ -108,7 +146,21 @@ const UserProfile = () => {
                       <User className="h-5 w-5 text-cc-blue dark:text-cc-gold" />
                       <div>
                         <p className="text-sm text-gray-500 dark:text-gray-400">Name</p>
-                        <p className="font-medium dark:text-white">{profile?.first_name} {profile?.last_name}</p>
+                        <p className="font-medium dark:text-white">
+                          {profile?.first_name && profile?.last_name 
+                            ? `${profile.first_name} ${profile.last_name}`
+                            : profile?.first_name || 'Not set'}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                      <Mail className="h-5 w-5 text-cc-blue dark:text-cc-gold" />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Email</p>
+                        <p className="font-medium dark:text-white truncate" title={user?.email || 'Not set'}>
+                          {user?.email || 'Not set'}
+                        </p>
                       </div>
                     </div>
                     
@@ -116,7 +168,7 @@ const UserProfile = () => {
                       <Building2 className="h-5 w-5 text-cc-blue dark:text-cc-gold" />
                       <div>
                         <p className="text-sm text-gray-500 dark:text-gray-400">Company</p>
-                        <p className="font-medium dark:text-white">{profile?.company || '—'}</p>
+                        <p className="font-medium dark:text-white">{profile?.company || 'Not set'}</p>
                       </div>
                     </div>
                     
@@ -124,9 +176,19 @@ const UserProfile = () => {
                       <Briefcase className="h-5 w-5 text-cc-blue dark:text-cc-gold" />
                       <div>
                         <p className="text-sm text-gray-500 dark:text-gray-400">Position</p>
-                        <p className="font-medium dark:text-white">{profile?.position || '—'}</p>
+                        <p className="font-medium dark:text-white">{profile?.position || 'Not set'}</p>
                       </div>
                     </div>
+
+                    {profile?.industry && (
+                      <div className="flex items-center space-x-2">
+                        <Layers className="h-5 w-5 text-cc-blue dark:text-cc-gold" />
+                        <div>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">Industry</p>
+                          <p className="font-medium dark:text-white">{profile.industry}</p>
+                        </div>
+                      </div>
+                    )}
                     
                     <div className="flex items-center space-x-2">
                       <Layers className="h-5 w-5 text-cc-blue dark:text-cc-gold" />
@@ -135,21 +197,40 @@ const UserProfile = () => {
                         <p className="font-medium dark:text-white capitalize">{profile?.role || 'User'}</p>
                       </div>
                     </div>
+
+                    {profile?.phone && (
+                      <div className="flex items-center space-x-2">
+                        <Phone className="h-5 w-5 text-cc-blue dark:text-cc-gold" />
+                        <div>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">Phone</p>
+                          <p className="font-medium dark:text-white">{profile.phone}</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <Separator className="my-4 dark:bg-gray-700" />
                   
                   <div className="space-y-2">
                     <p className="text-sm font-medium dark:text-white">Account Actions</p>
-                    <Button variant="outline" size="sm" className="w-full dark:border-gray-600 dark:text-white">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="w-full dark:border-gray-600 dark:text-white"
+                      onClick={handleChangePassword}
+                    >
                       Change Password
                     </Button>
-                    {profile?.role === 'Admin' || profile?.role === 'Developer' || profile?.role === 'Analyst' ? (
-                      <Button variant="outline" size="sm" className="w-full dark:border-gray-600 dark:text-white" 
-                        onClick={() => window.location.href = '/admin'}>
+                    {(profile?.role === 'Admin' || profile?.role === 'Developer' || profile?.role === 'Analyst') && (
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full dark:border-gray-600 dark:text-white" 
+                        onClick={() => window.location.href = '/admin'}
+                      >
                         Go to Admin Dashboard
                       </Button>
-                    ) : null}
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -172,11 +253,12 @@ const UserProfile = () => {
                           name="firstName"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="dark:text-white">First Name</FormLabel>
+                              <FormLabel className="dark:text-white">First Name *</FormLabel>
                               <FormControl>
                                 <Input
                                   {...field}
                                   className="dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                  placeholder="Enter your first name"
                                 />
                               </FormControl>
                               <FormMessage />
@@ -189,11 +271,12 @@ const UserProfile = () => {
                           name="lastName"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="dark:text-white">Last Name</FormLabel>
+                              <FormLabel className="dark:text-white">Last Name *</FormLabel>
                               <FormControl>
                                 <Input
                                   {...field}
                                   className="dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                  placeholder="Enter your last name"
                                 />
                               </FormControl>
                               <FormMessage />
@@ -208,11 +291,12 @@ const UserProfile = () => {
                           name="company"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="dark:text-white">Company</FormLabel>
+                              <FormLabel className="dark:text-white">Company *</FormLabel>
                               <FormControl>
                                 <Input
                                   {...field}
                                   className="dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                  placeholder="Enter your company name"
                                 />
                               </FormControl>
                               <FormMessage />
@@ -225,11 +309,12 @@ const UserProfile = () => {
                           name="position"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="dark:text-white">Position</FormLabel>
+                              <FormLabel className="dark:text-white">Position *</FormLabel>
                               <FormControl>
                                 <Input
                                   {...field}
                                   className="dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                  placeholder="Enter your job title"
                                 />
                               </FormControl>
                               <FormMessage />
@@ -249,6 +334,7 @@ const UserProfile = () => {
                                 <Input
                                   {...field}
                                   className="dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                  placeholder="e.g., Financial Services"
                                 />
                               </FormControl>
                               <FormMessage />
@@ -266,6 +352,7 @@ const UserProfile = () => {
                                 <Input
                                   {...field}
                                   className="dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                  placeholder="e.g., +233 20 000 0000"
                                 />
                               </FormControl>
                               <FormMessage />
@@ -285,6 +372,7 @@ const UserProfile = () => {
                                 {...field}
                                 rows={4}
                                 className="resize-none dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                placeholder="Tell us a bit about yourself and your professional background..."
                               />
                             </FormControl>
                             <FormMessage />
@@ -310,6 +398,11 @@ const UserProfile = () => {
         </div>
       </main>
       <Footer />
+      
+      <PasswordChangeModal 
+        isOpen={isPasswordModalOpen}
+        onClose={() => setIsPasswordModalOpen(false)}
+      />
     </div>
   );
 };

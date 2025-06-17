@@ -93,8 +93,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Function to fetch user profile
-  const fetchProfile = async (userId: string) => {
+  // Function to fetch user profile with better error handling
+  const fetchProfile = async (userId: string, retries = 3) => {
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -103,6 +103,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .single();
 
       if (error) {
+        if (error.code === 'PGRST116' && retries > 0) {
+          // Profile doesn't exist yet, retry after a short delay
+          console.log('Profile not found, retrying...', retries);
+          setTimeout(() => {
+            fetchProfile(userId, retries - 1);
+          }, 1000);
+          return;
+        }
         console.error('Error fetching profile:', error);
         return;
       }
@@ -111,6 +119,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setProfile(data as unknown as Profile);
     } catch (error) {
       console.error('Profile fetch error:', error);
+      if (retries > 0) {
+        setTimeout(() => {
+          fetchProfile(userId, retries - 1);
+        }, 1000);
+      }
     }
   };
 
@@ -164,7 +177,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  // Sign in function
+  // Enhanced sign in function
   const signIn = async (email: string, password: string) => {
     try {
       // Clean up existing state before signing in
@@ -183,21 +196,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       
       if (error) {
-        toast.error(error.message);
-        return { success: false, error: error.message };
+        let errorMessage = error.message;
+        
+        // Provide more user-friendly error messages
+        if (error.message.includes('Invalid login credentials')) {
+          errorMessage = 'Invalid email or password. Please check your credentials and try again.';
+        } else if (error.message.includes('Email not confirmed')) {
+          errorMessage = 'Please check your email and click the confirmation link before signing in.';
+        } else if (error.message.includes('Too many requests')) {
+          errorMessage = 'Too many login attempts. Please wait a moment before trying again.';
+        }
+        
+        toast.error(errorMessage);
+        return { success: false, error: errorMessage };
       }
       
       toast.success('Signed in successfully');
       return { success: true };
     } catch (error: any) {
-      toast.error('An error occurred during sign in');
-      return { success: false, error: error.message };
+      const errorMessage = 'An error occurred during sign in. Please try again.';
+      toast.error(errorMessage);
+      return { success: false, error: errorMessage };
     }
   };
 
-  // Sign up function with profile creation
+  // Enhanced sign up function with better profile handling
   const signUp = async (email: string, password: string, profileData: Partial<Profile>) => {
     try {
+      // Validate required fields
+      if (!profileData.first_name || !profileData.last_name) {
+        const errorMessage = 'First name and last name are required.';
+        toast.error(errorMessage);
+        return { success: false, error: errorMessage };
+      }
+
       // Create auth user
       const { data, error } = await supabase.auth.signUp({ 
         email, 
@@ -211,40 +243,57 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       
       if (error) {
-        toast.error(error.message);
-        return { success: false, error: error.message };
+        let errorMessage = error.message;
+        
+        // Provide more user-friendly error messages
+        if (error.message.includes('User already registered')) {
+          errorMessage = 'An account with this email already exists. Please sign in instead.';
+        } else if (error.message.includes('Password should be')) {
+          errorMessage = 'Password must be at least 6 characters long.';
+        } else if (error.message.includes('Invalid email')) {
+          errorMessage = 'Please enter a valid email address.';
+        }
+        
+        toast.error(errorMessage);
+        return { success: false, error: errorMessage };
       }
       
       // The profile is auto-created by the trigger, but we need to update it with provided data
       if (data.user) {
-        // Type casting to any to avoid TypeScript errors with Supabase types
-        const profileDataToUpdate: any = {
-          first_name: profileData.first_name,
-          last_name: profileData.last_name,
-          company: profileData.company,
-          position: profileData.position,
-          industry: profileData.industry,
-          phone: profileData.phone,
-          bio: profileData.bio,
-          role: profileData.role || 'User' // Default to User if no role specified
-        };
+        // Wait a moment for the trigger to create the profile
+        setTimeout(async () => {
+          try {
+            const profileDataToUpdate: any = {
+              first_name: profileData.first_name,
+              last_name: profileData.last_name,
+              company: profileData.company || null,
+              position: profileData.position || null,
+              industry: profileData.industry || null,
+              phone: profileData.phone || null,
+              bio: profileData.bio || null,
+              role: profileData.role || 'User'
+            };
 
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .update(profileDataToUpdate)
-          .eq('id', data.user.id as any);
-          
-        if (profileError) {
-          console.error('Error updating profile:', profileError);
-          // Don't return error here as the user is already created
-        }
+            const { error: profileError } = await supabase
+              .from('profiles')
+              .update(profileDataToUpdate)
+              .eq('id', data.user.id as any);
+              
+            if (profileError) {
+              console.error('Error updating profile:', profileError);
+            }
+          } catch (updateError) {
+            console.error('Error in profile update:', updateError);
+          }
+        }, 2000);
       }
       
-      toast.success('Account created successfully');
+      toast.success('Account created successfully! Please check your email to confirm your account.');
       return { success: true };
     } catch (error: any) {
-      toast.error('An error occurred during sign up');
-      return { success: false, error: error.message };
+      const errorMessage = 'An error occurred during account creation. Please try again.';
+      toast.error(errorMessage);
+      return { success: false, error: errorMessage };
     }
   };
 
@@ -287,22 +336,53 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Update profile function
+  // Enhanced update profile function with better validation
   const updateProfile = async (data: Partial<Profile>) => {
     try {
       if (!user) {
         return { success: false, error: 'Not authenticated' };
       }
 
-      // Convert to any type to avoid TypeScript errors
+      // Validate required fields
+      if (data.first_name && data.first_name.length < 2) {
+        return { success: false, error: 'First name must be at least 2 characters' };
+      }
+      if (data.last_name && data.last_name.length < 2) {
+        return { success: false, error: 'Last name must be at least 2 characters' };
+      }
+      if (data.company && data.company.length < 1) {
+        return { success: false, error: 'Company name is required' };
+      }
+      if (data.position && data.position.length < 1) {
+        return { success: false, error: 'Position is required' };
+      }
+
+      // Clean the data to remove empty strings
+      const cleanData = Object.entries(data).reduce((acc, [key, value]) => {
+        if (value === '') {
+          acc[key] = null;
+        } else {
+          acc[key] = value;
+        }
+        return acc;
+      }, {} as any);
+
       const { error } = await supabase
         .from('profiles')
-        .update(data as any)
+        .update(cleanData)
         .eq('id', user.id as any);
         
       if (error) {
-        toast.error('Failed to update profile');
-        return { success: false, error: error.message };
+        console.error('Profile update error:', error);
+        let errorMessage = 'Failed to update profile';
+        
+        if (error.message.includes('duplicate key')) {
+          errorMessage = 'This information is already in use.';
+        } else if (error.message.includes('check constraint')) {
+          errorMessage = 'Invalid data provided. Please check your inputs.';
+        }
+        
+        return { success: false, error: errorMessage };
       }
 
       // Log profile update activity
@@ -311,11 +391,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Refresh profile data
       await fetchProfile(user.id);
       
-      toast.success('Profile updated successfully');
       return { success: true };
     } catch (error: any) {
-      toast.error('An error occurred while updating profile');
-      return { success: false, error: error.message };
+      console.error('Profile update error:', error);
+      return { success: false, error: 'An unexpected error occurred while updating profile' };
     }
   };
 

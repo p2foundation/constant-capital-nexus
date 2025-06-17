@@ -12,7 +12,7 @@ const CookiePolicy = () => {
         <ThemeToggler />
       </div>
       
-      <main className="flex-1 container mx-auto px-4 py-12 mt-20">
+      <main className="flex-1 container mx-auto px-6 py-8 pt-20">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl md:text-4xl font-bold mb-8 text-cc-navy dark:text-white">Cookie Policy</h1>
           

@@ -507,7 +507,7 @@ const PrivateEquity = () => {
                   Discuss Investment Opportunities <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button variant="outline" className="border-white text-cc-navy hover:bg-white hover:text-cc-navy font-bold text-lg px-8 py-6">
+              <Button variant="outline" className="border-white text-white hover:bg-white hover:text-cc-navy font-bold text-lg px-8 py-6">
                 <Link to="/contact" className="flex items-center">
                   Submit Investment Proposal <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
