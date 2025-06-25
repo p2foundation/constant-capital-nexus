@@ -94,10 +94,10 @@ const PrivacyPolicy = () => {
               <p>If you have any questions about this Privacy Policy, please contact us at:</p>
               <address className="not-italic">
                 Constant Capital (Ghana) Limited<br />
-                6 Tanbu Lane, East Legon<br />
+                6 Tanbu Link, East Legon<br />
                 Accra, Ghana<br />
                 Email: info@constantcapital.com.gh<br />
-                Phone: +233 302 738 242
+                Phone: +233 302 500 386
               </address>
             </section>
           </div>

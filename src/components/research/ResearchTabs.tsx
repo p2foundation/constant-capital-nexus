@@ -19,6 +19,9 @@ const ResearchTabs: React.FC<ResearchTabsProps> = ({
   formatDate, 
   getReportsByType 
 }) => {
+  // Get only the 3 latest reports
+  const latestReports = reports.slice(0, 3);
+
   return (
     <div className="lg:w-2/3">
       <Tabs defaultValue="featured" className="w-full">
@@ -36,7 +39,7 @@ const ResearchTabs: React.FC<ResearchTabsProps> = ({
         ) : (
           <>
             <TabsContent value="featured" className="mt-0">
-              {getReportsByType(null, 3).map(report => (
+              {latestReports.map(report => (
                 <ResearchReportCard
                   key={report.id}
                   id={report.id}
@@ -48,7 +51,7 @@ const ResearchTabs: React.FC<ResearchTabsProps> = ({
                 />
               ))}
               
-              {getReportsByType(null).length === 0 && (
+              {latestReports.length === 0 && (
                 <div className="text-center py-12">
                   <p className="text-gray-500 dark:text-gray-400">No featured reports available.</p>
                 </div>

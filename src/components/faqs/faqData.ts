@@ -8,7 +8,7 @@ export const faqCategories = [
     questions: [
       {
         question: "What is Constant Capital (Ghana) Limited?",
-        answer: "Constant Capital (Ghana) Limited is a licensed investment banking and brokerage firm in Ghana, authorized by the Securities and Exchange Commission (SEC License: SD-001/15). We provide comprehensive financial services including securities trading, investment advisory, research services, and capital markets solutions."
+        answer: "Constant Capital (Ghana) Limited is a licensed investment banking and brokerage firm in Ghana, authorized by the Securities and Exchange Commission (SEC License: B-DL 026/24). We provide comprehensive financial services including securities trading, investment advisory, research services, and capital markets solutions."
       },
       {
         question: "What services do you offer?",

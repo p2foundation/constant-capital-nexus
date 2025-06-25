@@ -36,7 +36,7 @@ const TermsOfService = () => {
                 <li>Securities trading (equities, fixed income, eurobonds)</li>
                 <li>Investment advisory services</li>
                 <li>Research and market analysis</li>
-                <li>Wealth management</li>
+                <li>Financings & Capital Market</li>
               </ul>
               <p>All services are provided in accordance with the laws and regulations of Ghana and subject to oversight by the Securities and Exchange Commission of Ghana.</p>
             </section>
@@ -73,10 +73,10 @@ const TermsOfService = () => {
               <p>If you have any questions about these Terms, please contact us at:</p>
               <address className="not-italic">
                 Constant Capital (Ghana) Limited<br />
-                6 Tanbu Lane, East Legon<br />
+                6 Tanbu Link, East Legon<br />
                 Accra, Ghana<br />
                 Email: info@constantcapital.com.gh<br />
-                Phone: +233 302 738 242
+                Phone: +233 302 500 386
               </address>
             </section>
           </div>

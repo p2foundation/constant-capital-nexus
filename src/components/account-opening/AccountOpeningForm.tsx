@@ -1,9 +1,10 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { CheckCircle, FileText, Download, Printer } from 'lucide-react';
+import { CheckCircle, FileText, Download, Printer, Save, Clock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
+import { useAccountOpeningPersistence } from '@/hooks/useAccountOpeningPersistence';
 import PDFGenerator from './PDFGenerator';
 
 // Step components
@@ -167,9 +168,44 @@ const AccountOpeningForm = () => {
     declarationAccepted: false,
     signatureDate: '',
   });
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPDFPreview, setShowPDFPreview] = useState<'CSD' | 'KYC' | null>(null);
   const { toast } = useToast();
+  const { user } = useAuth();
+  const {
+    loadApplication,
+    saveApplication,
+    submitApplication,
+    isLoading,
+    isSaving,
+    hasExistingApplication
+  } = useAccountOpeningPersistence();
+
+  // Load saved data on mount
+  useEffect(() => {
+    const loadSavedData = async () => {
+      if (user) {
+        const savedData = await loadApplication();
+        if (savedData) {
+          setFormData(savedData);
+          toast({
+            title: "Progress Restored",
+            description: "Your previous form progress has been loaded.",
+          });
+        }
+      }
+    };
+
+    loadSavedData();
+  }, [user, loadApplication, toast]);
+
+  // Auto-save on form data changes
+  useEffect(() => {
+    if (user && !isLoading) {
+      saveApplication(formData);
+    }
+  }, [formData, user, isLoading, saveApplication]);
 
   const progress = ((currentStep + 1) / STEPS.length) * 100;
   const CurrentStepComponent = STEPS[currentStep].component;
@@ -187,23 +223,23 @@ const AccountOpeningForm = () => {
   };
 
   const handleSubmit = async () => {
-    setIsSubmitting(true);
-    try {
-      // Here you would typically send the data to your backend
-      console.log('Form Data:', formData);
-      
+    if (!user) {
       toast({
-        title: "Application Submitted",
-        description: "Your account opening application has been submitted successfully.",
-      });
-      
-      // Move to completion step or redirect
-    } catch (error) {
-      toast({
-        title: "Submission Failed",
-        description: "There was an error submitting your application. Please try again.",
+        title: "Authentication Required",
+        description: "Please sign in to submit your application.",
         variant: "destructive",
       });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const success = await submitApplication(formData);
+      if (success) {
+        // Redirect or show success state
+      }
+    } catch (error) {
+      console.error('Submission error:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -232,6 +268,17 @@ const AccountOpeningForm = () => {
   const closePDFPreview = () => {
     setShowPDFPreview(null);
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cc-navy mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-300">Loading your application...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (showPDFPreview) {
     return (
@@ -264,7 +311,21 @@ const AccountOpeningForm = () => {
       <div className="space-y-2">
         <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300">
           <span>Step {currentStep + 1} of {STEPS.length}</span>
-          <span>{Math.round(progress)}% Complete</span>
+          <div className="flex items-center space-x-4">
+            <span>{Math.round(progress)}% Complete</span>
+            {isSaving && (
+              <div className="flex items-center space-x-1 text-xs text-blue-600">
+                <Save className="h-3 w-3 animate-spin" />
+                <span>Saving...</span>
+              </div>
+            )}
+            {hasExistingApplication && (
+              <div className="flex items-center space-x-1 text-xs text-green-600">
+                <Clock className="h-3 w-3" />
+                <span>Progress saved</span>
+              </div>
+            )}
+          </div>
         </div>
         <Progress value={progress} className="h-2" />
       </div>
@@ -274,6 +335,11 @@ const AccountOpeningForm = () => {
         <h2 className="text-2xl font-semibold text-cc-navy dark:text-white">
           {STEPS[currentStep].title}
         </h2>
+        {hasExistingApplication && (
+          <p className="text-sm text-green-600 mt-1">
+            Your progress is automatically saved as you fill out the form
+          </p>
+        )}
       </div>
 
       {/* Step Content */}
@@ -319,7 +385,7 @@ const AccountOpeningForm = () => {
               <Button
                 type="button"
                 onClick={handleSubmit}
-                disabled={isSubmitting}
+                disabled={isSubmitting || !user}
                 className="bg-cc-navy hover:bg-cc-blue text-white"
               >
                 {isSubmitting ? 'Submitting...' : 'Submit Application'}

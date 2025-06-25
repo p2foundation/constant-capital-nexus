@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from 'lucide-react';
@@ -17,7 +16,7 @@ const HeroContent = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentMessageIndex((prev) => (prev + 1) % messages.length);
-    }, 4000); // Change message every 4 seconds
+    }, 5000); // Change message every 4 seconds
 
     return () => clearInterval(interval);
   }, [messages.length]);
@@ -25,7 +24,7 @@ const HeroContent = () => {
   return (
     <div className="animate-fade-in">
       <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-cc-navy dark:text-white leading-tight mb-6">
-        Ghana's Premier <span className="text-gradient">Investment</span> Brokerage
+        Ghana's Leading <span className="text-gradient">Investment</span> Brokerage
       </h1>
 
       {/* Flashing/rotating messages */}
@@ -37,7 +36,7 @@ const HeroContent = () => {
 
       <div className="flex flex-col sm:flex-row gap-4">
         <Button asChild className="bg-cc-navy hover:bg-cc-blue text-white dark:bg-cc-gold dark:hover:bg-cc-gold/90 px-6 py-6 rounded-md flex items-center justify-center">
-          <Link to="/register">
+          <Link to="/account-opening">
             Open an Account
             <ArrowRight className="ml-2 h-5 w-5" />
           </Link>
