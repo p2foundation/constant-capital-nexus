@@ -17,7 +17,7 @@ const CalculatorsDropdown = () => {
           Calculators
         </span>
       </NavigationMenuTrigger>
-      <NavigationMenuContent>
+      <NavigationMenuContent className="left-1/2 -translate-x-1/2">
         <div className="grid gap-3 p-4 w-[250px]">
           <Link to="/t-bill-calculator" className="flex flex-col p-3 rounded-md hover:bg-cc-light-blue dark:hover:bg-cc-navy/80">
             <div className="font-medium text-cc-navy dark:text-white">T-Bill Calculator</div>

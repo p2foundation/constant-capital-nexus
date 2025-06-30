@@ -45,7 +45,7 @@ const handler = async (req: Request): Promise<Response> => {
             heading: 'Password Reset Request',
             message: 'We received a request to reset your password for your Constant Capital account. Click the button below to create a new password.',
             buttonText: 'Reset Password',
-            footerMessage: 'If you didn\'t request this password reset, please ignore this email. Your password will remain unchanged.'
+            footerMessage: 'If you didn\'t request this password reset, please ignore this email. Your password will remain unchanged. This link will expire in 1 hour for security reasons.'
           };
         case 'email_change':
           return {
@@ -67,6 +67,35 @@ const handler = async (req: Request): Promise<Response> => {
     };
 
     const content = getEmailContent(type, firstName);
+
+    // Get the proper domain based on environment
+    const siteUrl = Deno.env.get("SITE_URL") || "https://constantcap.com.gh";
+    
+    // Smart domain replacement for reset password URLs
+    let finalConfirmationUrl = confirmationUrl;
+    
+    if (type === 'recovery') {
+      // Replace any Lovable preview domain with production domain
+      finalConfirmationUrl = finalConfirmationUrl.replace(
+        /https:\/\/preview--[^.]+\.lovable\.app/g, 
+        siteUrl
+      );
+      
+      // Also handle localhost for development
+      finalConfirmationUrl = finalConfirmationUrl.replace(
+        /http:\/\/localhost:\d+/g,
+        siteUrl
+      );
+      
+      // Ensure HTTPS for production
+      if (siteUrl.includes('constantcap.com.gh')) {
+        finalConfirmationUrl = finalConfirmationUrl.replace(/^http:/, 'https:');
+      }
+    }
+
+    console.log('Original URL:', confirmationUrl);
+    console.log('Final URL:', finalConfirmationUrl);
+    console.log('Site URL from env:', siteUrl);
 
     const htmlContent = `
     <!DOCTYPE html>
@@ -100,7 +129,7 @@ const handler = async (req: Request): Promise<Response> => {
                 
                 <!-- CTA Button -->
                 <div style="text-align: center; margin: 40px 0;">
-                    <a href="${confirmationUrl}" 
+                    <a href="${finalConfirmationUrl}" 
                        style="display: inline-block; background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%); color: white; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 12px rgba(30, 58, 95, 0.3);">
                         ${content.buttonText}
                     </a>
@@ -118,7 +147,7 @@ const handler = async (req: Request): Promise<Response> => {
                         If the button above doesn't work, copy and paste this link into your browser:
                     </p>
                     <p style="word-break: break-all; color: #2c5282; font-size: 14px; background-color: #f7fafc; padding: 12px; border-radius: 4px; border: 1px solid #e2e8f0;">
-                        ${confirmationUrl}
+                        ${finalConfirmationUrl}
                     </p>
                 </div>
             </div>
@@ -142,7 +171,7 @@ const handler = async (req: Request): Promise<Response> => {
     `;
 
     const emailResponse = await resend.emails.send({
-      from: "Constant Capital <noreply@market.constantcap.com.gh>",
+      from: "Constant Capital <noreply@constantcap.com.gh>",
       to: [email],
       subject: content.subject,
       html: htmlContent,

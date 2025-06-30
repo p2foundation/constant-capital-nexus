@@ -290,6 +290,7 @@ export type Database = {
           first_name: string | null
           id: string
           industry: string | null
+          is_active: boolean | null
           last_name: string | null
           phone: string | null
           position: string | null
@@ -304,6 +305,7 @@ export type Database = {
           first_name?: string | null
           id: string
           industry?: string | null
+          is_active?: boolean | null
           last_name?: string | null
           phone?: string | null
           position?: string | null
@@ -318,6 +320,7 @@ export type Database = {
           first_name?: string | null
           id?: string
           industry?: string | null
+          is_active?: boolean | null
           last_name?: string | null
           phone?: string | null
           position?: string | null
@@ -572,6 +575,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_delete_user: {
+        Args: { target_user_id: string }
+        Returns: boolean
+      }
       can_approve_content: {
         Args: Record<PropertyKey, never>
         Returns: boolean

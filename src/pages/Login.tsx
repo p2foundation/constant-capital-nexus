@@ -7,7 +7,7 @@ import { ArrowLeft } from 'lucide-react';
 const Login = () => {
   return (
     <div className="min-h-screen flex flex-col dark:bg-cc-navy/95">
-      <div className="bg-white border-b border-gray-100 shadow-sm py-4 dark:bg-cc-navy/90 dark:border-gray-800">
+      <div className="bg-white/90 backdrop-blur-sm fixed w-full z-50 border-b border-gray-100 shadow-sm py-4 dark:bg-cc-navy/90 dark:border-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
           <Link to="/" className="flex items-center">
             <span className="text-2xl font-serif font-bold text-cc-navy dark:text-white">
@@ -21,7 +21,7 @@ const Login = () => {
         </div>
       </div>
       
-      <div className="flex-1 flex items-center justify-center bg-cc-gray py-12 px-4 dark:bg-gray-950">
+      <div className="flex-1 flex items-center justify-center bg-cc-gray py-12 px-4 pt-28 dark:bg-gray-950">
         <div className="bg-white w-full max-w-md rounded-lg shadow-md p-8 border border-gray-100 dark:bg-cc-navy dark:border-gray-800">
           <LoginForm />
         </div>

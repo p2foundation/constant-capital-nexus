@@ -1,15 +1,16 @@
-
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import { 
   Users, 
   Activity,
@@ -25,6 +26,7 @@ import UserStatisticsCards from '@/components/user-management/UserStatisticsCard
 import UserTable from '@/components/user-management/UserTable';
 import ActivitiesTable from '@/components/user-management/ActivitiesTable';
 import AccountOpeningsSection from '@/components/user-management/AccountOpeningsSection';
+import EditUserDialog from '@/components/user-management/EditUserDialog';
 
 interface User {
   id: string;
@@ -82,6 +84,8 @@ const UserManagement = () => {
   const [activitiesCurrentPage, setActivitiesCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
   const [activitiesPerPage] = useState(10);
+  const [userToDelete, setUserToDelete] = useState<string | null>(null);
+  const [isDeletingUser, setIsDeletingUser] = useState(false);
 
   // Mock data for account openings (will be replaced later)
   const mockAccountOpenings: AccountOpening[] = [
@@ -123,9 +127,10 @@ const UserManagement = () => {
         return;
       }
 
-      // Type assertion to ensure proper typing
+      // Type assertion and fix data mapping
       const typedUsers = (data || []).map((user: any) => ({
         ...user,
+        job_position: user.job_position || user.position || '', // Handle both column names
         role: user.role as 'Admin' | 'Developer' | 'Analyst' | 'Customer' | 'User' | 'Client'
       }));
 
@@ -211,21 +216,102 @@ const UserManagement = () => {
   };
 
   const handleDeleteUser = async (userId: string) => {
-    if (confirm('Are you sure you want to delete this user?')) {
-      try {
-        // Note: In production, you might want to soft delete or deactivate instead
-        toast.info('User deletion would be implemented here');
-      } catch (error) {
-        toast.error('Failed to delete user');
+    setUserToDelete(userId);
+  };
+
+  const confirmDeleteUser = async () => {
+    if (!userToDelete) return;
+
+    setIsDeletingUser(true);
+
+    try {
+      console.log('Attempting to delete user:', userToDelete);
+      
+      const { data, error } = await supabase.functions.invoke('admin-delete-user', {
+        body: { userId: userToDelete }
+      });
+
+      console.log('Delete user response:', { data, error });
+
+      if (error) {
+        console.error('Edge function error:', error);
+        
+        // Handle different types of errors with more specific messages
+        if (error.message?.includes('FunctionsHttpError')) {
+          const errorDetails = error.context?.body;
+          if (errorDetails) {
+            const parsedError = typeof errorDetails === 'string' 
+              ? JSON.parse(errorDetails) 
+              : errorDetails;
+            
+            // Provide more user-friendly error messages
+            let userMessage = 'Failed to delete user';
+            if (parsedError.error?.includes('Access denied')) {
+              userMessage = 'Access denied. You do not have permission to delete users.';
+            } else if (parsedError.error?.includes('User profile not found')) {
+              userMessage = 'User profile not found. The user may have already been deleted.';
+            } else if (parsedError.error?.includes('Cannot delete your own account')) {
+              userMessage = 'You cannot delete your own account.';
+            } else if (parsedError.error) {
+              userMessage = `Failed to delete user: ${parsedError.error}`;
+            }
+            
+            toast.error(userMessage);
+            if (parsedError.details) {
+              console.error('Error details:', parsedError.details);
+            }
+          } else {
+            toast.error('Failed to delete user. Please try again or contact support.');
+          }
+        } else if (error.message?.includes('Invalid token')) {
+          toast.error('Your session has expired. Please log in again.');
+        } else {
+          toast.error(`Failed to delete user: ${error.message}`);
+        }
+        return;
       }
+
+      // Check if the response indicates success
+      if (data?.success) {
+        // Remove user from local state immediately
+        setUsers(users.filter(user => user.id !== userToDelete));
+        await fetchUserStatistics(); // Refresh statistics
+        toast.success('User deleted successfully');
+      } else {
+        console.error('Unexpected response format:', data);
+        toast.error('Failed to delete user. Please try again.');
+      }
+    } catch (error: any) {
+      console.error('Unexpected error deleting user:', error);
+      toast.error('An unexpected error occurred. Please try again.');
+    } finally {
+      setIsDeletingUser(false);
+      setUserToDelete(null);
     }
   };
 
   const handleToggleUserStatus = async (userId: string) => {
     try {
-      // This would need to be implemented with actual user deactivation logic
-      toast.info('User status toggle would be implemented here');
-    } catch (error) {
+      const user = users.find(u => u.id === userId);
+      if (!user) return;
+
+      const { error } = await supabase
+        .from('profiles')
+        .update({ is_active: !user.is_active })
+        .eq('id', userId);
+
+      if (error) {
+        throw error;
+      }
+
+      // Update local state
+      setUsers(users.map(u => 
+        u.id === userId ? { ...u, is_active: !u.is_active } : u
+      ));
+
+      toast.success(`User ${!user.is_active ? 'activated' : 'deactivated'} successfully`);
+    } catch (error: any) {
+      console.error('Error toggling user status:', error);
       toast.error('Failed to update user status');
     }
   };
@@ -248,6 +334,10 @@ const UserManagement = () => {
       console.error('Error updating role:', error);
       toast.error('Failed to update user role');
     }
+  };
+
+  const handleUserUpdated = () => {
+    fetchUsers(); // Refresh the user list
   };
 
   if (!isAdmin) {
@@ -339,6 +429,36 @@ const UserManagement = () => {
           </TabsContent>
         </Tabs>
       </div>
+      
+      {/* Edit User Dialog */}
+      <EditUserDialog
+        user={selectedUser}
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        onUserUpdated={handleUserUpdated}
+      />
+      
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!userToDelete} onOpenChange={() => setUserToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete User</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this user? This action cannot be undone and will permanently remove the user from both the authentication system and all associated data.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeletingUser}>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={confirmDeleteUser} 
+              className="bg-red-600 hover:bg-red-700"
+              disabled={isDeletingUser}
+            >
+              {isDeletingUser ? 'Deleting...' : 'Delete User'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       
       <Footer />
     </div>

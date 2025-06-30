@@ -22,6 +22,8 @@ import ResearchDetail from "@/pages/ResearchDetail";
 import ResearchServices from "@/pages/ResearchServices";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
+import ResetPassword from "@/pages/ResetPassword";
+import ResetPasswordConfirm from "@/pages/ResetPasswordConfirm";
 import AdminDashboard from "@/pages/AdminDashboard";
 import ResearchAdmin from "@/pages/ResearchAdmin";
 import UserManagement from "@/pages/UserManagement";
@@ -89,6 +91,8 @@ function App() {
                 {/* Auth Routes */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/auth/reset-password" element={<ResetPasswordConfirm />} />
                 
                 {/* User Routes */}
                 <Route path="/profile" element={
