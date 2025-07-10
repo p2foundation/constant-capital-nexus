@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { trackBusinessEvent } from '@/utils/analytics';
 import { canAccessPremiumContent } from '@/utils/premiumAccess';
+import ResearchSubscribe from './ResearchSubscribe';
 
 const ResearchSidebar: React.FC = () => {
   const { user, profile } = useAuth();
@@ -103,27 +104,7 @@ const ResearchSidebar: React.FC = () => {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardContent className="pt-6">
-          <h3 className="font-medium text-lg mb-4">Subscribe to Updates</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-            Stay informed with our latest research reports and market insights delivered to your inbox.
-          </p>
-          <form className="space-y-3" onSubmit={(e) => {
-            e.preventDefault();
-            trackBusinessEvent.newsletterSubscribe();
-            toast.success('Thank you for subscribing to our newsletter!');
-          }}>
-            <input 
-              type="email" 
-              placeholder="Your email address" 
-              className="w-full px-3 py-2 border border-gray-300 rounded text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-              required
-            />
-            <Button type="submit" className="w-full">Subscribe</Button>
-          </form>
-        </CardContent>
-      </Card>
+      <ResearchSubscribe />
     </div>
   );
 };

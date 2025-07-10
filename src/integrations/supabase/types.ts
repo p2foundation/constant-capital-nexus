@@ -199,6 +199,48 @@ export type Database = {
         }
         Relationships: []
       }
+      leads: {
+        Row: {
+          assigned_to: string | null
+          category: string
+          created_at: string
+          email: string
+          id: string
+          inquiry: string
+          name: string
+          phone: string | null
+          source: string
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          category: string
+          created_at?: string
+          email: string
+          id?: string
+          inquiry: string
+          name: string
+          phone?: string | null
+          source?: string
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          category?: string
+          created_at?: string
+          email?: string
+          id?: string
+          inquiry?: string
+          name?: string
+          phone?: string | null
+          source?: string
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       market_data: {
         Row: {
           additional_data: Json | null

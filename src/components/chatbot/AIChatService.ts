@@ -46,7 +46,7 @@ export class AIChatService {
       const response = await supabase.functions.invoke('submit-lead', {
         body: {
           ...leadData,
-          assignedTo: 'sefakor.add@constantcap.com.gh',
+          assignedTo: 'sefakor.addo@constantcap.com.gh',
           source: 'Ako Chatbot',
           timestamp: new Date().toISOString()
         }
