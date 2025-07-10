@@ -61,7 +61,7 @@ const CapitalMarkets = () => {
           
           {/* Key Services */}
           <div className="my-16">
-            <h2 className="text-3xl font-bold mb-8 text-cc-navy text-center dark:text-white">Our Key Services</h2>
+            <h2 className="text-3xl font-bold mb-8 text-cc-navy text-left dark:text-white">Our Key Services</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="bg-white p-6 rounded-lg shadow-sm dark:bg-gray-700">
                 <div className="flex items-center mb-4">
@@ -136,9 +136,9 @@ const CapitalMarkets = () => {
           </div>
           
           {/* Image Generator */}
-          <div className="my-8 text-center">
+          {/* <div className="my-8 text-center">
             <ImageGenerator onImageGenerated={handleImageGenerated} buttonText="Generate New Hero Image" />
-          </div>
+          </div> */}
           
           {/* Testimonial */}
           <div className="my-16">

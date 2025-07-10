@@ -161,7 +161,7 @@ const Footer = () => {
                   </svg>
                 </a>
                 <a
-                  href="#"
+                  href="https://x.com/ConstantCapGH"
                   className="w-10 h-10 rounded-full border border-gray-600 flex items-center justify-center hover:border-cc-gold transition-colors"
                   target="_blank"
                   rel="noopener noreferrer"

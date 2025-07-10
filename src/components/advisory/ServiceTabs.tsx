@@ -8,7 +8,7 @@ import InvestmentResearchTab from './tabs/InvestmentResearchTab';
 const ServiceTabs = () => {
   return (
     <div className="my-16">
-      <h2 className="text-3xl font-bold mb-8 text-cc-navy text-center dark:text-white">Our Advisory Services</h2>
+      <h2 className="text-3xl font-bold mb-8 text-cc-navy text-left dark:text-white">Our Advisory Services</h2>
       
       <Tabs defaultValue="portfolio" className="w-full">
         <TabsList className="grid grid-cols-1 md:grid-cols-3 w-full mb-8">

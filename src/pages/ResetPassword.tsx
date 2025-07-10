@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -13,37 +14,18 @@ const ResetPassword = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const getResetUrl = () => {
-    const currentOrigin = window.location.origin;
-    
-    // If we're on a Lovable preview domain or localhost, keep using it for development
-    if (currentOrigin.includes('lovable.app') || currentOrigin.includes('localhost')) {
-      return `${currentOrigin}/auth/reset-password`;
-    }
-    
-    // For production, use the actual domain
-    return `https://constantcap.com.gh/auth/reset-password`;
-  };
-
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const resetUrl = getResetUrl();
-      console.log('Using reset URL:', resetUrl);
-      
-      // Use our custom email function instead of the default Supabase one
-      const { error } = await supabase.functions.invoke('send-custom-auth-email', {
-        body: {
-          email: email,
-          confirmationUrl: resetUrl,
-          type: 'recovery'
-        }
+      // Use Supabase's built-in password reset with custom redirect
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/reset-password`
       });
 
       if (error) {
-        console.error('Custom email error:', error);
+        console.error('Password reset error:', error);
         toast.error('Failed to send reset email. Please try again.');
       } else {
         setIsSubmitted(true);
@@ -114,7 +96,7 @@ const ResetPassword = () => {
             </Button>
           </form>
           <div className="mt-6 text-center">
-            <Link to="/login" className="text-sm text-cc-blue hover:underline">
+            <Link to="/login" className="text-sm text-cc-blue dark:text-cc-gold hover:underline dark:hover:text-cc-orange">
               <ArrowLeft className="h-4 w-4 inline mr-1" />
               Back to Login
             </Link>

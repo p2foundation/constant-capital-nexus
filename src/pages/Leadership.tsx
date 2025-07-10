@@ -32,18 +32,18 @@ const Leadership = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-white dark:bg-gray-900">
       <Navbar />
       <div className="pt-16">
         {/* Hero Section */}
         <LeadershipHero />
 
         {/* Team Section */}
-        <div className="container mx-auto px-4 py-16">
+        <div className="container mx-auto px-4 py-16 bg-white dark:bg-gray-900">
           <div className="text-left mb-12">
-            <div className="text-cc-gold uppercase tracking-wide font-medium mb-2">GOVERNANCE</div>
-            <h2 className="text-3xl md:text-4xl font-bold text-cc-navy mb-4">Our Board</h2>
-            <blockquote className="max-w-2xl text-gray-600 italic">
+            <div className="text-cc-gold dark:text-cc-orange uppercase tracking-wide font-medium mb-2">GOVERNANCE</div>
+            <h2 className="text-3xl md:text-4xl font-bold text-cc-navy dark:text-white mb-4">Our Board</h2>
+            <blockquote className="max-w-2xl text-gray-600 dark:text-gray-300 italic">
               "Good business leaders create a vision, articulate the vision, passionately own the vision and relentlessly drive it to completion." – Jack Welch
             </blockquote>
           </div>

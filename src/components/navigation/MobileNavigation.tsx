@@ -11,7 +11,7 @@ const MobileNavigation = ({ isMenuOpen, toggleMenu }: MobileNavigationProps) => 
   if (!isMenuOpen) return null;
   
   return (
-    <div className="md:hidden bg-white border-t border-gray-100 animate-fade-in dark:bg-cc-navy/95 dark:border-gray-800">
+    <div className="md:hidden bg-white border-t border-gray-100 animate-fade-in dark:bg-cc-navy/95 dark:border-gray-800 max-h-[80vh] overflow-y-auto">
       <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
         <Link
           to="/"

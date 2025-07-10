@@ -23,6 +23,28 @@ export const useMarketDataFetcher = () => {
       setIsLoading(true);
       setError(null);
       
+      // Check if we should auto-fetch from external APIs
+      const { data: sourceData } = await supabase
+        .from('settings')
+        .select('value')
+        .eq('key', 'market_data_source')
+        .single();
+      
+      const dataSource = sourceData?.value as string || 'manual';
+      
+      // If not manual mode, try to fetch fresh data from external API
+      if (dataSource !== 'manual') {
+        try {
+          console.log(`Auto-fetching data from ${dataSource}...`);
+          await supabase.functions.invoke('fetch-market-data', {
+            body: { dataSource }
+          });
+        } catch (apiError) {
+          console.warn('Auto-fetch failed, using cached data:', apiError);
+          // Continue with database fetch even if API fails
+        }
+      }
+      
       // Fetch GSE index data - using 'as any' to bypass TypeScript errors
       const { data: gseData, error: gseError } = await supabase
         .from('market_data')

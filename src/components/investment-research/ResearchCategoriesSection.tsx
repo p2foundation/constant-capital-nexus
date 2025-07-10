@@ -7,7 +7,7 @@ import { ArrowRight, BarChart3, TrendingUp, FileText, Globe } from 'lucide-react
 const ResearchCategoriesSection = () => {
   return (
     <div className="my-16">
-      <h2 className="text-3xl font-bold mb-8 text-cc-navy text-center dark:text-white">Our Research Coverage</h2>
+      <h2 className="text-3xl font-bold mb-8 text-cc-navy text-left dark:text-white">Our Research Coverage</h2>
       
       <Tabs defaultValue="equity" className="w-full">
         <TabsList className="grid grid-cols-1 md:grid-cols-4 w-full mb-8">

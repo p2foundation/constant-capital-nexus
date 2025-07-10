@@ -88,11 +88,13 @@ function App() {
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/cookie-policy" element={<CookiePolicy />} />
                 
-                {/* Auth Routes */}
+                {/* Auth Routes - Multiple paths for password reset confirmation */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/auth/reset-password" element={<ResetPasswordConfirm />} />
+                <Route path="/reset-password-confirm" element={<ResetPasswordConfirm />} />
+                <Route path="/reset-password-confirm/*" element={<ResetPasswordConfirm />} />
                 
                 {/* User Routes */}
                 <Route path="/profile" element={

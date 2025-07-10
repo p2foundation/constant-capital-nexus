@@ -57,7 +57,7 @@ const PrivateEquity = () => {
           
           {/* Investment Approach */}
           <div className="my-16">
-            <h2 className="text-3xl font-bold mb-8 text-cc-navy text-center dark:text-white">Our Investment Approach</h2>
+            <h2 className="text-3xl font-bold mb-8 text-cc-navy text-left dark:text-white">Our Investment Approach</h2>
             
             <Tabs defaultValue="strategy" className="w-full">
               <TabsList className="grid grid-cols-1 md:grid-cols-4 w-full mb-8">
@@ -386,7 +386,7 @@ const PrivateEquity = () => {
           
           {/* Portfolio Highlights */}
           <div className="my-16 bg-gray-50 p-8 rounded-lg dark:bg-gray-800">
-            <h2 className="text-3xl font-bold mb-8 text-cc-navy text-center dark:text-white">Portfolio Highlights</h2>
+            <h2 className="text-3xl font-bold mb-8 text-cc-navy text-left dark:text-white">Portfolio Highlights</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-white p-6 rounded-lg shadow-sm dark:bg-gray-700">
                 <div className="h-48 bg-gray-100 rounded-lg mb-4 overflow-hidden dark:bg-gray-600">
@@ -455,8 +455,8 @@ const PrivateEquity = () => {
           
           {/* Team */}
           <div className="my-16">
-            <h2 className="text-3xl font-bold mb-8 text-cc-navy text-center dark:text-white">Investment Team</h2>
-            <p className="text-center max-w-3xl mx-auto mb-12 dark:text-gray-300">
+            <h2 className="text-3xl font-bold mb-8 text-cc-navy text-left dark:text-white">Investment Team</h2>
+            <p className="text-leftmax-w-3xl mx-auto mb-12 dark:text-gray-300">
               Our private equity team combines deep financial expertise with local market knowledge and operational experience to support portfolio companies through their growth journey.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -464,8 +464,8 @@ const PrivateEquity = () => {
                 <div className="w-24 h-24 rounded-full bg-gray-100 mx-auto mb-4 overflow-hidden dark:bg-gray-600">
                   <img src="/placeholder.svg" alt="Team Member" className="w-full h-full object-cover" />
                 </div>
-                <h3 className="text-lg font-bold text-cc-navy mb-1 dark:text-white">John Addo</h3>
-                <p className="text-sm text-cc-gold mb-3">Partner & Head of Private Equity</p>
+                <h3 className="text-lg font-bold text-cc-navy mb-1 dark:text-white">John Ebow Gaisie</h3>
+                <p className="text-sm text-cc-gold mb-3">Head of Private Equity</p>
                 <p className="text-sm text-gray-600 dark:text-gray-300">
                   15+ years of private equity and investment banking experience across African markets.
                 </p>
@@ -475,8 +475,8 @@ const PrivateEquity = () => {
                 <div className="w-24 h-24 rounded-full bg-gray-100 mx-auto mb-4 overflow-hidden dark:bg-gray-600">
                   <img src="/placeholder.svg" alt="Team Member" className="w-full h-full object-cover" />
                 </div>
-                <h3 className="text-lg font-bold text-cc-navy mb-1 dark:text-white">Sarah Mensah</h3>
-                <p className="text-sm text-cc-gold mb-3">Investment Director</p>
+                <h3 className="text-lg font-bold text-cc-navy mb-1 dark:text-white">Harriet Boadu</h3>
+                <p className="text-sm text-cc-gold mb-3">Investment Trader</p>
                 <p className="text-sm text-gray-600 dark:text-gray-300">
                   Expertise in financial services and consumer sectors with focus on operational improvements.
                 </p>
@@ -486,8 +486,8 @@ const PrivateEquity = () => {
                 <div className="w-24 h-24 rounded-full bg-gray-100 mx-auto mb-4 overflow-hidden dark:bg-gray-600">
                   <img src="/placeholder.svg" alt="Team Member" className="w-full h-full object-cover" />
                 </div>
-                <h3 className="text-lg font-bold text-cc-navy mb-1 dark:text-white">Michael Osei</h3>
-                <p className="text-sm text-cc-gold mb-3">Investment Manager</p>
+                <h3 className="text-lg font-bold text-cc-navy mb-1 dark:text-white">Stephen Missah</h3>
+                <p className="text-sm text-cc-gold mb-3">Head of Trading</p>
                 <p className="text-sm text-gray-600 dark:text-gray-300">
                   Specialized in healthcare investments and digital transformation strategies.
                 </p>
@@ -507,7 +507,7 @@ const PrivateEquity = () => {
                   Discuss Investment Opportunities <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button variant="outline" className="border-white text-white hover:bg-white hover:text-cc-navy font-bold text-lg px-8 py-6">
+              <Button variant="outline" className="border-white text-cc-navy hover:bg-white hover:text-cc-navy font-bold text-lg px-8 py-6">
                 <Link to="/contact" className="flex items-center">
                   Submit Investment Proposal <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>

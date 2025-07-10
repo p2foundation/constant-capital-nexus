@@ -10,7 +10,7 @@ interface LeaderCardProps {
 
 const LeaderCard: React.FC<LeaderCardProps> = ({ leader, onClick }) => {
   return (
-    <Card className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-all cursor-pointer dark:bg-gray-800 dark:shadow-gray-900/20 dark:hover:shadow-gray-900/40" onClick={onClick}>
+    <Card className="overflow-hidden border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl transition-all cursor-pointer bg-white dark:bg-gray-800 hover:scale-105" onClick={onClick}>
       <div className="aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700">
         <img
           src={leader.imageSrc}
@@ -19,7 +19,7 @@ const LeaderCard: React.FC<LeaderCardProps> = ({ leader, onClick }) => {
         />
       </div>
       <CardContent className="p-4 text-center">
-        <h3 className="text-xl font-bold text-cc-navy dark:text-white">{leader.name}</h3>
+        <h3 className="text-xl font-bold text-cc-navy dark:text-white mb-1">{leader.name}</h3>
         <p className="text-cc-gold dark:text-cc-orange font-medium">{leader.title}</p>
       </CardContent>
     </Card>

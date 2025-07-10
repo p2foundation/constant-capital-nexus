@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,22 +14,69 @@ const ResetPasswordConfirm = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [searchParams] = useSearchParams();
+  const [isSessionReady, setIsSessionReady] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    // Check if we have the required parameters
-    const accessToken = searchParams.get('access_token');
-    const refreshToken = searchParams.get('refresh_token');
-    
-    if (!accessToken || !refreshToken) {
-      setError('Invalid or expired reset link. Please request a new password reset.');
-    }
-  }, [searchParams]);
+    const handleAuthSession = async () => {
+      try {
+        // Check if we have tokens in the URL (hash or search params)
+        const hashParams = new URLSearchParams(location.hash.substring(1));
+        const searchParams = new URLSearchParams(location.search);
+        
+        const accessToken = hashParams.get('access_token') || searchParams.get('access_token');
+        const refreshToken = hashParams.get('refresh_token') || searchParams.get('refresh_token');
+        const tokenType = hashParams.get('token_type') || searchParams.get('token_type');
+        const type = hashParams.get('type') || searchParams.get('type');
+
+        console.log('Reset password tokens:', { accessToken: !!accessToken, refreshToken: !!refreshToken, type });
+
+        if (accessToken && refreshToken && type === 'recovery') {
+          // Set the session using the tokens from the URL
+          const { data, error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken
+          });
+
+          if (error) {
+            console.error('Error setting session:', error);
+            setError('Invalid or expired reset link. Please request a new password reset.');
+          } else if (data.session) {
+            console.log('Session set successfully');
+            setIsSessionReady(true);
+          }
+        } else {
+          // Check if there's already an active session
+          const { data: { session }, error } = await supabase.auth.getSession();
+          
+          if (error) {
+            console.error('Error getting session:', error);
+            setError('Unable to verify reset link. Please try again.');
+          } else if (session) {
+            console.log('Active session found');
+            setIsSessionReady(true);
+          } else {
+            setError('Invalid or expired reset link. Please request a new password reset.');
+          }
+        }
+      } catch (err) {
+        console.error('Error handling auth session:', err);
+        setError('An error occurred while processing the reset link.');
+      }
+    };
+
+    handleAuthSession();
+  }, [location]);
 
   const handlePasswordReset = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!isSessionReady) {
+      setError('Session not ready. Please try clicking the reset link again.');
+      return;
+    }
+
     if (password !== confirmPassword) {
       setError('Passwords do not match.');
       return;
@@ -44,24 +91,42 @@ const ResetPasswordConfirm = () => {
     setError('');
 
     try {
+      // First, verify we have an active session
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !session) {
+        setError('Your session has expired. Please request a new password reset.');
+        return;
+      }
+
+      console.log('Updating password for user:', session.user.id);
+
       const { error } = await supabase.auth.updateUser({
         password: password
       });
 
       if (error) {
-        setError(error.message);
+        console.error('Password update error:', error);
+        if (error.message.includes('session_not_found')) {
+          setError('Your session has expired. Please request a new password reset.');
+        } else {
+          setError(error.message);
+        }
       } else {
         toast.success('Password updated successfully!');
+        // Sign out and redirect to login to ensure clean state
+        await supabase.auth.signOut();
         navigate('/login');
       }
     } catch (error: any) {
-      setError('An error occurred while updating your password.');
+      console.error('Password reset error:', error);
+      setError('An error occurred while updating your password. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  if (error && !password) {
+  if (error && !isSessionReady) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <Card className="w-full max-w-md">
@@ -117,7 +182,7 @@ const ResetPasswordConfirm = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                disabled={isLoading}
+                disabled={isLoading || !isSessionReady}
                 minLength={6}
               />
             </div>
@@ -129,12 +194,16 @@ const ResetPasswordConfirm = () => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
-                disabled={isLoading}
+                disabled={isLoading || !isSessionReady}
                 minLength={6}
               />
             </div>
             
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button 
+              type="submit" 
+              className="w-full" 
+              disabled={isLoading || !isSessionReady}
+            >
               {isLoading ? 'Updating...' : 'Update Password'}
             </Button>
           </form>

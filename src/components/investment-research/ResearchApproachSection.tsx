@@ -5,7 +5,7 @@ import { Users, Target, Globe } from 'lucide-react';
 const ResearchApproachSection = () => {
   return (
     <div className="my-16 bg-gray-50 p-8 rounded-lg dark:bg-gray-800">
-      <h2 className="text-3xl font-bold mb-8 text-cc-navy text-center dark:text-white">Our Research Approach</h2>
+      <h2 className="text-3xl font-bold mb-8 text-cc-navy text-left dark:text-white">Our Research Approach</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="text-center">
           <div className="bg-cc-navy/10 w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4 dark:bg-cc-gold/20">

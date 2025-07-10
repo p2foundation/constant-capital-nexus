@@ -6,6 +6,7 @@ import AdminNavbar from '@/components/admin/AdminNavbar';
 import AdminFooter from '@/components/admin/AdminFooter';
 import MarketSummaryManager from '@/components/admin/MarketSummaryManager';
 import MarketDataManager from '@/components/admin/MarketDataManager';
+import MarketDataSourceSettings from '@/components/admin/MarketDataSourceSettings';
 import ContentManager from '@/components/admin/ContentManager';
 import ContactInbox from '@/components/admin/ContactInbox';
 import { AdminProvider } from '@/contexts/AdminContext';
@@ -130,15 +131,21 @@ const AdminDashboard = () => {
             </TabsContent>
             
             <TabsContent value="settings" className="mt-0">
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-                <h2 className="text-xl font-medium mb-4">Dashboard Settings</h2>
-                <p className="text-gray-500 dark:text-gray-400 mb-4">
-                  Configure dashboard preferences and account settings.
-                </p>
-                <div className="space-y-4">
-                  <Button variant="outline">Manage Account</Button>
-                  <Button variant="outline">API Connections</Button>
-                  <Button variant="outline">Data Backup</Button>
+              <div className="space-y-6">
+                <MarketDataSourceSettings onDataSourceChange={(source) => {
+                  console.log('Data source changed to:', source);
+                }} />
+                
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+                  <h2 className="text-xl font-medium mb-4">Dashboard Settings</h2>
+                  <p className="text-gray-500 dark:text-gray-400 mb-4">
+                    Configure dashboard preferences and account settings.
+                  </p>
+                  <div className="space-y-4">
+                    <Button variant="outline">Manage Account</Button>
+                    <Button variant="outline">API Connections</Button>
+                    <Button variant="outline">Data Backup</Button>
+                  </div>
                 </div>
               </div>
             </TabsContent>

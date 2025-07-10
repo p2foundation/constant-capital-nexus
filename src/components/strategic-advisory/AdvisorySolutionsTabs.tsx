@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 const AdvisorySolutionsTabs = () => {
   return (
     <div className="my-16">
-      <h2 className="text-3xl font-bold mb-8 text-cc-navy text-center dark:text-white">Our Advisory Solutions</h2>
+      <h2 className="text-3xl font-bold mb-8 text-cc-navy text-left dark:text-white">Our Advisory Solutions</h2>
       
       <Tabs defaultValue="ma" className="w-full">
         <TabsList className="grid grid-cols-1 md:grid-cols-4 w-full mb-8">

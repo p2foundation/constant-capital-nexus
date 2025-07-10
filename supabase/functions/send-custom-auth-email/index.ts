@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 
@@ -75,8 +74,21 @@ const handler = async (req: Request): Promise<Response> => {
     let finalConfirmationUrl = confirmationUrl;
     
     if (type === 'recovery') {
-      // Replace any Lovable preview domain with production domain
-      finalConfirmationUrl = finalConfirmationUrl.replace(
+      // For password reset, we need to ensure the URL points to our reset confirmation page
+      // The confirmationUrl from Supabase includes the tokens we need
+      const url = new URL(confirmationUrl);
+      
+      // Create the reset password confirmation URL with all the auth parameters
+      // Use auth/reset-password as the path to match our route
+      finalConfirmationUrl = `${siteUrl}/auth/reset-password${url.search}${url.hash}`;
+      
+      // Also handle the case where tokens are in the hash
+      if (url.hash && !url.search) {
+        finalConfirmationUrl = `${siteUrl}/auth/reset-password${url.hash}`;
+      }
+    } else {
+      // For other types (signup, email change), use domain replacement
+      finalConfirmationUrl = confirmationUrl.replace(
         /https:\/\/preview--[^.]+\.lovable\.app/g, 
         siteUrl
       );
@@ -170,22 +182,49 @@ const handler = async (req: Request): Promise<Response> => {
     </html>
     `;
 
-    const emailResponse = await resend.emails.send({
-      from: "Constant Capital <noreply@constantcap.com.gh>",
-      to: [email],
-      subject: content.subject,
-      html: htmlContent,
-    });
+    // Use your verified domain
+    const fromAddress = "Constant Capital <noreply@market.constantcap.com.gh>";
 
-    console.log("Custom auth email sent successfully:", emailResponse);
+    try {
+      const emailResponse = await resend.emails.send({
+        from: fromAddress,
+        to: [email],
+        subject: content.subject,
+        html: htmlContent,
+      });
 
-    return new Response(JSON.stringify(emailResponse), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-        ...corsHeaders,
-      },
-    });
+      console.log("Custom auth email sent successfully:", emailResponse);
+
+      return new Response(JSON.stringify(emailResponse), {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+          ...corsHeaders,
+        },
+      });
+    } catch (emailError: any) {
+      console.error("Resend API error:", emailError);
+      
+      // Provide specific error messages based on the error type
+      let errorMessage = "Failed to send email. Please try again.";
+      
+      if (emailError.message?.includes("domain is not verified")) {
+        errorMessage = "Email domain not verified. Please verify market.constantcap.com.gh in Resend dashboard.";
+      } else if (emailError.message?.includes("API key")) {
+        errorMessage = "Invalid API key. Please check your Resend configuration.";
+      }
+      
+      return new Response(
+        JSON.stringify({ 
+          error: errorMessage,
+          details: emailError.message 
+        }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
   } catch (error: any) {
     console.error("Error in send-custom-auth-email function:", error);
     return new Response(

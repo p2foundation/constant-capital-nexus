@@ -62,7 +62,7 @@ const IndustryExpertiseSection = () => {
 
   return (
     <div className="my-16 bg-gray-50 p-8 rounded-lg dark:bg-gray-800">
-      <h2 className="text-3xl font-bold mb-8 text-cc-navy text-center dark:text-white">Industry Expertise</h2>
+      <h2 className="text-3xl font-bold mb-8 text-cc-navy text-left dark:text-white">Industry Expertise</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {industries.map((industry, index) => (
           <div key={index} className="bg-white p-6 rounded-lg shadow-sm dark:bg-gray-700">
