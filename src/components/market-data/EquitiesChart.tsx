@@ -65,7 +65,7 @@ const EquitiesChart: React.FC = () => {
           <XAxis dataKey="name" />
           <YAxis domain={[minValue, maxValue]} />
           <Tooltip 
-            formatter={(value) => [`GHS ${value}`, '']}
+            formatter={(value, name) => [`GHS ${value}`, name]}
             labelFormatter={(label) => `${label}`}
           />
           <Area 

@@ -230,7 +230,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { success: false, error: errorMessage };
       }
 
-      // Create auth user
+      // Create auth user with custom email confirmation
       const { data, error } = await supabase.auth.signUp({ 
         email, 
         password,
@@ -238,9 +238,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           data: {
             first_name: profileData.first_name,
             last_name: profileData.last_name
-          }
+          },
+          emailRedirectTo: `${window.location.origin}/auth/confirm`
         }
       });
+      
+      // Send custom branded confirmation email
+      if (data.user && !data.user.email_confirmed_at) {
+        try {
+          // For new signups, Supabase would send the confirmation email automatically
+          // We'll use our custom email function instead by extracting the URL from data
+          const baseUrl = window.location.origin;
+          const confirmationUrl = `${baseUrl}/auth/confirm?redirect_to=${baseUrl}`;
+          
+          // Call our custom email function
+          await supabase.functions.invoke('send-custom-auth-email', {
+            body: {
+              email,
+              confirmationUrl,
+              type: 'signup',
+              firstName: profileData.first_name,
+              lastName: profileData.last_name
+            }
+          });
+          
+          console.log('Custom signup email sent successfully');
+        } catch (emailError) {
+          console.error('Error sending custom signup email:', emailError);
+          // Don't fail the signup if email fails
+        }
+      }
       
       if (error) {
         let errorMessage = error.message;

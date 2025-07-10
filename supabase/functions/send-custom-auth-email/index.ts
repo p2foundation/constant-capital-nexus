@@ -182,7 +182,7 @@ const handler = async (req: Request): Promise<Response> => {
     </html>
     `;
 
-    // Use your verified domain
+    // Use your verified domain - ensure this matches your verified domain in Resend
     const fromAddress = "Constant Capital <noreply@market.constantcap.com.gh>";
 
     try {

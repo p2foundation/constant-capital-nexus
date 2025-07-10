@@ -41,6 +41,7 @@ import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import CookiePolicy from "@/pages/CookiePolicy";
 import AccountOpening from "@/pages/AccountOpening";
 import FAQs from "@/pages/FAQs";
+import EmailConfirm from "@/pages/EmailConfirm";
 
 // Components
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
@@ -93,6 +94,7 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/auth/reset-password" element={<ResetPasswordConfirm />} />
+                <Route path="/auth/confirm" element={<EmailConfirm />} />
                 <Route path="/reset-password-confirm" element={<ResetPasswordConfirm />} />
                 <Route path="/reset-password-confirm/*" element={<ResetPasswordConfirm />} />
                 

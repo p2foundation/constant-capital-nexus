@@ -49,7 +49,7 @@ const FixedIncomeChart: React.FC = () => {
           <XAxis dataKey="name" />
           <YAxis domain={[minValue, maxValue]} />
           <Tooltip 
-            formatter={(value) => [`${value}%`, '']}
+            formatter={(value, name) => [`${value}%`, name]}
             labelFormatter={(label) => `${label}`}
           />
           <Area 

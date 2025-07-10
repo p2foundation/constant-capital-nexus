@@ -56,7 +56,7 @@ const EurobondsChart: React.FC = () => {
             scale="auto"
           />
           <Tooltip 
-            formatter={(value) => [`${value}%`, '']}
+            formatter={(value, name) => [`${value}%`, name]}
             labelFormatter={(label) => `${label}`}
           />
           <Legend />
