@@ -24,7 +24,7 @@ const EquitiesChart: React.FC = () => {
       
       const entry = dateMap.get(dateStr);
       const symbol = item.ticker_symbol.toLowerCase();
-      entry[symbol] = parseFloat(item.value.toString()); // Convert value to string before parsing
+      entry[symbol] = parseFloat(item.value.toString());
     });
     
     // Convert to array and sort by date
@@ -35,10 +35,10 @@ const EquitiesChart: React.FC = () => {
     });
   }, [marketData.equities]);
   
-  // Calculate min and max for the Y axis domain
-  const allValues = chartData.flatMap(item => ['gcb', 'scb', 'eti'].map(key => item[key]).filter(Boolean));
+  // Calculate min and max for the Y axis domain - now includes 5 major companies
+  const allValues = chartData.flatMap(item => ['gcb', 'scb', 'eti', 'mtngh', 'total'].map(key => item[key]).filter(Boolean));
   const minValue = allValues.length ? Math.min(...allValues) * 0.98 : 0;
-  const maxValue = allValues.length ? Math.max(...allValues) * 1.02 : 20;
+  const maxValue = allValues.length ? Math.max(...allValues) * 1.02 : 30;
   
   return (
     <div className="h-[300px]">
@@ -59,6 +59,14 @@ const EquitiesChart: React.FC = () => {
             <linearGradient id="colorETI" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#F2981D" stopOpacity={0.8} />
               <stop offset="95%" stopColor="#F2981D" stopOpacity={0.1} />
+            </linearGradient>
+            <linearGradient id="colorMTN" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#FFCC02" stopOpacity={0.8} />
+              <stop offset="95%" stopColor="#FFCC02" stopOpacity={0.1} />
+            </linearGradient>
+            <linearGradient id="colorTOTAL" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#DC2626" stopOpacity={0.8} />
+              <stop offset="95%" stopColor="#DC2626" stopOpacity={0.1} />
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -91,6 +99,22 @@ const EquitiesChart: React.FC = () => {
             stroke="#F2981D" 
             fillOpacity={1} 
             fill="url(#colorETI)" 
+          />
+          <Area 
+            type="monotone" 
+            dataKey="mtngh" 
+            name="MTN Ghana" 
+            stroke="#FFCC02" 
+            fillOpacity={1} 
+            fill="url(#colorMTN)" 
+          />
+          <Area 
+            type="monotone" 
+            dataKey="total" 
+            name="TotalEnergies Ghana" 
+            stroke="#DC2626" 
+            fillOpacity={1} 
+            fill="url(#colorTOTAL)" 
           />
         </AreaChart>
       </ResponsiveContainer>

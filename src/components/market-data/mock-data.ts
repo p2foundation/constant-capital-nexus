@@ -35,20 +35,15 @@ export const eurobondData = [
   { name: 'Jul', ghana29: 11.8, nigeria32: 10.9, kenya31: 12.4, ghana30: 12.1 },
 ];
 
-// Sample equities data
+// Sample equities data - Top 5 GSE companies
 export const equitiesData = [
-  { name: 'Jan', value: 2400 },
-  { name: 'Feb', value: 1398 },
-  { name: 'Mar', value: 9800 },
-  { name: 'Apr', value: 3908 },
-  { name: 'May', value: 4800 },
-  { name: 'Jun', value: 3800 },
-  { name: 'Jul', value: 4300 },
-  { name: 'Aug', value: 9398 },
-  { name: 'Sep', value: 5900 },
-  { name: 'Oct', value: 2800 },
-  { name: 'Nov', value: 4800 },
-  { name: 'Dec', value: 3800 },
+  { name: 'Jan', gcb: 7.20, scb: 21.50, eti: 19.80, mtngh: 3.10, total: 24.50 },
+  { name: 'Feb', gcb: 7.35, scb: 21.75, eti: 20.10, mtngh: 3.15, total: 24.80 },
+  { name: 'Mar', gcb: 7.50, scb: 22.00, eti: 20.40, mtngh: 3.20, total: 25.10 },
+  { name: 'Apr', gcb: 7.45, scb: 21.90, eti: 20.20, mtngh: 3.25, total: 25.00 },
+  { name: 'May', gcb: 7.60, scb: 22.10, eti: 20.50, mtngh: 3.30, total: 25.20 },
+  { name: 'Jun', gcb: 7.55, scb: 22.05, eti: 20.35, mtngh: 3.28, total: 25.15 },
+  { name: 'Jul', gcb: 7.65, scb: 22.15, eti: 20.60, mtngh: 3.32, total: 25.30 },
 ];
 
 // Fixed Income Data - Updated to match Ghana's actual fixed income instruments

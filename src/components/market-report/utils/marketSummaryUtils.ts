@@ -32,3 +32,11 @@ export const getLatestEurobonds = (marketData: MarketDataByType) => {
 export const getLatestGSE = (marketData: MarketDataByType) => {
   return getMostRecentDataPoint(marketData.gse);
 };
+
+/**
+ * Get latest equities data points for major companies
+ */
+export const getLatestEquities = (marketData: MarketDataByType) => {
+  const companies = ['GCB', 'SCB', 'ETI', 'MTNGH', 'TOTAL'];
+  return getLatestDataPoints(marketData.equities, companies);
+};

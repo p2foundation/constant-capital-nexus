@@ -11,16 +11,39 @@ import Footer from '@/components/Footer';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-// Stock price data
+// Stock price data - Based on GSE listings with realistic price estimates
 const stocks = {
-  "MTNGH": 3.30,
-  "GOIL": 1.77,
-  "TOTAL": 25.0,
-  "UNIL": 19.54,
-  "FML": 4.80, // Example price
-  "GCB": 7.60, // 760 pesewas = 7.60 GHS
+  "ACCESS": 9.20,
+  "ADB": 0.50,
+  "AGA": 45.00,
+  "ALLGH": 1.25,
+  "ALW": 0.80,
+  "ASG": 2.10,
+  "BOPP": 15.50,
+  "CAL": 0.95,
+  "CLYD": 0.30,
+  "CMLT": 0.12,
+  "CPC": 0.25,
   "DASPHARM": 0.38,
-  "ACCESS": 9.20
+  "EGH": 12.80,
+  "EGL": 3.20,
+  "ETI": 20.50,
+  "FML": 4.80,
+  "GCB": 7.60,
+  "GGBL": 8.40,
+  "GOIL": 1.77,
+  "MAC": 0.15,
+  "MTNGH": 3.30,
+  "PBC": 1.80,
+  "RBGH": 1.50,
+  "SCB": 22.00,
+  "SIC": 0.85,
+  "SOGEGH": 1.20,
+  "SWL": 0.18,
+  "TBL": 0.45,
+  "TLW": 35.00,
+  "TOTAL": 25.00,
+  "UNIL": 19.54
 };
 
 const EquityCalculator = () => {
