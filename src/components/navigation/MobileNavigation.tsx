@@ -73,13 +73,24 @@ const MobileNavigation = ({ isMenuOpen, toggleMenu }: MobileNavigationProps) => 
           Private Equity
         </Link>
         
+        {/* Research Hub Section */}
+        <div className="py-2 px-3 font-medium text-cc-navy dark:text-white">Research Hub:</div>
         <Link
           to="/research"
-          className="block px-3 py-2 rounded-md text-base font-medium text-cc-navy hover:bg-cc-light-blue dark:text-white dark:hover:bg-cc-navy/80"
+          className="block px-3 py-2 rounded-md text-base font-medium text-cc-navy hover:bg-cc-light-blue dark:text-white dark:hover:bg-cc-navy/80 ml-4"
           onClick={toggleMenu}
         >
-          Research
+          Daily Reports
         </Link>
+        <a
+          href="https://research.constantcap.com.gh"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block px-3 py-2 rounded-md text-base font-medium text-cc-navy hover:bg-cc-light-blue dark:text-white dark:hover:bg-cc-navy/80 ml-4"
+          onClick={toggleMenu}
+        >
+          Research Portal
+        </a>
         
         {/* Calculators Section */}
         <div className="py-2 px-3 font-medium text-cc-navy dark:text-white">Calculators:</div>

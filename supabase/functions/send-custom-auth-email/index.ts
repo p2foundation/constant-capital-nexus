@@ -105,9 +105,13 @@ const handler = async (req: Request): Promise<Response> => {
       }
     }
 
+    console.log('=== EMAIL DEBUG INFO ===');
+    console.log('Email type:', type);
+    console.log('Recipient:', email);
     console.log('Original URL:', confirmationUrl);
     console.log('Final URL:', finalConfirmationUrl);
     console.log('Site URL from env:', siteUrl);
+    console.log('========================');
 
     const htmlContent = `
     <!DOCTYPE html>

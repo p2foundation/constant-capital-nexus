@@ -18,7 +18,7 @@ const CTASection = () => {
             Browse Research Reports <ArrowRight className="ml-2 h-5 w-5" />
           </Link>
         </Button>
-        <Button variant="outline" className="border-white text-cc-navy bg-white hover:bg-gray-100 font-bold text-lg px-8 py-6">
+        <Button variant="outline" className="border-white text-white bg-transparent hover:bg-white hover:text-cc-navy font-bold text-lg px-8 py-6">
           <Link to="/contact" className="flex items-center">
             Request Custom Research <ArrowRight className="ml-2 h-5 w-5" />
           </Link>

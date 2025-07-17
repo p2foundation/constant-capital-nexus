@@ -19,9 +19,9 @@ const ResetPassword = () => {
     setIsLoading(true);
 
     try {
-      // Use Supabase's built-in password reset with custom redirect
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth/reset-password`
+      // Use our custom password reset function that sends branded emails
+      const { data, error } = await supabase.functions.invoke('custom-password-reset', {
+        body: { email }
       });
 
       if (error) {

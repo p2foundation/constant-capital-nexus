@@ -1,53 +1,52 @@
-
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Calculator } from 'lucide-react';
 import {
   NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import { Link } from 'react-router-dom';
 
-const CalculatorsDropdown = () => {
+const ResearchHubDropdown = () => {
   return (
     <NavigationMenuItem>
       <NavigationMenuTrigger className="text-cc-navy dark:text-white hover:text-cc-blue dark:hover:text-cc-gold">
-        <Calculator className="h-4 w-4 mr-1" />
-        Calculators
+        Research Hub
       </NavigationMenuTrigger>
       <NavigationMenuContent>
         <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
           <li className="row-span-2">
             <div className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-cc-navy/50 to-cc-blue p-6 no-underline outline-none focus:shadow-md">
               <div className="mb-2 mt-4 text-lg font-medium text-white">
-                Financial Calculators
+                Research Hub
               </div>
               <p className="text-sm leading-tight text-gray-200">
-                Calculate returns and analyze investment opportunities.
+                Access comprehensive market research and analysis tools.
               </p>
             </div>
           </li>
           <li>
             <Link
-              to="/t-bill-calculator"
+              to="/research"
               className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
             >
-              <div className="text-sm font-medium leading-none">T-Bill Calculator</div>
+              <div className="text-sm font-medium leading-none">Daily Reports</div>
               <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                Calculate returns on treasury bills and government securities
+                Daily market analysis and investment research reports
               </p>
             </Link>
           </li>
           <li>
-            <Link
-              to="/equity-calculator"
+            <a
+              href="https://research.constantcap.com.gh"
+              target="_blank"
+              rel="noopener noreferrer"
               className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
             >
-              <div className="text-sm font-medium leading-none">Equity Calculator</div>
+              <div className="text-sm font-medium leading-none">Research Portal</div>
               <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                Calculate stock investment returns and analyze equity performance
+                Advanced research platform and analytical tools
               </p>
-            </Link>
+            </a>
           </li>
         </ul>
       </NavigationMenuContent>
@@ -55,4 +54,4 @@ const CalculatorsDropdown = () => {
   );
 };
 
-export default CalculatorsDropdown;
+export default ResearchHubDropdown;

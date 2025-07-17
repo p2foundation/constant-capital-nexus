@@ -23,7 +23,7 @@ const HeroSection = () => {
                 Access Research Reports <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
-            <Button variant="outline" className="border-white text-cc-navy hover:bg-white hover:text-cc-navy">
+            <Button variant="outline" className="border-white text-cc-navy bg-white hover:bg-gray-100 hover:text-cc-navy">
               <Link to="/contact" className="flex items-center">
                 Schedule Consultation <ArrowRight className="ml-2 h-5 w-5" />
               </Link>

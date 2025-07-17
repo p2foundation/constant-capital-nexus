@@ -4,6 +4,7 @@ import NavigationItem from './NavigationItem';
 import ServicesDropdown from './dropdowns/ServicesDropdown';
 import CalculatorsDropdown from './dropdowns/CalculatorsDropdown';
 import AboutDropdown from './dropdowns/AboutDropdown';
+import ResearchHubDropdown from './dropdowns/ResearchHubDropdown';
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -18,11 +19,10 @@ const DesktopNavigation = () => {
         <NavigationMenuList>
           <AboutDropdown />
           <ServicesDropdown />
+          <ResearchHubDropdown />
           <CalculatorsDropdown />
         </NavigationMenuList>
       </NavigationMenu>
-      
-      <NavigationItem to="/research">Research</NavigationItem>
       <NavigationItem to="/faqs">FAQs</NavigationItem>
       <NavigationItem to="/contact">Contact Us</NavigationItem>
     </div>
