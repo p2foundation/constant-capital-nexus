@@ -12,18 +12,22 @@ const EmailConfirm = () => {
   useEffect(() => {
     const handleEmailConfirmation = async () => {
       try {
-        // Get the token and type from URL parameters
-        const token = searchParams.get('token');
+        // Get the token_hash and type from URL parameters (Supabase format)
+        const tokenHash = searchParams.get('token_hash');
         const type = searchParams.get('type');
         const redirectTo = searchParams.get('redirect_to');
 
+        // Also check for alternative parameter names
+        const token = searchParams.get('token') || tokenHash;
+
         if (!token || !type) {
-          toast.error('Invalid confirmation link');
+          console.log('Missing parameters:', { token, tokenHash, type });
+          toast.error('Invalid confirmation link. Please check that you clicked the correct link from your email.');
           navigate('/login');
           return;
         }
 
-        // Verify the email confirmation
+        // Verify the email confirmation with the correct token format
         const { data, error } = await supabase.auth.verifyOtp({
           token_hash: token,
           type: type as any,

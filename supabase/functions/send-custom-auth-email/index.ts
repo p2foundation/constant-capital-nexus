@@ -87,7 +87,11 @@ const handler = async (req: Request): Promise<Response> => {
         finalConfirmationUrl = `${siteUrl}/auth/reset-password${url.hash}`;
       }
     } else {
-      // For other types (signup, email change), use domain replacement
+      // For signup and email change, we need to ensure we're using the production domain
+      // but we can't get the real tokens, so we'll use a generic confirmation URL
+      // The user will need to use the original Supabase email for the actual confirmation
+      
+      // Replace preview domains with production domain
       finalConfirmationUrl = confirmationUrl.replace(
         /https:\/\/preview--[^.]+\.lovable\.app/g, 
         siteUrl
@@ -98,6 +102,12 @@ const handler = async (req: Request): Promise<Response> => {
         /http:\/\/localhost:\d+/g,
         siteUrl
       );
+      
+      // For signup emails, we'll create a general confirmation URL
+      // The actual confirmation will happen via the original Supabase email
+      if (type === 'signup') {
+        finalConfirmationUrl = `${siteUrl}/auth/confirm`;
+      }
       
       // Ensure HTTPS for production
       if (siteUrl.includes('constantcap.com.gh')) {
@@ -141,14 +151,20 @@ const handler = async (req: Request): Promise<Response> => {
                 
                 <p style="color: #4a5568; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
                     ${content.message}
+                    ${type === 'signup' ? '<br><br><strong>Important:</strong> You will receive two emails - this branded welcome email and a confirmation email from Supabase. Please click the confirmation link in the Supabase email to activate your account.' : ''}
                 </p>
                 
-                <!-- CTA Button -->
+                <!-- CTA Button - Only functional for non-signup emails -->
                 <div style="text-align: center; margin: 40px 0;">
-                    <a href="${finalConfirmationUrl}" 
-                       style="display: inline-block; background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%); color: white; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 12px rgba(30, 58, 95, 0.3);">
-                        ${content.buttonText}
-                    </a>
+                    ${type === 'signup' ? 
+                      `<div style="display: inline-block; background: #f7fafc; color: #4a5568; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 16px; border: 2px solid #e2e8f0;">
+                         Welcome to Constant Capital!
+                       </div>` :
+                      `<a href="${finalConfirmationUrl}" 
+                         style="display: inline-block; background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%); color: white; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 12px rgba(30, 58, 95, 0.3);">
+                           ${content.buttonText}
+                       </a>`
+                    }
                 </div>
                 
                 <div style="background-color: #f7fafc; border-left: 4px solid #ffd700; padding: 20px; margin: 30px 0; border-radius: 4px;">
@@ -157,15 +173,23 @@ const handler = async (req: Request): Promise<Response> => {
                     </p>
                 </div>
                 
-                <!-- Alternative Link -->
-                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
-                    <p style="color: #718096; font-size: 14px; line-height: 1.5;">
-                        If the button above doesn't work, copy and paste this link into your browser:
-                    </p>
-                    <p style="word-break: break-all; color: #2c5282; font-size: 14px; background-color: #f7fafc; padding: 12px; border-radius: 4px; border: 1px solid #e2e8f0;">
-                        ${finalConfirmationUrl}
-                    </p>
-                </div>
+                ${type !== 'signup' ? 
+                  `<!-- Alternative Link -->
+                   <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
+                       <p style="color: #718096; font-size: 14px; line-height: 1.5;">
+                           If the button above doesn't work, copy and paste this link into your browser:
+                       </p>
+                       <p style="word-break: break-all; color: #2c5282; font-size: 14px; background-color: #f7fafc; padding: 12px; border-radius: 4px; border: 1px solid #e2e8f0;">
+                           ${finalConfirmationUrl}
+                       </p>
+                   </div>` : 
+                  `<!-- Signup Note -->
+                   <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
+                       <p style="color: #718096; font-size: 14px; line-height: 1.5;">
+                           <strong>Next Steps:</strong> Look for a separate email from Supabase with the subject "Confirm your signup" and click the confirmation link to activate your account.
+                       </p>
+                   </div>`
+                }
             </div>
             
             <!-- Footer -->

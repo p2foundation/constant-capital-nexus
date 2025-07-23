@@ -42,6 +42,8 @@ interface User {
   last_sign_in_at: string;
   is_active: boolean;
   email_confirmed_at: string;
+  manually_confirmed_by: string | null;
+  manual_confirmation_date: string | null;
 }
 
 interface UserActivity {
@@ -340,6 +342,30 @@ const UserManagement = () => {
     fetchUsers(); // Refresh the user list
   };
 
+  const handleManuallyConfirmUser = async (userId: string) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error("You must be logged in to perform this action");
+        return;
+      }
+
+      const response = await supabase.functions.invoke('admin-confirm-user', {
+        body: { userId },
+      });
+
+      if (response.error) {
+        throw new Error(response.error.message || 'Failed to manually confirm user');
+      }
+
+      toast.success("User has been manually confirmed");
+      fetchUsers();
+    } catch (error) {
+      console.error('Error manually confirming user:', error);
+      toast.error(error instanceof Error ? error.message : "Failed to manually confirm user");
+    }
+  };
+
   if (!isAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -407,10 +433,11 @@ const UserManagement = () => {
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
               itemsPerPage={itemsPerPage}
-              onEditUser={handleEditUser}
-              onDeleteUser={handleDeleteUser}
-              onToggleUserStatus={handleToggleUserStatus}
-              onUpdateRole={handleUpdateRole}
+                    onEditUser={handleEditUser}
+                    onDeleteUser={handleDeleteUser}
+                    onToggleUserStatus={handleToggleUserStatus}
+                    onUpdateRole={handleUpdateRole}
+                    onManuallyConfirmUser={handleManuallyConfirmUser}
             />
           </TabsContent>
 

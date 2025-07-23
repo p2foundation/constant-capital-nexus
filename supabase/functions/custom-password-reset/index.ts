@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -36,26 +37,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Processing password reset request for:", email);
 
-    // Check if user exists
-    const { data: userData, error: userError } = await supabase
-      .from('profiles')
-      .select('id, first_name, last_name')
-      .eq('id', (await supabase.auth.admin.getUserByEmail(email)).data.user?.id)
-      .single();
-
-    if (userError || !userData) {
-      // Don't reveal if user exists or not for security
-      console.log("User not found:", email);
-      return new Response(
-        JSON.stringify({ success: true, message: "If the email exists, a reset link has been sent." }),
-        {
-          status: 200,
-          headers: { "Content-Type": "application/json", ...corsHeaders },
-        }
-      );
-    }
-
-    // Generate a password reset using Supabase Admin API but intercept it
+    // Generate a password reset link using Supabase Admin API
     const { data, error } = await supabase.auth.admin.generateLink({
       type: 'recovery',
       email: email,
@@ -66,6 +48,21 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (error) {
       console.error("Error generating reset link:", error);
+      
+      // For security, don't reveal if user exists or not
+      if (error.message.includes('User not found') || error.message.includes('Invalid email')) {
+        return new Response(
+          JSON.stringify({ 
+            success: true, 
+            message: "If the email exists, a reset link has been sent." 
+          }),
+          {
+            status: 200,
+            headers: { "Content-Type": "application/json", ...corsHeaders },
+          }
+        );
+      }
+      
       return new Response(
         JSON.stringify({ error: "Failed to generate reset link" }),
         {
@@ -75,20 +72,34 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    console.log("Generated reset link:", data.properties?.action_link);
+    console.log("Generated reset link successfully");
 
     // Extract the URL and send custom email
     const resetUrl = data.properties?.action_link;
     
     if (resetUrl) {
+      // Try to get user profile data for personalization (optional)
+      let userData = null;
+      try {
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('id, first_name, last_name')
+          .eq('id', data.user.id)
+          .single();
+        
+        userData = profileData;
+      } catch (profileError) {
+        console.log("Could not fetch user profile, proceeding without personalization");
+      }
+
       // Send custom branded email instead of Supabase default
       const emailResponse = await supabase.functions.invoke('send-custom-auth-email', {
         body: {
           email,
           confirmationUrl: resetUrl,
           type: 'recovery',
-          firstName: userData.first_name,
-          lastName: userData.last_name
+          firstName: userData?.first_name || '',
+          lastName: userData?.last_name || ''
         }
       });
 

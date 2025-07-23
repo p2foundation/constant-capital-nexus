@@ -8,7 +8,7 @@ import { Pagination, PaginationContent, PaginationItem, PaginationLink, Paginati
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Users, Search, Edit, Trash2, MoreHorizontal, Clock } from 'lucide-react';
+import { Users, Search, Edit, Trash2, MoreHorizontal, Clock, CheckCircle, UserCheck } from 'lucide-react';
 
 interface User {
   id: string;
@@ -24,6 +24,8 @@ interface User {
   last_sign_in_at: string;
   is_active: boolean;
   email_confirmed_at: string;
+  manually_confirmed_by: string | null;
+  manual_confirmation_date: string | null;
 }
 
 interface UserTableProps {
@@ -39,6 +41,7 @@ interface UserTableProps {
   onDeleteUser: (userId: string) => void;
   onToggleUserStatus: (userId: string) => void;
   onUpdateRole: (userId: string, newRole: string) => Promise<void>;
+  onManuallyConfirmUser: (userId: string) => Promise<void>;
 }
 
 const UserTable: React.FC<UserTableProps> = ({
@@ -53,7 +56,8 @@ const UserTable: React.FC<UserTableProps> = ({
   onEditUser,
   onDeleteUser,
   onToggleUserStatus,
-  onUpdateRole
+  onUpdateRole,
+  onManuallyConfirmUser
 }) => {
   const filteredUsers = users.filter(user => {
     const matchesSearch = 
@@ -123,6 +127,7 @@ const UserTable: React.FC<UserTableProps> = ({
                 <TableHead>Company</TableHead>
                 <TableHead>Role</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Confirmation</TableHead>
                 <TableHead>Last Sign In</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
@@ -130,7 +135,7 @@ const UserTable: React.FC<UserTableProps> = ({
             <TableBody>
               {paginatedUsers.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                  <TableCell colSpan={7} className="text-center py-8 text-gray-500">
                     No users found matching your criteria.
                   </TableCell>
                 </TableRow>
@@ -187,6 +192,33 @@ const UserTable: React.FC<UserTableProps> = ({
                           checked={user.is_active}
                           onCheckedChange={() => onToggleUserStatus(user.id)}
                         />
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        {user.email_confirmed_at ? (
+                          <div className="flex items-center gap-1 text-green-600">
+                            <CheckCircle className="h-4 w-4" />
+                            <span className="text-sm">Email Confirmed</span>
+                          </div>
+                        ) : user.manual_confirmation_date ? (
+                          <div className="flex items-center gap-1 text-blue-600">
+                            <UserCheck className="h-4 w-4" />
+                            <span className="text-sm">Manually Confirmed</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline" className="text-orange-600">Pending</Badge>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => onManuallyConfirmUser(user.id)}
+                              className="text-xs"
+                            >
+                              Manually Authorize
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     </TableCell>
                     <TableCell>

@@ -94,6 +94,14 @@ const RegisterForm = () => {
               "Account created successfully. Please check your email to confirm your registration.",
           },
         });
+      } else if (error && error.includes('check your email')) {
+        // Handle email confirmation case
+        navigate("/login", {
+          state: {
+            message:
+              "Account created successfully. Please check your email to confirm your registration before signing in.",
+          },
+        });
       } else if (error) {
         console.error("Registration error:", error);
       }

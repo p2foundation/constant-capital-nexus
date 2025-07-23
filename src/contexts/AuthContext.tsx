@@ -243,30 +243,44 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       });
       
-      // Send custom branded confirmation email
-      if (data.user && !data.user.email_confirmed_at) {
+      // Send custom branded confirmation email with proper auth tokens
+      if (data.user && !data.session) {
         try {
-          // For new signups, Supabase would send the confirmation email automatically
-          // We'll use our custom email function instead by extracting the URL from data
-          const baseUrl = window.location.origin;
-          const confirmationUrl = `${baseUrl}/auth/confirm?redirect_to=${baseUrl}`;
-          
-          // Call our custom email function
-          await supabase.functions.invoke('send-custom-auth-email', {
-            body: {
-              email,
-              confirmationUrl,
-              type: 'signup',
-              firstName: profileData.first_name,
-              lastName: profileData.last_name
+          // Use the actual confirmation URL from Supabase which contains the real tokens
+          // We need to trigger the confirmation flow and capture the real URL
+          const { data: resendData, error: resendError } = await supabase.auth.resend({
+            type: 'signup',
+            email: email,
+            options: {
+              emailRedirectTo: `${window.location.origin}/auth/confirm`
             }
           });
-          
-          console.log('Custom signup email sent successfully');
+
+          // If resend was successful, send our custom email
+          if (!resendError) {
+            await supabase.functions.invoke('send-custom-auth-email', {
+              body: {
+                email,
+                confirmationUrl: `${window.location.origin}/auth/confirm`, // This will be enhanced by the edge function
+                type: 'signup',
+                firstName: profileData.first_name,
+                lastName: profileData.last_name
+              }
+            });
+            
+            console.log('Custom signup email sent successfully');
+          }
         } catch (emailError) {
           console.error('Error sending custom signup email:', emailError);
           // Don't fail the signup if email fails
         }
+
+        return {
+          success: false,
+          error: 'Please check your email and click the confirmation link to activate your account.',
+          requiresEmailConfirmation: true,
+          userEmail: email
+        };
       }
       
       if (error) {

@@ -617,6 +617,30 @@ export type Database = {
         }
         Relationships: []
       }
+      user_manual_confirmations: {
+        Row: {
+          confirmation_date: string
+          confirmed_by: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          confirmation_date?: string
+          confirmed_by: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          confirmation_date?: string
+          confirmed_by?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -624,6 +648,12 @@ export type Database = {
     Functions: {
       admin_delete_user: {
         Args: { target_user_id: string }
+        Returns: boolean
+      }
+      admin_manually_confirm_user: {
+        Args:
+          | { target_user_id: string }
+          | { target_user_id: string; confirmed_by_user_id: string }
         Returns: boolean
       }
       can_approve_content: {
@@ -666,6 +696,8 @@ export type Database = {
           last_sign_in_at: string
           is_active: boolean
           email_confirmed_at: string
+          manually_confirmed_by: string
+          manual_confirmation_date: string
         }[]
       }
     }
