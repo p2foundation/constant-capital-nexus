@@ -4,9 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from '@/integrations/supabase/client';
-import { Mail, MailOpen, Clock, User, Phone, MessageSquare } from 'lucide-react';
+import { Mail, MailOpen, Clock, User, Phone, MessageSquare, Reply } from 'lucide-react';
 import { toast } from 'sonner';
 import { Tables } from '@/integrations/supabase/types';
+import ReplyDialog from './ReplyDialog';
 
 type ContactMessage = Tables<'contact_messages'>;
 
@@ -15,6 +16,7 @@ const ContactInbox = () => {
   const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'unread' | 'read' | 'replied'>('all');
+  const [isReplyDialogOpen, setIsReplyDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchMessages();
@@ -97,6 +99,14 @@ const ContactInbox = () => {
       hour: '2-digit',
       minute: '2-digit'
     });
+  };
+
+  const handleReplyDialogClose = () => {
+    setIsReplyDialogOpen(false);
+  };
+
+  const handleReplySent = () => {
+    fetchMessages(); // Refresh messages after reply is sent
   };
 
   if (loading) {
@@ -208,6 +218,14 @@ const ContactInbox = () => {
                   </div>
                   <div className="flex gap-2">
                     <Button
+                      variant="default"
+                      size="sm"
+                      onClick={() => setIsReplyDialogOpen(true)}
+                    >
+                      <Reply className="w-4 h-4 mr-1" />
+                      Reply
+                    </Button>
+                    <Button
                       variant="outline"
                       size="sm"
                       onClick={() => updateMessageStatus(selectedMessage.id, 'replied')}
@@ -277,6 +295,13 @@ const ContactInbox = () => {
           </CardContent>
         </Card>
       </div>
+      
+      <ReplyDialog
+        isOpen={isReplyDialogOpen}
+        onClose={handleReplyDialogClose}
+        message={selectedMessage}
+        onReplySent={handleReplySent}
+      />
     </div>
   );
 };

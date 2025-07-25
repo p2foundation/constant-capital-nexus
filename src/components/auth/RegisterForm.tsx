@@ -76,7 +76,7 @@ const RegisterForm = () => {
     setIsLoading(true);
 
     try {
-      const { success, error } = await signUp(values.email, values.password, {
+      const result = await signUp(values.email, values.password, {
         first_name: values.firstName,
         last_name: values.lastName,
         company: values.company,
@@ -87,23 +87,24 @@ const RegisterForm = () => {
         role: values.role as any,
       });
 
-      if (success) {
+      if (result.success) {
         navigate("/login", {
           state: {
             message:
               "Account created successfully. Please check your email to confirm your registration.",
           },
         });
-      } else if (error && error.includes('check your email')) {
-        // Handle email confirmation case
-        navigate("/login", {
+      } else if ((result as any).requiresEmailConfirmation && (result as any).userEmail) {
+        // Show email confirmation alert instead of navigating away
+        navigate("/register", {
           state: {
-            message:
-              "Account created successfully. Please check your email to confirm your registration before signing in.",
+            showEmailConfirmation: true,
+            userEmail: (result as any).userEmail,
+            message: result.error || "Please check your email to confirm your registration."
           },
         });
-      } else if (error) {
-        console.error("Registration error:", error);
+      } else if (result.error) {
+        console.error("Registration error:", result.error);
       }
     } catch (error) {
       console.error("Registration error:", error);
@@ -259,14 +260,44 @@ const RegisterForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="dark:text-white">Position</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Investment Analyst"
-                        {...field}
-                        disabled={isLoading}
-                        className="dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                      />
-                    </FormControl>
+                    <Select 
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      disabled={isLoading}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="dark:bg-gray-800 dark:border-gray-700 dark:text-white">
+                          <SelectValue placeholder="Select position" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className="dark:bg-gray-800 dark:border-gray-700">
+                        <SelectItem value="CEO">Chief Executive Officer</SelectItem>
+                        <SelectItem value="CFO">Chief Financial Officer</SelectItem>
+                        <SelectItem value="CIO">Chief Investment Officer</SelectItem>
+                        <SelectItem value="Fund Manager">Fund Manager</SelectItem>
+                        <SelectItem value="Portfolio Manager">Portfolio Manager</SelectItem>
+                        <SelectItem value="Investment Analyst">Investment Analyst</SelectItem>
+                        <SelectItem value="Research Analyst">Research Analyst</SelectItem>
+                        <SelectItem value="Financial Advisor">Financial Advisor</SelectItem>
+                        <SelectItem value="Wealth Manager">Wealth Manager</SelectItem>
+                        <SelectItem value="Investment Banker">Investment Banker</SelectItem>
+                        <SelectItem value="Equity Analyst">Equity Analyst</SelectItem>
+                        <SelectItem value="Fixed Income Analyst">Fixed Income Analyst</SelectItem>
+                        <SelectItem value="Risk Manager">Risk Manager</SelectItem>
+                        <SelectItem value="Compliance Officer">Compliance Officer</SelectItem>
+                        <SelectItem value="Trader">Trader</SelectItem>
+                        <SelectItem value="Sales Manager">Sales Manager</SelectItem>
+                        <SelectItem value="Business Development">Business Development</SelectItem>
+                        <SelectItem value="Operations Manager">Operations Manager</SelectItem>
+                        <SelectItem value="Accountant">Accountant</SelectItem>
+                        <SelectItem value="Auditor">Auditor</SelectItem>
+                        <SelectItem value="Student">Student</SelectItem>
+                        <SelectItem value="Consultant">Consultant</SelectItem>
+                        <SelectItem value="Entrepreneur">Entrepreneur</SelectItem>
+                        <SelectItem value="Retired">Retired</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

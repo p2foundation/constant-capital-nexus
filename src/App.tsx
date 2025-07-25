@@ -95,6 +95,7 @@ function App() {
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/auth/reset-password" element={<ResetPasswordConfirm />} />
                 <Route path="/auth/confirm" element={<EmailConfirm />} />
+                <Route path="/email-confirm" element={<EmailConfirm />} />
                 <Route path="/reset-password-confirm" element={<ResetPasswordConfirm />} />
                 <Route path="/reset-password-confirm/*" element={<ResetPasswordConfirm />} />
                 

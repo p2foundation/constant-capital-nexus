@@ -243,41 +243,54 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       });
       
-      // Send custom branded confirmation email with proper auth tokens
+      // Send custom branded confirmation email
       if (data.user && !data.session) {
         try {
-          // Use the actual confirmation URL from Supabase which contains the real tokens
-          // We need to trigger the confirmation flow and capture the real URL
-          const { data: resendData, error: resendError } = await supabase.auth.resend({
-            type: 'signup',
-            email: email,
-            options: {
-              emailRedirectTo: `${window.location.origin}/auth/confirm`
+          // Send our custom branded email immediately
+          const { error: customEmailError } = await supabase.functions.invoke('send-custom-auth-email', {
+            body: {
+              email,
+              confirmationUrl: `${window.location.origin}/email-confirm`,
+              type: 'signup',
+              firstName: profileData.first_name,
+              lastName: profileData.last_name,
+              // Include user ID for better tracking
+              userId: data.user.id
             }
           });
-
-          // If resend was successful, send our custom email
-          if (!resendError) {
-            await supabase.functions.invoke('send-custom-auth-email', {
-              body: {
-                email,
-                confirmationUrl: `${window.location.origin}/auth/confirm`, // This will be enhanced by the edge function
-                type: 'signup',
-                firstName: profileData.first_name,
-                lastName: profileData.last_name
+          
+          if (customEmailError) {
+            console.error('Custom email error:', customEmailError);
+            // Fall back to default Supabase email if custom fails
+            await supabase.auth.resend({
+              type: 'signup',
+              email: email,
+              options: {
+                emailRedirectTo: `${window.location.origin}/email-confirm`
               }
             });
-            
-            console.log('Custom signup email sent successfully');
           }
+          
+          console.log('Signup email sent successfully');
         } catch (emailError) {
-          console.error('Error sending custom signup email:', emailError);
-          // Don't fail the signup if email fails
+          console.error('Error sending signup email:', emailError);
+          // Try to resend using default Supabase method as fallback
+          try {
+            await supabase.auth.resend({
+              type: 'signup',
+              email: email,
+              options: {
+                emailRedirectTo: `${window.location.origin}/email-confirm`
+              }
+            });
+          } catch (resendError) {
+            console.error('Fallback email also failed:', resendError);
+          }
         }
 
         return {
           success: false,
-          error: 'Please check your email and click the confirmation link to activate your account.',
+          error: 'Registration successful! Please check your email and click the confirmation link to activate your account.',
           requiresEmailConfirmation: true,
           userEmail: email
         };

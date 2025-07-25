@@ -75,20 +75,21 @@ const handler = async (req: Request): Promise<Response> => {
     let finalConfirmationUrl = confirmationUrl;
     
     if (type === 'recovery') {
-      // For password reset, we need to ensure the URL points to our reset confirmation page
-      const url = new URL(confirmationUrl);
-      
-      // Create the reset password confirmation URL with all the auth parameters
-      finalConfirmationUrl = `${siteUrl}/auth/reset-password${url.search}${url.hash}`;
-      
-      // Also handle the case where tokens are in the hash
-      if (url.hash && !url.search) {
-        finalConfirmationUrl = `${siteUrl}/auth/reset-password${url.hash}`;
-      }
-    } else if (type === 'signup') {
-      // For signup, use the actual confirmation URL from Supabase
-      // This contains the real tokens needed for confirmation
+      // For password reset, preserve the original URL structure
+      // The confirmation URL from Supabase contains proper auth tokens
       finalConfirmationUrl = confirmationUrl;
+      
+      // Log for debugging
+      console.log('Password reset URL processing:', {
+        originalUrl: confirmationUrl,
+        finalUrl: finalConfirmationUrl
+      });
+    } else if (type === 'signup') {
+      // For signup, ensure we use the proper confirmation URL
+      // The URL should point to our email confirm page
+      const baseUrl = confirmationUrl.includes('/email-confirm') ? 
+        confirmationUrl : `${siteUrl}/email-confirm`;
+      finalConfirmationUrl = baseUrl;
     } else {
       // For email change, create a general confirmation URL
       finalConfirmationUrl = `${siteUrl}/auth/confirm`;

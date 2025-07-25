@@ -109,8 +109,12 @@ export default {
 				'fade-out': 'fade-out 0.5s ease-out'
 			},
 			fontFamily: {
-				serif: ['Playfair Display', 'serif'],
-				sans: ['Inter', 'sans-serif']
+				// Constant Capital Ghana brand fonts
+				'heading': ['Optima', 'Montserrat', 'Arial Black', 'sans-serif'],
+				'body': ['Myriad Pro', 'Source Sans Pro', 'Arial', 'sans-serif'],
+				// Keep semantic names for better maintainability
+				serif: ['Optima', 'Montserrat', 'serif'],
+				sans: ['Myriad Pro', 'Source Sans Pro', 'sans-serif']
 			}
 		}
 	},

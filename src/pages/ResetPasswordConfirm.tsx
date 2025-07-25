@@ -30,7 +30,13 @@ const ResetPasswordConfirm = () => {
         const tokenType = hashParams.get('token_type') || searchParams.get('token_type');
         const type = hashParams.get('type') || searchParams.get('type');
 
-        console.log('Reset password tokens:', { accessToken: !!accessToken, refreshToken: !!refreshToken, type });
+        console.log('Reset password URL params:', { 
+          hash: location.hash, 
+          search: location.search,
+          accessToken: !!accessToken, 
+          refreshToken: !!refreshToken, 
+          type 
+        });
 
         if (accessToken && refreshToken && type === 'recovery') {
           // Set the session using the tokens from the URL

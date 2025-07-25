@@ -28,6 +28,9 @@ interface UserActivity {
   timestamp: string;
   ip_address?: string;
   user_agent?: string;
+  user_email?: string;
+  user_first_name?: string;
+  user_last_name?: string;
 }
 
 interface ActivitiesTableProps {
@@ -86,7 +89,12 @@ const ActivitiesTable: React.FC<ActivitiesTableProps> = ({
             </TableHeader>
             <TableBody>
               {paginatedActivities.map((activity) => {
+                // Use the data from the database function or fall back to the users prop
                 const user = users.find(u => u.id === activity.user_id);
+                const displayName = activity.user_first_name || activity.user_last_name 
+                  ? `${activity.user_first_name || ''} ${activity.user_last_name || ''}`.trim()
+                  : activity.user_email || user?.email || 'Unknown User';
+
                 return (
                   <TableRow key={activity.id}>
                     <TableCell>
@@ -98,7 +106,7 @@ const ActivitiesTable: React.FC<ActivitiesTableProps> = ({
                       </div>
                     </TableCell>
                     <TableCell>
-                      {user ? `${user.first_name} ${user.last_name}` : 'Unknown User'}
+                      {displayName}
                     </TableCell>
                     <TableCell>
                       {new Date(activity.timestamp).toLocaleString()}

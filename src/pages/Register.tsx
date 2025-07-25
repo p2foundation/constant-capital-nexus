@@ -1,10 +1,18 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import RegisterForm from '@/components/auth/RegisterForm';
+import EmailConfirmationAlert from '@/components/auth/EmailConfirmationAlert';
 import { ArrowLeft } from 'lucide-react';
 
 const Register = () => {
+  const location = useLocation();
+  const state = location.state as { 
+    showEmailConfirmation?: boolean; 
+    userEmail?: string; 
+    message?: string;
+  } | null;
+
   return (
     <div className="min-h-screen flex flex-col">
       <div className="bg-white/90 backdrop-blur-sm fixed w-full z-50 border-b border-gray-100 shadow-sm py-4 dark:bg-cc-navy/90 dark:border-gray-800">
@@ -22,9 +30,16 @@ const Register = () => {
       </div>
       
       <div className="flex-1 flex items-center justify-center bg-cc-gray py-12 px-4 pt-28 dark:bg-cc-navy/50">
-        <div className="bg-white w-full max-w-2xl rounded-lg shadow-md p-8 border border-gray-100 dark:bg-cc-navy dark:border-gray-800">
-          <RegisterForm />
-        </div>
+        {state?.showEmailConfirmation && state?.userEmail ? (
+          <EmailConfirmationAlert 
+            email={state.userEmail}
+            onDismiss={() => window.location.href = '/login'}
+          />
+        ) : (
+          <div className="bg-white w-full max-w-2xl rounded-lg shadow-md p-8 border border-gray-100 dark:bg-cc-navy dark:border-gray-800">
+            <RegisterForm />
+          </div>
+        )}
       </div>
       
       <div className="bg-white border-t border-gray-100 py-4 text-center text-sm text-gray-500 dark:bg-cc-navy/90 dark:border-gray-800 dark:text-gray-400">

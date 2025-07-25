@@ -668,6 +668,21 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
+      get_user_activities_with_emails: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          user_id: string
+          activity_type: string
+          activity_timestamp: string
+          ip_address: unknown
+          user_agent: string
+          created_at: string
+          user_email: string
+          user_first_name: string
+          user_last_name: string
+        }[]
+      }
       get_user_role: {
         Args: { user_id?: string }
         Returns: string

@@ -167,14 +167,10 @@ const UserManagement = () => {
     }
   };
 
-  // Fetch user activities
+  // Fetch user activities with email information
   const fetchActivities = async () => {
     try {
-      const { data, error } = await supabase
-        .from('user_activities')
-        .select('*')
-        .order('timestamp', { ascending: false })
-        .limit(50);
+      const { data, error } = await supabase.rpc('get_user_activities_with_emails');
       
       if (error) {
         console.error('Error fetching activities:', error);
@@ -182,13 +178,20 @@ const UserManagement = () => {
         return;
       }
 
-      // Type assertion to ensure proper typing
-      const typedActivities = (data || []).map((activity: any) => ({
-        ...activity,
-        activity_type: activity.activity_type as 'login' | 'logout' | 'profile_update' | 'account_access'
+      // Map the data to match the expected format
+      const mappedActivities = (data || []).map((activity: any) => ({
+        id: activity.id,
+        user_id: activity.user_id,
+        activity_type: activity.activity_type as 'login' | 'logout' | 'profile_update' | 'account_access',
+        timestamp: activity.activity_timestamp,
+        ip_address: activity.ip_address,
+        user_agent: activity.user_agent,
+        user_email: activity.user_email,
+        user_first_name: activity.user_first_name,
+        user_last_name: activity.user_last_name
       }));
 
-      setActivities(typedActivities);
+      setActivities(mappedActivities);
     } catch (error) {
       console.error('Error fetching activities:', error);
       toast.error('Failed to fetch user activities');

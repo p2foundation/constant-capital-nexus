@@ -1,5 +1,8 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+/* Constant Capital Ghana Brand Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Optima:wght@400;700&family=Myriad+Pro:wght@400;600&display=swap');
+/* Fallback fonts for better web compatibility */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Source+Sans+Pro:wght@400;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -98,11 +101,11 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground font-body;
   }
 
   h1, h2, h3, h4, h5 {
-    @apply font-serif;
+    @apply font-heading font-bold;
   }
 }
 
