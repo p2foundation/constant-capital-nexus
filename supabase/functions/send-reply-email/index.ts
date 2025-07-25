@@ -131,11 +131,11 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'Constant Capital Ghana <noreply@resend.dev>',
+        from: 'Constant Capital <noreply@market.constantcap.com.gh>',
         to: [to],
         subject: subject,
         html: emailHtml,
-        reply_to: 'noreply@resend.dev'
+        reply_to: 'info@market.constantcap.com.gh'
       }),
     });
 
