@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -20,6 +21,8 @@ const EmailConfirm = () => {
         // Also check for alternative parameter names
         const token = searchParams.get('token') || tokenHash;
 
+        console.log('Confirmation parameters:', { token, tokenHash, type, redirectTo });
+
         if (!token || !type) {
           console.log('Missing parameters:', { token, tokenHash, type });
           toast.error('Invalid confirmation link. Please check that you clicked the correct link from your email.');
@@ -35,7 +38,7 @@ const EmailConfirm = () => {
 
         if (error) {
           console.error('Email confirmation error:', error);
-          toast.error('Failed to confirm email. The link may have expired.');
+          toast.error('Failed to confirm email. The link may have expired or already been used.');
           navigate('/login');
           return;
         }

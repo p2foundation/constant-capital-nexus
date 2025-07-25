@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import StrategicAdvisoryHero from '@/components/strategic-advisory/StrategicAdvisoryHero';
@@ -18,6 +19,25 @@ const StrategicAdvisory = () => {
 
   return (
     <div className="flex flex-col min-h-screen dark:bg-gray-950">
+      <Helmet>
+        <title>Strategic Advisory | Corporate Finance | M&A Advisory | Constant Capital Ghana</title>
+        <meta name="description" content="Strategic advisory services in Ghana including M&A advisory, corporate finance, capital raising, and business transformation. Expert guidance for growth and value creation." />
+        <meta name="keywords" content="strategic advisory Ghana, M&A advisory, corporate finance Ghana, capital raising, business advisory, mergers acquisitions Ghana" />
+        <link rel="canonical" href="https://constantcap.com.gh/strategic-advisory" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": "Strategic Advisory",
+            "provider": {
+              "@type": "Organization",
+              "name": "Constant Capital (Ghana) Limited"
+            },
+            "description": "Strategic advisory services including M&A, corporate finance, and business transformation",
+            "areaServed": "Ghana"
+          })}
+        </script>
+      </Helmet>
       <Navbar />
       <div className="pt-16">
         <StrategicAdvisoryHero />

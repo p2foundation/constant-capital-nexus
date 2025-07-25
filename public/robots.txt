@@ -5,8 +5,19 @@ Allow: /
 # Specific bot permissions
 User-agent: Googlebot
 Allow: /
+Crawl-delay: 1
 
 User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
 Allow: /
 
 User-agent: Twitterbot
@@ -15,13 +26,25 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
+User-agent: LinkedInBot
+Allow: /
+
 # Sitemap location
 Sitemap: https://constantcap.com.gh/sitemap.xml
 
-# Crawl-delay for general bots
-Crawl-delay: 1
+# Disallow admin and private areas
+Disallow: /admin*
+Disallow: /api/*
+Disallow: /settings*
+Disallow: /user-management*
+Disallow: /_*
+Disallow: /supabase/*
 
-# Disallow admin areas
-Disallow: /admin
-Disallow: /api/
-Disallow: /settings
+# Allow important pages
+Allow: /research
+Allow: /securities-trading
+Allow: /investment-advisory
+Allow: /strategic-advisory
+Allow: /contact
+Allow: /about
+Allow: /faqs

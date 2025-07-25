@@ -1,4 +1,29 @@
+
 project_id = "estbtjkwlgefncxmxzta"
 
+[auth]
+enable_signup = true
+enable_confirmations = true
+enable_recoveries = true
+enable_email_change_confirmations = true
+disable_signup = false
+enable_anonymous_sign_ins = false
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+enable_confirmations = true
+template = {}
+
+[auth.sms]
+enable_signup = false
+enable_confirmations = false
+
 [functions.custom-password-reset]
+verify_jwt = false
+
+[functions.auth-webhook]
+verify_jwt = false
+
+[functions.send-custom-auth-email]
 verify_jwt = false

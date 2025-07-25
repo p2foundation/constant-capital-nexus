@@ -278,14 +278,38 @@ const RegisterForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="dark:text-white">Industry</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Financial Services"
-                        {...field}
-                        disabled={isLoading}
-                        className="dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                      />
-                    </FormControl>
+                    <Select 
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      disabled={isLoading}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="dark:bg-gray-800 dark:border-gray-700 dark:text-white">
+                          <SelectValue placeholder="Select industry" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className="dark:bg-gray-800 dark:border-gray-700">
+                        <SelectItem value="Financial Services">Financial Services</SelectItem>
+                        <SelectItem value="Banking">Banking</SelectItem>
+                        <SelectItem value="Insurance">Insurance</SelectItem>
+                        <SelectItem value="Asset Management">Asset Management</SelectItem>
+                        <SelectItem value="Investment Banking">Investment Banking</SelectItem>
+                        <SelectItem value="Private Equity">Private Equity</SelectItem>
+                        <SelectItem value="Venture Capital">Venture Capital</SelectItem>
+                        <SelectItem value="Real Estate">Real Estate</SelectItem>
+                        <SelectItem value="Technology">Technology</SelectItem>
+                        <SelectItem value="Healthcare">Healthcare</SelectItem>
+                        <SelectItem value="Manufacturing">Manufacturing</SelectItem>
+                        <SelectItem value="Energy">Energy</SelectItem>
+                        <SelectItem value="Mining">Mining</SelectItem>
+                        <SelectItem value="Agriculture">Agriculture</SelectItem>
+                        <SelectItem value="Telecommunications">Telecommunications</SelectItem>
+                        <SelectItem value="Government">Government</SelectItem>
+                        <SelectItem value="Education">Education</SelectItem>
+                        <SelectItem value="Non-Profit">Non-Profit</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -400,11 +424,11 @@ const RegisterForm = () => {
 
           <div className="text-center text-sm text-gray-500 dark:text-gray-400">
             By creating an account, you agree to our{" "}
-            <a href="#" className="text-cc-blue hover:underline dark:text-cc-gold">
+            <a href="/terms-of-service" className="text-cc-blue hover:underline dark:text-cc-gold" target="_blank" rel="noopener noreferrer">
               Terms of Service
             </a>{" "}
             and{" "}
-            <a href="#" className="text-cc-blue hover:underline dark:text-cc-gold">
+            <a href="/privacy-policy" className="text-cc-blue hover:underline dark:text-cc-gold" target="_blank" rel="noopener noreferrer">
               Privacy Policy
             </a>
             .
