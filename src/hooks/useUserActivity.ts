@@ -2,9 +2,11 @@
 import { useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useRewardSystem } from '@/hooks/useRewardSystem';
 
 export const useUserActivity = () => {
   const { user } = useAuth();
+  const { trackActivity } = useRewardSystem();
 
   const logActivity = async (activityType: 'login' | 'logout' | 'profile_update' | 'account_access') => {
     if (!user) return;
@@ -25,6 +27,11 @@ export const useUserActivity = () => {
 
       if (error) {
         console.error('Error logging activity:', error);
+      } else {
+        // Also track for rewards if it's a significant activity
+        if (['login', 'account_access', 'profile_update'].includes(activityType)) {
+          trackActivity(activityType);
+        }
       }
     } catch (error) {
       console.error('Error logging activity:', error);

@@ -36,6 +36,17 @@ const ResearchHubDropdown = () => {
             </Link>
           </li>
           <li>
+            <Link
+              to="/full-market-report"
+              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+            >
+              <div className="text-sm font-medium leading-none">Market Report</div>
+              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                Comprehensive market analysis and performance charts
+              </p>
+            </Link>
+          </li>
+          <li>
             <a
               href="https://research.constantcap.com.gh"
               target="_blank"

@@ -42,6 +42,7 @@ import CookiePolicy from "@/pages/CookiePolicy";
 import AccountOpening from "@/pages/AccountOpening";
 import FAQs from "@/pages/FAQs";
 import EmailConfirm from "@/pages/EmailConfirm";
+import Rewards from "@/pages/Rewards";
 
 // Components
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
@@ -103,6 +104,11 @@ function App() {
                 <Route path="/profile" element={
                   <ProtectedRoute>
                     <UserProfile />
+                  </ProtectedRoute>
+                } />
+                <Route path="/rewards" element={
+                  <ProtectedRoute>
+                    <Rewards />
                   </ProtectedRoute>
                 } />
                 

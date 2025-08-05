@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from "@/contexts/AuthContext";
+import { useRewardSystem } from '@/hooks/useRewardSystem';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,6 +17,7 @@ import ThemeToggler from '../ThemeToggler';
 
 const AuthButtons = () => {
   const { session, user, profile, signOut, isAdmin } = useAuth();
+  const { userReward, trackActivity } = useRewardSystem();
   const navigate = useNavigate();
   
   const calculateRewardPoints = () => {
@@ -72,14 +74,27 @@ const AuthButtons = () => {
     return 0;
   };
   
+  // Track login activity when component mounts
+  useEffect(() => {
+    if (user && trackActivity) {
+      trackActivity('login');
+    }
+  }, [user, trackActivity]);
+
   const handleSignOut = async () => {
+    if (trackActivity) {
+      await trackActivity('logout');
+    }
     await signOut();
     navigate('/login');
   };
   
   if (session && user) {
-    const rewardPoints = calculateRewardPoints();
-    const tier = getRewardTier(rewardPoints);
+    // Use reward system data if available, fallback to calculated points
+    const rewardPoints = userReward?.available_points || calculateRewardPoints();
+    const tier = userReward ? 
+      { name: userReward.tier_level, color: getRewardTier(rewardPoints).color, icon: getRewardTier(rewardPoints).icon } :
+      getRewardTier(rewardPoints);
     const nextTierPoints = getNextTierPoints(rewardPoints);
     const progressPercentage = nextTierPoints > 0 ? ((rewardPoints % 500) / 500) * 100 : 100;
 
@@ -164,6 +179,13 @@ const AuthButtons = () => {
                 <Link to="/profile" className="flex items-center w-full">
                   <UserCircle className="w-4 h-4" />
                   <span className="ml-3">My Profile</span>
+                </Link>
+              </DropdownMenuItem>
+              
+              <DropdownMenuItem asChild className="flex items-center space-x-3 px-3 py-2 cursor-pointer rounded-md">
+                <Link to="/rewards" className="flex items-center w-full">
+                  <Trophy className="w-4 h-4" />
+                  <span className="ml-3">Rewards</span>
                 </Link>
               </DropdownMenuItem>
             

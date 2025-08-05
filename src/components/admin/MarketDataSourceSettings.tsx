@@ -164,6 +164,8 @@ export default function MarketDataSourceSettings({ onDataSourceChange }: MarketD
         return 'Financial Modeling Prep';
       case 'yahoo_finance':
         return 'Yahoo Finance';
+      case 'gse_official':
+        return 'GSE Official API';
       case 'manual':
         return 'Manual Entry';
       default:
@@ -177,6 +179,8 @@ export default function MarketDataSourceSettings({ onDataSourceChange }: MarketD
         return 'Professional financial data with real-time updates and comprehensive market coverage';
       case 'yahoo_finance':
         return 'Free financial data service with good coverage of major markets and currencies';
+      case 'gse_official':
+        return 'Official Ghana Stock Exchange data with real-time quotes and comprehensive market coverage';
       case 'manual':
         return 'Manual data entry by admin users with full control over all market data';
       default:
@@ -245,6 +249,12 @@ export default function MarketDataSourceSettings({ onDataSourceChange }: MarketD
                 <div className="flex items-center gap-2">
                   <TrendingUp className="h-4 w-4" />
                   Yahoo Finance
+                </div>
+              </SelectItem>
+              <SelectItem value="gse_official">
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4" />
+                  GSE Official API
                 </div>
               </SelectItem>
             </SelectContent>

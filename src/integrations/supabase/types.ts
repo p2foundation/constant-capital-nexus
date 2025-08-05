@@ -485,6 +485,114 @@ export type Database = {
         }
         Relationships: []
       }
+      reward_achievements: {
+        Row: {
+          achievement_code: string
+          achievement_name: string
+          achievement_type: Database["public"]["Enums"]["achievement_type"]
+          description: string | null
+          icon_name: string | null
+          id: string
+          points_awarded: number
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          achievement_code: string
+          achievement_name: string
+          achievement_type: Database["public"]["Enums"]["achievement_type"]
+          description?: string | null
+          icon_name?: string | null
+          id?: string
+          points_awarded?: number
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          achievement_code?: string
+          achievement_name?: string
+          achievement_type?: Database["public"]["Enums"]["achievement_type"]
+          description?: string | null
+          icon_name?: string | null
+          id?: string
+          points_awarded?: number
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reward_redemptions: {
+        Row: {
+          expires_at: string | null
+          fulfilled_at: string | null
+          id: string
+          points_cost: number
+          redeemed_at: string
+          redemption_details: Json | null
+          reward_category: Database["public"]["Enums"]["reward_category"]
+          reward_name: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          expires_at?: string | null
+          fulfilled_at?: string | null
+          id?: string
+          points_cost: number
+          redeemed_at?: string
+          redemption_details?: Json | null
+          reward_category: Database["public"]["Enums"]["reward_category"]
+          reward_name: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          expires_at?: string | null
+          fulfilled_at?: string | null
+          id?: string
+          points_cost?: number
+          redeemed_at?: string
+          redemption_details?: Json | null
+          reward_category?: Database["public"]["Enums"]["reward_category"]
+          reward_name?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reward_transactions: {
+        Row: {
+          activity_details: Json | null
+          activity_type: string
+          created_at: string
+          id: string
+          points: number
+          reference_id: string | null
+          transaction_type: Database["public"]["Enums"]["reward_transaction_type"]
+          user_id: string
+        }
+        Insert: {
+          activity_details?: Json | null
+          activity_type: string
+          created_at?: string
+          id?: string
+          points: number
+          reference_id?: string | null
+          transaction_type: Database["public"]["Enums"]["reward_transaction_type"]
+          user_id: string
+        }
+        Update: {
+          activity_details?: Json | null
+          activity_type?: string
+          created_at?: string
+          id?: string
+          points?: number
+          reference_id?: string | null
+          transaction_type?: Database["public"]["Enums"]["reward_transaction_type"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       settings: {
         Row: {
           key: string
@@ -641,6 +749,45 @@ export type Database = {
         }
         Relationships: []
       }
+      user_rewards: {
+        Row: {
+          available_points: number
+          created_at: string
+          id: string
+          last_activity_date: string | null
+          redeemed_points: number
+          streak_days: number
+          tier_level: string
+          total_points: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          available_points?: number
+          created_at?: string
+          id?: string
+          last_activity_date?: string | null
+          redeemed_points?: number
+          streak_days?: number
+          tier_level?: string
+          total_points?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          available_points?: number
+          created_at?: string
+          id?: string
+          last_activity_date?: string | null
+          redeemed_points?: number
+          streak_days?: number
+          tier_level?: string
+          total_points?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -654,6 +801,15 @@ export type Database = {
         Args:
           | { target_user_id: string }
           | { target_user_id: string; confirmed_by_user_id: string }
+        Returns: boolean
+      }
+      award_points: {
+        Args: {
+          target_user_id: string
+          points_amount: number
+          activity_type_param: string
+          activity_details_param?: Json
+        }
         Returns: boolean
       }
       can_approve_content: {
@@ -715,14 +871,55 @@ export type Database = {
           manual_confirmation_date: string
         }[]
       }
+      redeem_points: {
+        Args: {
+          target_user_id: string
+          points_cost: number
+          reward_name_param: string
+          reward_category_param: Database["public"]["Enums"]["reward_category"]
+          redemption_details_param?: Json
+        }
+        Returns: boolean
+      }
+      unlock_achievement: {
+        Args: {
+          target_user_id: string
+          achievement_code_param: string
+          achievement_name_param: string
+          achievement_type_param: Database["public"]["Enums"]["achievement_type"]
+          description_param: string
+          points_awarded_param?: number
+          icon_name_param?: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
+      achievement_type:
+        | "onboarding"
+        | "engagement"
+        | "milestone"
+        | "social"
+        | "learning"
+        | "loyalty"
       application_status:
         | "draft"
         | "submitted"
         | "under_review"
         | "approved"
         | "rejected"
+      reward_category:
+        | "digital"
+        | "physical"
+        | "experience"
+        | "investment"
+        | "consultation"
+      reward_transaction_type:
+        | "earned"
+        | "redeemed"
+        | "expired"
+        | "bonus"
+        | "referral"
       user_role:
         | "Admin"
         | "Developer"
@@ -857,12 +1054,34 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      achievement_type: [
+        "onboarding",
+        "engagement",
+        "milestone",
+        "social",
+        "learning",
+        "loyalty",
+      ],
       application_status: [
         "draft",
         "submitted",
         "under_review",
         "approved",
         "rejected",
+      ],
+      reward_category: [
+        "digital",
+        "physical",
+        "experience",
+        "investment",
+        "consultation",
+      ],
+      reward_transaction_type: [
+        "earned",
+        "redeemed",
+        "expired",
+        "bonus",
+        "referral",
       ],
       user_role: [
         "Admin",

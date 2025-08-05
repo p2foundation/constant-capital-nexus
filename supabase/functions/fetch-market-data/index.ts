@@ -4,6 +4,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 import { MarketDataRecord } from './types.ts';
 import { fetchFromFinancialModelingPrep } from './financial-modeling-prep.ts';
 import { fetchFromYahooFinance } from './yahoo-finance.ts';
+import { fetchFromGSEOfficial } from './gse-official.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -40,6 +41,8 @@ serve(async (req) => {
       marketData = await fetchFromFinancialModelingPrep();
     } else if (dataSource === 'yahoo_finance') {
       marketData = await fetchFromYahooFinance();
+    } else if (dataSource === 'gse_official') {
+      marketData = await fetchFromGSEOfficial();
     }
 
     if (marketData.length > 0) {
