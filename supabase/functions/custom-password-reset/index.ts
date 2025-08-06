@@ -12,6 +12,9 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
+// Get the correct domain from environment or use the verified domain
+const SITE_URL = Deno.env.get('SITE_URL') || 'https://market.constantcap.com.gh';
+
 interface PasswordResetRequest {
   email: string;
 }
@@ -36,13 +39,14 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     console.log("Processing password reset request for:", email);
+    console.log("Using redirect URL:", `${SITE_URL}/auth/reset-password`);
 
     // Generate a password reset link using Supabase Admin API
     const { data, error } = await supabase.auth.admin.generateLink({
       type: 'recovery',
       email: email,
       options: {
-        redirectTo: `${Deno.env.get("SITE_URL") || "https://constantcap.com.gh"}/auth/reset-password`
+        redirectTo: `${SITE_URL}/auth/reset-password`
       }
     });
 

@@ -10,6 +10,9 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
+// Get the correct domain from environment or use the verified domain
+const SITE_URL = Deno.env.get('SITE_URL') || 'https://market.constantcap.com.gh';
+
 interface AuthEmailRequest {
   email: string;
   confirmationUrl: string;
@@ -68,31 +71,46 @@ const handler = async (req: Request): Promise<Response> => {
 
     const content = getEmailContent(type, firstName);
 
-    // Get the proper domain based on environment
-    const siteUrl = Deno.env.get("SITE_URL") || "https://constantcap.com.gh";
+    // Use the verified domain consistently
+    const siteUrl = SITE_URL;
     
-    // Process the confirmation URL based on type
+    // Process the confirmation URL based on type and ensure correct domain
     let finalConfirmationUrl = confirmationUrl;
+    
+    // Ensure URL uses the correct domain
+    if (finalConfirmationUrl && !finalConfirmationUrl.startsWith(siteUrl)) {
+      try {
+        const urlObj = new URL(finalConfirmationUrl);
+        finalConfirmationUrl = `${siteUrl}${urlObj.pathname}${urlObj.search}${urlObj.hash}`;
+      } catch (urlError) {
+        console.warn('Invalid URL provided, using site URL as fallback:', urlError);
+        finalConfirmationUrl = siteUrl;
+      }
+    }
     
     if (type === 'recovery') {
       // For password reset, preserve the original URL structure
       // The confirmation URL from Supabase contains proper auth tokens
-      finalConfirmationUrl = confirmationUrl;
+      // Ensure it points to the correct reset password page
+      if (finalConfirmationUrl.includes('/auth/confirm')) {
+        finalConfirmationUrl = finalConfirmationUrl.replace('/auth/confirm', '/auth/reset-password');
+      }
       
-      // Log for debugging
       console.log('Password reset URL processing:', {
         originalUrl: confirmationUrl,
         finalUrl: finalConfirmationUrl
       });
     } else if (type === 'signup') {
       // For signup, ensure we use the proper confirmation URL
-      // The URL should point to our email confirm page
-      const baseUrl = confirmationUrl.includes('/email-confirm') ? 
-        confirmationUrl : `${siteUrl}/email-confirm`;
-      finalConfirmationUrl = baseUrl;
+      // Replace /auth/confirm with /email-confirm for better UX
+      if (finalConfirmationUrl.includes('/auth/confirm')) {
+        finalConfirmationUrl = finalConfirmationUrl.replace('/auth/confirm', '/email-confirm');
+      }
     } else {
-      // For email change, create a general confirmation URL
-      finalConfirmationUrl = `${siteUrl}/auth/confirm`;
+      // For email change, use the general confirmation URL
+      if (!finalConfirmationUrl.includes('/auth/confirm')) {
+        finalConfirmationUrl = `${siteUrl}/auth/confirm`;
+      }
     }
 
     console.log('=== EMAIL DEBUG INFO ===');
