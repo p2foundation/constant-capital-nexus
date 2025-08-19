@@ -3,7 +3,7 @@ project_id = "estbtjkwlgefncxmxzta"
 
 [auth]
 enable_signup = true
-enable_confirmations = true
+enable_confirmations = false
 enable_recoveries = true
 enable_email_change_confirmations = true
 disable_signup = false
@@ -12,12 +12,15 @@ enable_anonymous_sign_ins = false
 [auth.email]
 enable_signup = true
 double_confirm_changes = true
-enable_confirmations = true
+enable_confirmations = false
 template = {}
 
 [auth.sms]
 enable_signup = false
 enable_confirmations = false
+
+[functions.generate-auth-url]
+verify_jwt = false
 
 [functions.custom-password-reset]
 verify_jwt = false
@@ -26,4 +29,13 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.send-custom-auth-email]
+verify_jwt = false
+
+[functions.send-manual-confirmation-email]
+verify_jwt = false
+
+[functions.admin-confirm-user]
+verify_jwt = false
+
+[functions.submit-lead]
 verify_jwt = false

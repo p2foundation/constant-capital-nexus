@@ -35,7 +35,7 @@ interface User {
   last_name: string;
   role: 'Admin' | 'Developer' | 'Analyst' | 'Customer' | 'User' | 'Client';
   company: string;
-  job_position: string;
+  position: string; // Use position to match database column
   phone: string;
   industry: string;
   created_at: string;
@@ -132,7 +132,7 @@ const UserManagement = () => {
       // Type assertion and fix data mapping
       const typedUsers = (data || []).map((user: any) => ({
         ...user,
-        job_position: user.job_position || user.position || '', // Handle both column names
+        position: user.position || '', // Use position directly from database
         role: user.role as 'Admin' | 'Developer' | 'Analyst' | 'Customer' | 'User' | 'Client'
       }));
 
@@ -353,6 +353,7 @@ const UserManagement = () => {
         return;
       }
 
+      // First confirm the user
       const response = await supabase.functions.invoke('admin-confirm-user', {
         body: { userId },
       });
@@ -361,7 +362,37 @@ const UserManagement = () => {
         throw new Error(response.error.message || 'Failed to manually confirm user');
       }
 
-      toast.success("User has been manually confirmed");
+      // Get user details for email notification
+      const user = users.find(u => u.id === userId);
+      if (user && user.email && user.first_name) {
+        // Get admin name from current session
+        const { data: adminProfile } = await supabase
+          .from('profiles')
+          .select('first_name, last_name')
+          .eq('id', session.user.id)
+          .single();
+
+        const adminName = adminProfile 
+          ? `${adminProfile.first_name} ${adminProfile.last_name}`.trim()
+          : 'Admin';
+
+        // Send confirmation email
+        try {
+          await supabase.functions.invoke('send-manual-confirmation-email', {
+            body: {
+              userEmail: user.email,
+              userName: user.first_name,
+              adminName: adminName
+            },
+          });
+          console.log('Manual confirmation email sent successfully');
+        } catch (emailError) {
+          console.error('Failed to send confirmation email:', emailError);
+          // Don't fail the confirmation if email fails
+        }
+      }
+
+      toast.success("User has been manually confirmed and notified via email");
       fetchUsers();
     } catch (error) {
       console.error('Error manually confirming user:', error);

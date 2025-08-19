@@ -10,8 +10,8 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-// Get the correct domain from environment or use the verified domain
-const SITE_URL = Deno.env.get('SITE_URL') || 'https://market.constantcap.com.gh';
+// Get the correct domain from environment or use the verified domain  
+const SITE_URL = Deno.env.get('SITE_URL') || 'https://constantcap.com.gh';
 
 interface AuthEmailRequest {
   email: string;
@@ -36,8 +36,8 @@ const handler = async (req: Request): Promise<Response> => {
       switch (type) {
         case 'signup':
           return {
-            subject: 'Welcome to Constant Capital - Confirm Your Account',
-            heading: `Welcome to Constant Capital${name}!`,
+            subject: 'Welcome to Constant Capital Ghana - Confirm Your Account',
+            heading: `Welcome to Constant Capital Ghana${name}!`,
             message: 'Thank you for joining Ghana\'s premier investment research and advisory firm. To complete your registration and access our exclusive market insights, please confirm your email address by clicking the button below.',
             buttonText: 'Confirm Your Email',
             footerMessage: 'Once confirmed, you\'ll have access to our comprehensive market research, investment advisory services, and real-time financial data. This link will expire in 24 hours for security reasons.'
@@ -71,54 +71,16 @@ const handler = async (req: Request): Promise<Response> => {
 
     const content = getEmailContent(type, firstName);
 
-    // Use the verified domain consistently
-    const siteUrl = SITE_URL;
-    
-    // Process the confirmation URL based on type and ensure correct domain
-    let finalConfirmationUrl = confirmationUrl;
-    
-    // Ensure URL uses the correct domain
-    if (finalConfirmationUrl && !finalConfirmationUrl.startsWith(siteUrl)) {
-      try {
-        const urlObj = new URL(finalConfirmationUrl);
-        finalConfirmationUrl = `${siteUrl}${urlObj.pathname}${urlObj.search}${urlObj.hash}`;
-      } catch (urlError) {
-        console.warn('Invalid URL provided, using site URL as fallback:', urlError);
-        finalConfirmationUrl = siteUrl;
-      }
-    }
-    
-    if (type === 'recovery') {
-      // For password reset, preserve the original URL structure
-      // The confirmation URL from Supabase contains proper auth tokens
-      // Ensure it points to the correct reset password page
-      if (finalConfirmationUrl.includes('/auth/confirm')) {
-        finalConfirmationUrl = finalConfirmationUrl.replace('/auth/confirm', '/auth/reset-password');
-      }
-      
-      console.log('Password reset URL processing:', {
-        originalUrl: confirmationUrl,
-        finalUrl: finalConfirmationUrl
-      });
-    } else if (type === 'signup') {
-      // For signup, ensure we use the proper confirmation URL
-      // Replace /auth/confirm with /email-confirm for better UX
-      if (finalConfirmationUrl.includes('/auth/confirm')) {
-        finalConfirmationUrl = finalConfirmationUrl.replace('/auth/confirm', '/email-confirm');
-      }
-    } else {
-      // For email change, use the general confirmation URL
-      if (!finalConfirmationUrl.includes('/auth/confirm')) {
-        finalConfirmationUrl = `${siteUrl}/auth/confirm`;
-      }
-    }
+    // Use the confirmation URL as-is since it should already have the correct domain
+    // from the generate-auth-url function
+    const finalConfirmationUrl = confirmationUrl;
 
     console.log('=== EMAIL DEBUG INFO ===');
     console.log('Email type:', type);
     console.log('Recipient:', email);
     console.log('Original URL:', confirmationUrl);
     console.log('Final URL:', finalConfirmationUrl);
-    console.log('Site URL from env:', siteUrl);
+    console.log('Site URL from env:', SITE_URL);
     console.log('========================');
 
     const htmlContent = `

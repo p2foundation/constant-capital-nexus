@@ -77,9 +77,9 @@ const MarketSummaryCard = ({ isLoading, marketSummaryData }: MarketSummaryCardPr
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <div className="absolute bottom-0 left-0 right-0 flex justify-center pb-4">
-              <CarouselPrevious className="relative translate-y-0 left-0 mr-2 dark:bg-cc-navy/70 dark:text-white dark:border-cc-gold/30 dark:hover:bg-cc-gold/20" />
-              <CarouselNext className="relative translate-y-0 right-0 dark:bg-cc-navy/70 dark:text-white dark:border-cc-gold/30 dark:hover:bg-cc-gold/20" />
+            <div className="absolute top-4 right-4 flex gap-2 sm:bottom-4 sm:left-1/2 sm:-translate-x-1/2 sm:right-auto sm:top-auto">
+              <CarouselPrevious className="relative translate-y-0 left-0 h-8 w-8 sm:h-10 sm:w-10 dark:bg-cc-navy/70 dark:text-white dark:border-cc-gold/30 dark:hover:bg-cc-gold/20" />
+              <CarouselNext className="relative translate-y-0 right-0 h-8 w-8 sm:h-10 sm:w-10 dark:bg-cc-navy/70 dark:text-white dark:border-cc-gold/30 dark:hover:bg-cc-gold/20" />
             </div>
           </Carousel>
         )}

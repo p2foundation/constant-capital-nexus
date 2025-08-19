@@ -99,24 +99,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('id', userId as any)
-        .single();
+        .eq('id', userId)
+        .maybeSingle();
 
       if (error) {
-        if (error.code === 'PGRST116' && retries > 0) {
-          // Profile doesn't exist yet, retry after a short delay
-          console.log('Profile not found, retrying...', retries);
+        console.error('Error fetching profile:', error);
+        if (retries > 0) {
+          console.log('Profile fetch error, retrying...', retries);
           setTimeout(() => {
             fetchProfile(userId, retries - 1);
           }, 1000);
-          return;
         }
-        console.error('Error fetching profile:', error);
         return;
       }
 
-      // Use type assertion to convert the data to Profile type
-      setProfile(data as unknown as Profile);
+      if (!data) {
+        // Profile doesn't exist, create a basic one
+        console.log('Profile not found, creating basic profile for user:', userId);
+        const { data: newProfile, error: createError } = await supabase
+          .from('profiles')
+          .insert({
+            id: userId,
+            role: 'User'
+          })
+          .select()
+          .single();
+
+        if (createError) {
+          console.error('Error creating profile:', createError);
+          if (retries > 0) {
+            setTimeout(() => {
+              fetchProfile(userId, retries - 1);
+            }, 1000);
+          }
+          return;
+        }
+
+        setProfile(newProfile as Profile);
+        return;
+      }
+
+      // Set the profile data
+      setProfile(data as Profile);
+      console.log('Profile loaded successfully:', data);
     } catch (error) {
       console.error('Profile fetch error:', error);
       if (retries > 0) {
@@ -230,62 +255,62 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { success: false, error: errorMessage };
       }
 
-      // Create auth user with custom email confirmation
-      const { data, error } = await supabase.auth.signUp({ 
-        email, 
+      // Sign up without emailRedirectTo to prevent Supabase's automatic email
+      const { data, error } = await supabase.auth.signUp({
+        email,
         password,
         options: {
           data: {
             first_name: profileData.first_name,
-            last_name: profileData.last_name
-          },
-          emailRedirectTo: `${window.location.origin}/auth/confirm`
+            last_name: profileData.last_name,
+            phone: profileData.phone,
+            company: profileData.company,
+            position: profileData.position,
+            industry: profileData.industry,
+            role: 'User'
+          }
         }
       });
       
-      // Send custom branded confirmation email
+      // Send custom branded confirmation email with proper tokens
       if (data.user && !data.session) {
         try {
-          // Send our custom branded email immediately
+          // Generate confirmation URL using our generate-auth-url edge function
+          const { data: urlData, error: urlError } = await supabase.functions.invoke('generate-auth-url', {
+            body: {
+              userId: data.user.id,
+              email: email,
+              type: 'signup',
+              redirectTo: `${window.location.origin}/email-confirm`
+            }
+          });
+          
+          if (urlError) {
+            console.error('Error generating auth URL:', urlError);
+            throw new Error('Failed to generate confirmation link');
+          }
+          
+          // Send our custom branded email with the real confirmation URL
           const { error: customEmailError } = await supabase.functions.invoke('send-custom-auth-email', {
             body: {
               email,
-              confirmationUrl: `${window.location.origin}/email-confirm`,
+              confirmationUrl: urlData.confirmationUrl,
               type: 'signup',
               firstName: profileData.first_name,
-              lastName: profileData.last_name,
-              // Include user ID for better tracking
-              userId: data.user.id
+              lastName: profileData.last_name
             }
           });
           
           if (customEmailError) {
             console.error('Custom email error:', customEmailError);
-            // Fall back to default Supabase email if custom fails
-            await supabase.auth.resend({
-              type: 'signup',
-              email: email,
-              options: {
-                emailRedirectTo: `${window.location.origin}/email-confirm`
-              }
-            });
+            throw new Error('Failed to send confirmation email');
           }
           
-          console.log('Signup email sent successfully');
+          console.log('Custom signup email sent successfully');
         } catch (emailError) {
-          console.error('Error sending signup email:', emailError);
-          // Try to resend using default Supabase method as fallback
-          try {
-            await supabase.auth.resend({
-              type: 'signup',
-              email: email,
-              options: {
-                emailRedirectTo: `${window.location.origin}/email-confirm`
-              }
-            });
-          } catch (resendError) {
-            console.error('Fallback email also failed:', resendError);
-          }
+          console.error('Error in confirmation email process:', emailError);
+          // Don't fail the signup, but notify the user
+          toast.error('Account created but confirmation email failed. Please contact support.');
         }
 
         return {
@@ -331,7 +356,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const { error: profileError } = await supabase
               .from('profiles')
               .update(profileDataToUpdate)
-              .eq('id', data.user.id as any);
+              .eq('id', data.user.id);
               
             if (profileError) {
               console.error('Error updating profile:', profileError);
@@ -424,7 +449,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { error } = await supabase
         .from('profiles')
         .update(cleanData)
-        .eq('id', user.id as any);
+        .eq('id', user.id);
         
       if (error) {
         console.error('Profile update error:', error);

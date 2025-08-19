@@ -22,9 +22,10 @@ interface User {
   last_name: string;
   role: 'Admin' | 'Developer' | 'Analyst' | 'Customer' | 'User' | 'Client';
   company: string;
-  job_position: string;
+  position: string; // Use position to match database column
   phone: string;
   industry: string;
+  bio?: string;
   created_at: string;
   last_sign_in_at: string;
   is_active: boolean;
@@ -63,10 +64,10 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({
         first_name: user.first_name || '',
         last_name: user.last_name || '',
         company: user.company || '',
-        position: user.job_position || '', // Map job_position to position
+        position: user.position || '',
         phone: user.phone || '',
         industry: user.industry || '',
-        bio: '',
+        bio: user.bio || '',
         role: user.role || 'User'
       });
     }
@@ -119,92 +120,98 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Edit User</DialogTitle>
-          <DialogDescription>
+      <DialogContent className="w-[95vw] max-w-[500px] sm:max-w-[600px] max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+        <DialogHeader className="space-y-2">
+          <DialogTitle className="text-lg sm:text-xl">Edit User</DialogTitle>
+          <DialogDescription className="text-sm text-muted-foreground">
             Update user information and permissions.
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="first_name">First Name</Label>
+              <Label htmlFor="first_name" className="text-sm font-medium">First Name</Label>
               <Input
                 id="first_name"
                 value={formData.first_name}
                 onChange={(e) => handleInputChange('first_name', e.target.value)}
                 placeholder="Enter first name"
+                className="h-10"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="last_name">Last Name</Label>
+              <Label htmlFor="last_name" className="text-sm font-medium">Last Name</Label>
               <Input
                 id="last_name"
                 value={formData.last_name}
                 onChange={(e) => handleInputChange('last_name', e.target.value)}
                 placeholder="Enter last name"
+                className="h-10"
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email (Read Only)</Label>
+            <Label htmlFor="email" className="text-sm font-medium">Email (Read Only)</Label>
             <Input
               id="email"
               value={user?.email || ''}
               disabled
-              className="bg-gray-100"
+              className="h-10 bg-muted text-muted-foreground"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="company">Company</Label>
+              <Label htmlFor="company" className="text-sm font-medium">Company</Label>
               <Input
                 id="company"
                 value={formData.company}
                 onChange={(e) => handleInputChange('company', e.target.value)}
                 placeholder="Enter company name"
+                className="h-10"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="position">Position</Label>
+              <Label htmlFor="position" className="text-sm font-medium">Position</Label>
               <Input
                 id="position"
                 value={formData.position}
                 onChange={(e) => handleInputChange('position', e.target.value)}
                 placeholder="Enter job position"
+                className="h-10"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone</Label>
+              <Label htmlFor="phone" className="text-sm font-medium">Phone</Label>
               <Input
                 id="phone"
                 value={formData.phone}
                 onChange={(e) => handleInputChange('phone', e.target.value)}
                 placeholder="Enter phone number"
+                className="h-10"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="industry">Industry</Label>
+              <Label htmlFor="industry" className="text-sm font-medium">Industry</Label>
               <Input
                 id="industry"
                 value={formData.industry}
                 onChange={(e) => handleInputChange('industry', e.target.value)}
                 placeholder="Enter industry"
+                className="h-10"
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="role">Role</Label>
+            <Label htmlFor="role" className="text-sm font-medium">Role</Label>
             <Select value={formData.role} onValueChange={(value) => handleInputChange('role', value)}>
-              <SelectTrigger>
+              <SelectTrigger className="h-10">
                 <SelectValue placeholder="Select role" />
               </SelectTrigger>
               <SelectContent>
@@ -219,26 +226,32 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="bio">Bio</Label>
+            <Label htmlFor="bio" className="text-sm font-medium">Bio</Label>
             <Textarea
               id="bio"
               value={formData.bio}
               onChange={(e) => handleInputChange('bio', e.target.value)}
               placeholder="Enter user bio"
               rows={3}
+              className="resize-none"
             />
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0 pt-4">
             <Button 
               type="button" 
               variant="outline" 
               onClick={() => onOpenChange(false)}
               disabled={isLoading}
+              className="w-full sm:w-auto order-2 sm:order-1"
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading}>
+            <Button 
+              type="submit" 
+              disabled={isLoading}
+              className="w-full sm:w-auto order-1 sm:order-2"
+            >
               {isLoading ? 'Updating...' : 'Update User'}
             </Button>
           </DialogFooter>

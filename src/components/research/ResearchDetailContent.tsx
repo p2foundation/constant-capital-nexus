@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { Lock } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { canAccessPremiumContent } from '@/utils/premiumAccess';
+import { formatResearchContent, formatPreviewText } from '@/utils/contentFormatter';
 
 interface ResearchDetailContentProps {
   preview: string;
@@ -17,14 +18,17 @@ const ResearchDetailContent = ({ preview, content, isPremium = false }: Research
   const hasAccess = canAccessPremiumContent(profile);
 
   return (
-    <div className="space-y-4">
-      <div className="text-gray-600 dark:text-gray-300 font-medium italic border-l-4 border-cc-navy dark:border-cc-gold pl-4 py-2 bg-gray-50 dark:bg-gray-800/50">
-        {preview}
+    <div className="space-y-6">
+      <div className="text-gray-600 dark:text-gray-300 font-medium italic border-l-4 border-cc-navy dark:border-cc-gold pl-4 py-3 bg-gray-50 dark:bg-gray-800/50 rounded-r-lg">
+        <div dangerouslySetInnerHTML={{ __html: formatPreviewText(preview) }} />
       </div>
       
       <div className="prose dark:prose-invert max-w-none">
         {content && (!isPremium || hasAccess) ? (
-          <div dangerouslySetInnerHTML={{ __html: content }} />
+          <div 
+            className="research-content"
+            dangerouslySetInnerHTML={{ __html: formatResearchContent(content) }} 
+          />
         ) : isPremium && !hasAccess ? (
           <div className="space-y-4">
             <div className="p-4 border border-orange-200 rounded-lg bg-orange-50 dark:bg-orange-900/20 dark:border-orange-800">

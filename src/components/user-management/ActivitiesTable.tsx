@@ -12,7 +12,7 @@ interface User {
   last_name: string;
   role: 'Admin' | 'Developer' | 'Analyst' | 'Customer' | 'User' | 'Client';
   company: string;
-  job_position: string;
+  position: string; // Use position to match database column
   phone: string;
   industry: string;
   created_at: string;

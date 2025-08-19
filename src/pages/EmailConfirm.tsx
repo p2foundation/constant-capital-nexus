@@ -43,13 +43,26 @@ const EmailConfirm = () => {
           return;
         }
 
-        // Verify the email confirmation
+        // Verify the email confirmation  
         console.log('Attempting verification with:', { token_hash: finalToken, type });
         
-        const { data, error } = await supabase.auth.verifyOtp({
-          token_hash: finalToken,
-          type: type as any,
-        });
+        let verificationResult;
+        if (tokenHash) {
+          // Use verifyOtp for token_hash (new method)
+          verificationResult = await supabase.auth.verifyOtp({
+            token_hash: finalToken,
+            type: type as any,
+          });
+        } else {
+          // Use verifyOtp for regular tokens (legacy support)
+          verificationResult = await supabase.auth.verifyOtp({
+            token: finalToken,
+            type: type as any,
+            email: searchParams.get('email') || undefined
+          });
+        }
+        
+        const { data, error } = verificationResult;
 
         console.log('Verification result:', { data, error });
 
@@ -76,7 +89,7 @@ const EmailConfirm = () => {
           
           // Redirect after a short delay
           setTimeout(() => {
-            navigate(redirectTo || '/login');
+            navigate('/');
           }, 3000);
         } else {
           setError('Confirmation completed but user data is missing. Please try signing in.');
@@ -103,28 +116,31 @@ const EmailConfirm = () => {
         return;
       }
 
-      // Try custom email first
+      // Generate new confirmation URL and send via custom email
+      const { data: urlData, error: urlError } = await supabase.functions.invoke('generate-auth-url', {
+        body: {
+          userId: '', // We don't have userId for resend, but email is sufficient
+          email: email,
+          type: 'signup',
+          redirectTo: `${window.location.origin}/email-confirm`
+        }
+      });
+      
+      if (urlError) {
+        throw new Error('Failed to generate new confirmation link');
+      }
+      
+      // Send custom branded email
       const { error: customEmailError } = await supabase.functions.invoke('send-custom-auth-email', {
         body: {
           email,
-          confirmationUrl: `${window.location.origin}/email-confirm`,
+          confirmationUrl: urlData.confirmationUrl,
           type: 'signup'
         }
       });
 
       if (customEmailError) {
-        // Fall back to Supabase resend
-        const { error: resendError } = await supabase.auth.resend({
-          type: 'signup',
-          email: email,
-          options: {
-            emailRedirectTo: `${window.location.origin}/email-confirm`
-          }
-        });
-
-        if (resendError) {
-          throw resendError;
-        }
+        throw customEmailError;
       }
 
       toast.success('New confirmation email sent! Please check your inbox.');
@@ -207,11 +223,10 @@ const EmailConfirm = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Alert className="border-amber-200 bg-amber-50 dark:bg-amber-900/20 dark:border-amber-800">
-            <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-            <AlertDescription className="text-amber-800 dark:text-amber-200">
-              <strong>Email confirmation is currently experiencing issues.</strong> This is a known problem
-              we're working to resolve. You can try the options below.
+          <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800">
+            <AlertTriangle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+            <AlertDescription className="text-blue-800 dark:text-blue-200">
+              The confirmation link appears to be invalid or has expired. Please request a new confirmation email.
             </AlertDescription>
           </Alert>
           

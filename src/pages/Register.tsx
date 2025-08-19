@@ -29,14 +29,14 @@ const Register = () => {
         </div>
       </div>
       
-      <div className="flex-1 flex items-center justify-center bg-cc-gray py-12 px-4 pt-28 dark:bg-cc-navy/50">
+      <div className="flex-1 flex items-center justify-center py-12 px-4 pt-28">
         {state?.showEmailConfirmation && state?.userEmail ? (
           <EmailConfirmationAlert 
             email={state.userEmail}
             onDismiss={() => window.location.href = '/login'}
           />
         ) : (
-          <div className="bg-white w-full max-w-2xl rounded-lg shadow-md p-8 border border-gray-100 dark:bg-cc-navy dark:border-gray-800">
+          <div className="w-full">
             <RegisterForm />
           </div>
         )}

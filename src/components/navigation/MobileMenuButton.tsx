@@ -14,7 +14,7 @@ const MobileMenuButton = ({ isMenuOpen, toggleMenu }: MobileMenuButtonProps) => 
       <ThemeToggler />
       <button
         onClick={toggleMenu}
-        className="inline-flex items-center justify-center p-2 rounded-md text-cc-navy hover:text-cc-blue focus:outline-none dark:text-white dark:hover:text-cc-gold"
+        className="inline-flex items-center justify-center p-3 rounded-lg text-cc-navy hover:text-cc-blue focus:outline-none dark:text-white dark:hover:text-cc-gold transition-colors min-h-[44px] min-w-[44px]"
       >
         {isMenuOpen ? (
           <X className="h-6 w-6" />

@@ -28,9 +28,9 @@ const Hero = () => {
   return (
     <section className="relative bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 min-h-screen flex items-center">
       <div className="absolute inset-0 bg-pattern opacity-10"></div>
-      <div className="relative z-10 w-full pt-24 pb-20 sm:pt-32 sm:pb-24 lg:pb-32">
+      <div className="relative z-10 w-full pt-20 pb-16 sm:pt-24 sm:pb-20 lg:pt-32 lg:pb-32">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <HeroContent />
             <MarketSummaryCard 
               isLoading={isLoading} 

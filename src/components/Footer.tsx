@@ -6,8 +6,8 @@ import { Facebook } from "lucide-react";
 const Footer = () => {
   return (
     <footer className="bg-cc-navy text-white">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-8">
           <div>
             <div className="mb-6">
               {/* Use the orange logo for footer since it's always on dark background */}
@@ -180,30 +180,30 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <div className="text-sm text-gray-400 mb-4 md:mb-0">
+        <div className="border-t border-gray-800 mt-8 sm:mt-12 pt-6 sm:pt-8 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+          <div className="text-sm text-gray-400 text-center sm:text-left">
             &copy; {new Date().getFullYear()} Constant Capital (Ghana) Limited.
             All rights reserved.
           </div>
 
-          <div className="flex space-x-6 text-sm text-gray-400">
+          <div className="flex flex-wrap justify-center sm:justify-end gap-4 sm:gap-6 text-sm text-gray-400">
             <Link
               to="/terms-of-service"
               className="hover:text-white transition-colors"
             >
-              Terms of Service
+              Terms
             </Link>
             <Link
               to="/privacy-policy"
               className="hover:text-white transition-colors"
             >
-              Privacy Policy
+              Privacy
             </Link>
             <Link
               to="/cookie-policy"
               className="hover:text-white transition-colors"
             >
-              Cookie Policy
+              Cookies
             </Link>
           </div>
         </div>

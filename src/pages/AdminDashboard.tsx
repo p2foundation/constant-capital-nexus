@@ -9,6 +9,7 @@ import MarketDataManager from '@/components/admin/MarketDataManager';
 import MarketDataSourceSettings from '@/components/admin/MarketDataSourceSettings';
 import ContentManager from '@/components/admin/ContentManager';
 import ContactInbox from '@/components/admin/ContactInbox';
+import EmailTestingPanel from '@/components/auth/EmailTestingPanel';
 import { AdminProvider } from '@/contexts/AdminContext';
 import { FileText, ChartBar, Settings, Layout, Database, Calendar, TrendingUp, Mail } from 'lucide-react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
@@ -61,6 +62,10 @@ const AdminDashboard = () => {
               <TabsTrigger value="settings" className="flex items-center gap-2">
                 <Settings className="h-4 w-4" />
                 <span>Settings</span>
+              </TabsTrigger>
+              <TabsTrigger value="email-testing" className="flex items-center gap-2">
+                <Mail className="h-4 w-4" />
+                <span>Email Testing</span>
               </TabsTrigger>
             </TabsList>
             
@@ -146,6 +151,19 @@ const AdminDashboard = () => {
                     <Button variant="outline">API Connections</Button>
                     <Button variant="outline">Data Backup</Button>
                   </div>
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="email-testing" className="mt-0">
+              <div className="space-y-6">
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+                  <h2 className="text-xl font-medium mb-4">Email System Testing & Diagnostics</h2>
+                  <p className="text-gray-500 dark:text-gray-400 mb-6">
+                    Use this tool to test and troubleshoot email confirmation issues. This helps diagnose
+                    problems with user registration and email delivery.
+                  </p>
+                  <EmailTestingPanel />
                 </div>
               </div>
             </TabsContent>

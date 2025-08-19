@@ -29,7 +29,7 @@ const ServiceCard = ({
 }) => {
   return (
     <div className="bg-white dark:bg-cc-navy/60 h-full shadow-md rounded-sm overflow-hidden border border-transparent dark:border-cc-gold/20">
-      <div className="h-[300px] overflow-hidden relative">
+      <div className="h-[200px] sm:h-[250px] md:h-[300px] overflow-hidden relative">
         <img 
           src={imageUrl} 
           alt={title} 
@@ -46,14 +46,14 @@ const ServiceCard = ({
           </div>
         )}
       </div>
-      <div className="p-8">
-        <h3 className="text-xl font-bold mb-4 dark:text-white">{title}</h3>
-        <p className="text-gray-700 dark:text-gray-300 mb-6">
+      <div className="p-4 sm:p-6 lg:p-8">
+        <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 dark:text-white">{title}</h3>
+        <p className="text-gray-700 dark:text-gray-300 mb-4 sm:mb-6 text-sm sm:text-base leading-relaxed">
           {description}
         </p>
         <Link 
           to={link}
-          className="inline-flex items-center text-cc-navy dark:text-cc-gold hover:text-cc-gold dark:hover:text-white transition-colors"
+          className="inline-flex items-center text-cc-navy dark:text-cc-gold hover:text-cc-gold dark:hover:text-white transition-colors min-h-[44px]"
         >
           <ArrowRight className="h-5 w-5" />
         </Link>
@@ -112,11 +112,11 @@ const Services = () => {
   ];
 
   return (
-    <div className="py-16 bg-cc-gray dark:bg-cc-navy/90">
+    <div className="py-12 sm:py-16 bg-cc-gray dark:bg-cc-navy/90">
       <div className="container mx-auto px-4">
-        <div className="mb-16">
+        <div className="mb-12 sm:mb-16 text-center sm:text-left">
           <h2 className="text-sm font-medium uppercase tracking-wider text-cc-gold mb-2">WHAT WE DO</h2>
-          <h3 className="text-4xl sm:text-5xl font-bold text-cc-navy dark:text-white mb-6">Delivering for Our Clients</h3>
+          <h3 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-cc-navy dark:text-white mb-4 sm:mb-6">Delivering for Our Clients</h3>
         </div>
         
         <Carousel
@@ -126,9 +126,9 @@ const Services = () => {
           }}
           className="w-full"
         >
-          <CarouselContent className="-ml-4">
+          <CarouselContent className="-ml-2 sm:-ml-4">
             {services.map((service, index) => (
-              <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
+              <CarouselItem key={index} className="pl-2 sm:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
                 <ServiceCard
                   title={service.title}
                   description={service.description}
@@ -141,12 +141,12 @@ const Services = () => {
             ))}
           </CarouselContent>
           
-          <div className="flex items-center justify-center gap-4 mt-8">
-            <CarouselPrevious className="static transform-none flex h-10 w-10 items-center justify-center border border-cc-navy text-cc-navy dark:border-cc-gold dark:text-cc-gold hover:bg-cc-navy hover:text-white dark:hover:bg-cc-gold dark:hover:text-cc-navy">
-              <ArrowLeft className="h-6 w-6" />
+          <div className="flex items-center justify-center gap-3 mt-6 sm:mt-8">
+            <CarouselPrevious className="static transform-none flex h-12 w-12 sm:h-10 sm:w-10 items-center justify-center border border-cc-navy text-cc-navy dark:border-cc-gold dark:text-cc-gold hover:bg-cc-navy hover:text-white dark:hover:bg-cc-gold dark:hover:text-cc-navy transition-colors">
+              <ArrowLeft className="h-5 w-5 sm:h-6 sm:w-6" />
             </CarouselPrevious>
-            <CarouselNext className="static transform-none flex h-10 w-10 items-center justify-center border border-cc-navy text-cc-navy dark:border-cc-gold dark:text-cc-gold hover:bg-cc-navy hover:text-white dark:hover:bg-cc-gold dark:hover:text-cc-navy">
-              <ArrowRight className="h-6 w-6" />
+            <CarouselNext className="static transform-none flex h-12 w-12 sm:h-10 sm:w-10 items-center justify-center border border-cc-navy text-cc-navy dark:border-cc-gold dark:text-cc-gold hover:bg-cc-navy hover:text-white dark:hover:bg-cc-gold dark:hover:text-cc-navy transition-colors">
+              <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6" />
             </CarouselNext>
           </div>
         </Carousel>
