@@ -2,6 +2,7 @@
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { useAnalytics } from '@/hooks/useAnalytics';
 import HeroSection from '@/components/investment-research/HeroSection';
 import OverviewSection from '@/components/investment-research/OverviewSection';
 import ResearchCategoriesSection from '@/components/investment-research/ResearchCategoriesSection';
@@ -9,6 +10,8 @@ import ResearchApproachSection from '@/components/investment-research/ResearchAp
 import CTASection from '@/components/investment-research/CTASection';
 
 const InvestmentResearch = () => {
+  useAnalytics();
+  
   return (
     <div className="flex flex-col min-h-screen dark:bg-gray-950">
       <Navbar />

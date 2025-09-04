@@ -2,6 +2,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import Navbar from '@/components/Navbar';
+import { useAnalytics } from '@/hooks/useAnalytics';
 import Footer from '@/components/Footer';
 import HeroSection from '@/components/securities/HeroSection';
 import ServicesSection from '@/components/securities/ServicesSection';
@@ -9,6 +10,8 @@ import WhyChooseUsSection from '@/components/securities/WhyChooseUsSection';
 import TestimonialSection from '@/components/securities/TestimonialSection';
 
 const SecuritiesTrading = () => {
+  useAnalytics();
+  
   return (
     <div className="flex flex-col min-h-screen dark:bg-gray-950">
       <Helmet>

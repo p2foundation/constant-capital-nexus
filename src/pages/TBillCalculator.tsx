@@ -10,8 +10,11 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Separator } from '@/components/ui/separator';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 const TBillCalculator = () => {
+  useAnalytics();
+  
   const [faceValue, setFaceValue] = useState<string>('10000');
   const [interestRate, setInterestRate] = useState<string>('15');
   const [term, setTerm] = useState<string>('91');

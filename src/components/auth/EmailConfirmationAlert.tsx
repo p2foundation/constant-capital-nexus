@@ -38,7 +38,7 @@ const EmailConfirmationAlert: React.FC<EmailConfirmationAlertProps> = ({
       const { error: customEmailError } = await supabase.functions.invoke('send-custom-auth-email', {
         body: {
           email,
-          confirmationUrl: `${window.location.origin}/email-confirm`,
+          confirmationUrl: `https://constantcap.com.gh/email-confirm`,
           type: 'signup'
         }
       });
@@ -50,7 +50,7 @@ const EmailConfirmationAlert: React.FC<EmailConfirmationAlertProps> = ({
           type: 'signup',
           email: email,
           options: {
-            emailRedirectTo: `${window.location.origin}/email-confirm`
+            emailRedirectTo: `https://constantcap.com.gh/email-confirm`
           }
         });
 

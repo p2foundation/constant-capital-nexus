@@ -3,8 +3,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import LoginForm from '@/components/LoginForm';
 import { ArrowLeft } from 'lucide-react';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 const Login = () => {
+  useAnalytics();
+  
   return (
     <div className="min-h-screen flex flex-col dark:bg-cc-navy/95">
       <div className="bg-white/90 backdrop-blur-sm fixed w-full z-50 border-b border-gray-100 shadow-sm py-4 dark:bg-cc-navy/90 dark:border-gray-800">

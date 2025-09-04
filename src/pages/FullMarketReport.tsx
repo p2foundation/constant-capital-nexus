@@ -10,8 +10,11 @@ import MarketSummaryView from '@/components/market-report/MarketSummaryView';
 import ChartsView from '@/components/market-report/ChartsView';
 import ReportHeader from '@/components/market-report/ReportHeader';
 import { getReportDate } from '@/components/market-report/utils';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 const FullMarketReport: React.FC = () => {
+  useAnalytics();
+  
   const { marketData, latestData, isLoading, error } = useMarketData();
   const [selectedView, setSelectedView] = useState<'charts' | 'summary'>('charts');
 

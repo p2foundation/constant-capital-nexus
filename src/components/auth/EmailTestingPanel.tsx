@@ -34,7 +34,7 @@ const EmailTestingPanel = () => {
       const { data: customEmailResult, error: customEmailError } = await supabase.functions.invoke('send-custom-auth-email', {
         body: {
           email: testEmail,
-          confirmationUrl: `${window.location.origin}/email-confirm?test=true`,
+          confirmationUrl: `https://constantcap.com.gh/email-confirm?test=true`,
           type: 'signup',
           firstName: 'Test',
           lastName: 'User'
@@ -52,7 +52,7 @@ const EmailTestingPanel = () => {
           type: 'signup',
           email: testEmail,
           options: {
-            emailRedirectTo: `${window.location.origin}/email-confirm?test=true`
+            emailRedirectTo: `https://constantcap.com.gh/email-confirm?test=true`
           }
         });
 

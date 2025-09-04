@@ -1,12 +1,15 @@
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { useAnalytics } from '@/hooks/useAnalytics';
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Award, Building, Briefcase, Handshake, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from "@/components/ui/card";
 
 const About = () => {
+  useAnalytics();
+  
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
@@ -19,9 +22,9 @@ const About = () => {
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 font-serif">
                 About Constant Capital
               </h1>
-              <p className="text-lg md:text-xl text-gray-300 mb-10 max-w-3xl">
-                Constant Capital (Ghana) Limited is a registered broker-dealer and investment advisor, licensed and regulated by the Securities and Exchange Commission (SEC). We are a licensed dealing member of the Ghana Stock Exchange (GSE) and a depository participant (DP) at the Central Securities Depository (CSD). We are committed to meeting the diverse needs of our clients through the provision of a full array of innovative and customized financial solutions to international standards.
-              </p>
+                <p className="text-lg md:text-xl text-gray-300 mb-10 max-w-3xl">
+                  Constant Capital (Ghana) Limited is a registered broker-dealer and investment advisor, licensed and regulated by the Securities and Exchange Commission (SEC). We are a licensed dealing member of the Ghana Stock Exchange (GSE) and a depository participant (DP) at the Central Securities Depository (CSD). We are committed to meeting the diverse needs of our international and local clients through the provision of a full array of innovative and customized financial solutions to global standards, connecting African opportunities with international capital.
+                </p>
               <Link to="/leadership">
                 <Button className="bg-cc-gold hover:bg-cc-gold/90 text-white text-base">
                   Meet Our Team
@@ -38,16 +41,17 @@ const About = () => {
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div>
                 <h2 className="text-3xl font-bold text-cc-navy dark:text-white mb-6 font-serif">
-                  A Tradition of Excellence in Financial Services
+                  A Gateway to African Markets for Global Investors
                 </h2>
                 <p className="text-gray-700 dark:text-gray-300 mb-6">
-                  Founded in Ghana, Constant Capital has grown to become a trusted name in West African finance. Our deep 
-                  understanding of local markets, combined with international expertise, allows us to offer innovative 
-                  financial solutions that create lasting value.
+                  Founded in Ghana, Constant Capital has grown to become West Africa's premier gateway for international investment. Our deep 
+                  understanding of African markets, combined with global expertise and international partnerships, allows us to offer innovative 
+                  financial solutions that connect local opportunities with international capital, creating lasting value across borders.
                 </p>
                 <p className="text-gray-700 dark:text-gray-300">
-                  We are committed to the highest standards of integrity, transparency, and professional excellence in 
-                  all our dealings, ensuring that our clients' interests always come first.
+                  We serve clients from around the world seeking exposure to African markets, as well as local institutions and individuals. 
+                  Our commitment to international standards of integrity, transparency, and professional excellence ensures that all our clients' 
+                  interests come first, regardless of their location or size.
                 </p>
               </div>
               <div className="rounded-lg overflow-hidden shadow-xl">
@@ -67,7 +71,7 @@ const About = () => {
             <div className="text-left mb-12">
               <h2 className="text-3xl font-bold text-cc-navy dark:text-white mb-4 font-serif">Our Core Values</h2>
               <p className="text-gray-700 dark:text-gray-300 max-w-3xl">
-                These principles guide everything we do as we strive to be the premier investment banking firm in West Africa.
+                These principles guide everything we do as we strive to be the premier investment banking firm connecting Africa with global capital markets.
               </p>
             </div>
             
@@ -133,7 +137,7 @@ const About = () => {
                   <h2 className="text-2xl font-bold text-cc-navy dark:text-white font-serif">Our Vision</h2>
                 </div>
                 <p className="text-gray-700 dark:text-gray-300 text-lg">
-                  To be the premier investment bank in West Africa, known for excellence in financial services and commitment to our clients' success, setting the standard for innovation and integrity in the markets we serve.
+                  To be the premier investment bank in Africa, known for excellence in financial services and commitment to connecting African opportunities with global capital, setting the standard for innovation and integrity across international markets.
                 </p>
               </div>
               

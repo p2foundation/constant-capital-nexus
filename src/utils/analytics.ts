@@ -102,5 +102,26 @@ export const trackBusinessEvent = {
 
   newsletterSubscribe: () => {
     trackEvent('subscribe', 'newsletter');
+  },
+
+  // International market tracking
+  internationalClientInquiry: (country: string) => {
+    trackEvent('inquiry', 'international_client', country);
+  },
+
+  africanMarketInterest: (market: string) => {
+    trackEvent('interest', 'african_markets', market);
+  },
+
+  crossBorderTransaction: (fromCountry: string, toCountry: string) => {
+    trackEvent('transaction', 'cross_border', `${fromCountry}_to_${toCountry}`);
+  },
+
+  multiCurrencyAccountOpen: (currencies: string) => {
+    trackEvent('open', 'multi_currency_account', currencies);
+  },
+
+  internationalResearchDownload: (reportType: string, userCountry: string) => {
+    trackEvent('download', 'international_research', `${reportType}_${userCountry}`);
   }
 };

@@ -28,7 +28,7 @@ const CustomAuthWrapper: React.FC<CustomAuthWrapperProps> = ({
       const { error } = await supabase.functions.invoke('send-custom-auth-email', {
         body: {
           email: userEmail,
-          confirmationUrl: `${window.location.origin}/auth/confirm`,
+          confirmationUrl: `https://constantcap.com.gh/auth/confirm`,
           type: 'signup'
         }
       });

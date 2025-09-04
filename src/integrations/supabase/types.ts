@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
@@ -799,16 +799,16 @@ export type Database = {
       }
       admin_manually_confirm_user: {
         Args:
+          | { confirmed_by_user_id: string; target_user_id: string }
           | { target_user_id: string }
-          | { target_user_id: string; confirmed_by_user_id: string }
         Returns: boolean
       }
       award_points: {
         Args: {
-          target_user_id: string
-          points_amount: number
-          activity_type_param: string
           activity_details_param?: Json
+          activity_type_param: string
+          points_amount: number
+          target_user_id: string
         }
         Returns: boolean
       }
@@ -827,15 +827,15 @@ export type Database = {
       get_user_activities_with_emails: {
         Args: Record<PropertyKey, never>
         Returns: {
-          id: string
-          user_id: string
-          activity_type: string
           activity_timestamp: string
+          activity_type: string
+          created_at: string
+          id: string
           ip_address: unknown
           user_agent: string
-          created_at: string
           user_email: string
           user_first_name: string
+          user_id: string
           user_last_name: string
         }[]
       }
@@ -846,50 +846,50 @@ export type Database = {
       get_user_statistics: {
         Args: Record<PropertyKey, never>
         Returns: {
-          total_users: number
-          pending_activations: number
           activated_users: number
+          pending_activations: number
+          total_users: number
         }[]
       }
       get_users_with_profiles: {
         Args: Record<PropertyKey, never>
         Returns: {
-          id: string
-          email: string
-          first_name: string
-          last_name: string
-          role: string
           company: string
-          job_position: string
-          phone: string
-          industry: string
           created_at: string
-          last_sign_in_at: string
-          is_active: boolean
+          email: string
           email_confirmed_at: string
-          manually_confirmed_by: string
+          first_name: string
+          id: string
+          industry: string
+          is_active: boolean
+          job_position: string
+          last_name: string
+          last_sign_in_at: string
           manual_confirmation_date: string
+          manually_confirmed_by: string
+          phone: string
+          role: string
         }[]
       }
       redeem_points: {
         Args: {
-          target_user_id: string
           points_cost: number
-          reward_name_param: string
-          reward_category_param: Database["public"]["Enums"]["reward_category"]
           redemption_details_param?: Json
+          reward_category_param: Database["public"]["Enums"]["reward_category"]
+          reward_name_param: string
+          target_user_id: string
         }
         Returns: boolean
       }
       unlock_achievement: {
         Args: {
-          target_user_id: string
           achievement_code_param: string
           achievement_name_param: string
           achievement_type_param: Database["public"]["Enums"]["achievement_type"]
           description_param: string
-          points_awarded_param?: number
           icon_name_param?: string
+          points_awarded_param?: number
+          target_user_id: string
         }
         Returns: boolean
       }

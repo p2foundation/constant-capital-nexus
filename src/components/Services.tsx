@@ -73,31 +73,31 @@ const Services = () => {
   const services = [
     {
       title: "Securities Trading",
-      description: "Access to Ghana Stock Exchange and other African markets with competitive commission rates for our institutional and corporate clients.",
+      description: "Access to Ghana Stock Exchange and other African markets with competitive commission rates for institutional and international clients seeking African market exposure.",
       imageUrl: "/lovable-uploads/19a0a23f-1474-49a7-a0fc-4b62e718b6e7.png",
       link: "/securities-trading"
     },
     {
       title: "Investment Research",
-      description: "Comprehensive market intelligence and analysis to guide your investment decisions across Ghana and African markets.",
+      description: "Comprehensive market intelligence and analysis covering Ghana, West African markets, and emerging African investment opportunities for global investors.",
       imageUrl: "/lovable-uploads/749a8bb6-9f9d-4731-8233-2a3459f75e84.png",
       link: "/investment-research"
     },
     {
       title: "Financings & Capital Markets",
-      description: "Providing capital raising solutions through debt and equity offerings, with specialized expertise in African capital markets.",
+      description: "International capital raising solutions through debt and equity offerings, connecting African companies with global investors and capital markets.",
       imageUrl: "/lovable-uploads/5d82ecc8-34e0-4284-9c90-434650eaf740.png",
       link: "/capital-markets"
     },
     {
       title: "Investment Advisory",
-      description: "Tailored investment strategies and portfolio management for institutional clients and high-net-worth individuals.",
+      description: "Tailored investment strategies and African market portfolio management for institutional clients, family offices, and international high-net-worth individuals.",
       imageUrl: "/lovable-uploads/1f153fc7-d536-4eab-8f5c-6527267e1769.png",
       link: "/investment-advisory"
     },
     {
       title: "Strategic Advisory",
-      description: "Expert guidance on mergers, acquisitions, corporate restructuring, and strategic business initiatives.",
+      description: "Expert guidance on cross-border mergers, acquisitions, corporate restructuring, and strategic business initiatives across African markets.",
       imageUrl: strategicAdvisoryImage,
       link: "/strategic-advisory",
       showImageGenerator: true,
@@ -105,7 +105,7 @@ const Services = () => {
     },
     {
       title: "Private Equity",
-      description: "Alternative investment solutions focusing on growth capital for promising businesses across key sectors in Ghana and Africa.",
+      description: "Alternative investment solutions focusing on growth capital for promising businesses across key sectors in Ghana, West Africa, and emerging African markets.",
       imageUrl: "/lovable-uploads/3722b840-57e0-4fc4-8378-9ee194fd4491.png",
       link: "/private-equity"
     }
@@ -116,7 +116,10 @@ const Services = () => {
       <div className="container mx-auto px-4">
         <div className="mb-12 sm:mb-16 text-center sm:text-left">
           <h2 className="text-sm font-medium uppercase tracking-wider text-cc-gold mb-2">WHAT WE DO</h2>
-          <h3 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-cc-navy dark:text-white mb-4 sm:mb-6">Delivering for Our Clients</h3>
+          <h3 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-cc-navy dark:text-white mb-4 sm:mb-6">Delivering for Our Global Clients</h3>
+          <p className="text-gray-600 dark:text-gray-300 text-lg max-w-3xl">
+            Connecting African opportunities with international capital through expert financial services and deep market knowledge.
+          </p>
         </div>
         
         <Carousel

@@ -4,8 +4,11 @@ import { Link, useLocation } from 'react-router-dom';
 import RegisterForm from '@/components/auth/RegisterForm';
 import EmailConfirmationAlert from '@/components/auth/EmailConfirmationAlert';
 import { ArrowLeft } from 'lucide-react';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 const Register = () => {
+  useAnalytics();
+  
   const location = useLocation();
   const state = location.state as { 
     showEmailConfirmation?: boolean; 

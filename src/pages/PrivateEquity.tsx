@@ -2,6 +2,7 @@
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { useAnalytics } from '@/hooks/useAnalytics';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Briefcase, TrendingUp, BarChart3, Building, Users } from 'lucide-react';
@@ -9,6 +10,8 @@ import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const PrivateEquity = () => {
+  useAnalytics();
+  
   return (
     <div className="flex flex-col min-h-screen dark:bg-gray-950">
       <Navbar />

@@ -71,9 +71,8 @@ const handler = async (req: Request): Promise<Response> => {
 
     const content = getEmailContent(type, firstName);
 
-    // Use the confirmation URL as-is since it should already have the correct domain
-    // from the generate-auth-url function
-    const finalConfirmationUrl = confirmationUrl;
+    // Ensure localhost URLs are replaced with production domain
+    const finalConfirmationUrl = confirmationUrl.replace(/https?:\/\/localhost(:\d+)?/g, SITE_URL);
 
     console.log('=== EMAIL DEBUG INFO ===');
     console.log('Email type:', type);

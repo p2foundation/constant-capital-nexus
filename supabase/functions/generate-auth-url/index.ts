@@ -36,7 +36,8 @@ const handler = async (req: Request): Promise<Response> => {
     );
 
     // Use production URL instead of localhost for redirectTo
-    const productionRedirectTo = redirectTo.replace(/http:\/\/localhost:\d+/, 'https://constantcap.com.gh');
+    const SITE_URL = Deno.env.get('SITE_URL') || 'https://constantcap.com.gh';
+    const productionRedirectTo = redirectTo.replace(/https?:\/\/localhost(:\d+)?/g, SITE_URL);
     
     // Generate the confirmation URL using admin API
     const { data, error } = await supabaseAdmin.auth.admin.generateLink({

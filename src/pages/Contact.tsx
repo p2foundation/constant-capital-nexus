@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { useAnalytics } from '@/hooks/useAnalytics';
 import ChatBot from "@/components/ChatBot";
 import OfficeStatus from "@/components/contact/OfficeStatus";
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Navigation, Mail, Phone } from "lucide-react";
 import { useContactForm } from "@/hooks/useContactForm";
 const Contact = () => {
+  useAnalytics();
+  
   const {
     submitContactForm,
     isSubmitting

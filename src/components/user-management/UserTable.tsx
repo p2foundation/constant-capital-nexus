@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,7 +8,8 @@ import { Pagination, PaginationContent, PaginationItem, PaginationLink, Paginati
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Users, Search, Edit, Trash2, MoreHorizontal, Clock, CheckCircle, UserCheck } from 'lucide-react';
+import { Users, Search, Eye, Edit, Trash2, MoreHorizontal, Clock, CheckCircle, UserCheck } from 'lucide-react';
+import ViewUserDialog from './ViewUserDialog';
 
 interface User {
   id: string;
@@ -59,6 +60,13 @@ const UserTable: React.FC<UserTableProps> = ({
   onUpdateRole,
   onManuallyConfirmUser
 }) => {
+  const [selectedViewUser, setSelectedViewUser] = useState<User | null>(null);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+
+  const handleViewUser = (user: User) => {
+    setSelectedViewUser(user);
+    setIsViewDialogOpen(true);
+  };
   const filteredUsers = users.filter(user => {
     const matchesSearch = 
       user.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -239,6 +247,10 @@ const UserTable: React.FC<UserTableProps> = ({
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
                           <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={() => handleViewUser(user)}>
+                            <Eye className="h-4 w-4 mr-2" />
+                            View Details
+                          </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => onEditUser(user)}>
                             <Edit className="h-4 w-4 mr-2" />
                             Edit User
@@ -292,6 +304,12 @@ const UserTable: React.FC<UserTableProps> = ({
           </div>
         )}
       </CardContent>
+      
+      <ViewUserDialog
+        user={selectedViewUser}
+        open={isViewDialogOpen}
+        onOpenChange={setIsViewDialogOpen}
+      />
     </Card>
   );
 };

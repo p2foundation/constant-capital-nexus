@@ -1,7 +1,10 @@
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 const NotFound = () => {
+  useAnalytics();
+  
   const location = useLocation();
 
   useEffect(() => {

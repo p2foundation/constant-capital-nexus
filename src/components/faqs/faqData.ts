@@ -20,7 +20,11 @@ export const faqCategories = [
       },
       {
         question: "What markets do you operate in?",
-        answer: "We primarily operate in the Ghanaian capital markets, including the Ghana Stock Exchange (GSE). We also provide access to regional African markets and international investment opportunities through our network of partners."
+        answer: "We primarily operate in the Ghanaian capital markets, including the Ghana Stock Exchange (GSE), while providing access to regional African markets including Nigeria (NGX), South Africa (JSE), Kenya (NSE), and Egypt (EGX). We also facilitate international investment opportunities through our network of global partners."
+      },
+      {
+        question: "Do you serve international clients?",
+        answer: "Yes, we welcome international clients seeking exposure to African markets. We provide comprehensive support for foreign investors, including currency hedging, regulatory compliance assistance, and detailed market intelligence across West and East African markets."
       }
     ]
   },
@@ -46,7 +50,11 @@ export const faqCategories = [
       },
       {
         question: "Can non-residents open accounts?",
-        answer: "Yes, non-residents can open accounts with us. Additional documentation may be required, including proof of income source and compliance with international regulations. Contact our team for specific requirements."
+        answer: "Yes, non-residents and international clients can open accounts with us. We specialize in serving foreign investors seeking African market exposure. Additional documentation may be required, including proof of income source, tax identification numbers, and compliance with international regulations. We also assist with currency conversion and multi-currency account options."
+      },
+      {
+        question: "Do you provide multi-currency services?",
+        answer: "Yes, we offer multi-currency account services supporting GHS, USD, EUR, and GBP. This enables seamless international transactions and currency hedging for our global clients investing in African markets."
       }
     ]
   },
@@ -56,7 +64,7 @@ export const faqCategories = [
     questions: [
       {
         question: "What types of securities can I trade?",
-        answer: "You can trade equities listed on the Ghana Stock Exchange (GSE), government and corporate bonds, treasury bills, eurobonds, and other fixed-income securities. We also provide access to selected international markets."
+        answer: "You can trade equities listed on the Ghana Stock Exchange (GSE) and other African exchanges, government and corporate bonds, treasury bills, eurobonds, and other fixed-income securities. We also provide access to selected international markets and cross-border investment opportunities across Africa."
       },
       {
         question: "What are your trading fees and commissions?",
@@ -72,7 +80,7 @@ export const faqCategories = [
       },
       {
         question: "Do you provide investment advice?",
-        answer: "Yes, we provide professional investment advisory services. Our certified investment advisors can help you develop investment strategies, portfolio allocation, and provide market insights based on your risk profile and investment objectives."
+        answer: "Yes, we provide professional investment advisory services with expertise in African markets and international diversification strategies. Our certified investment advisors help clients develop regional investment strategies, cross-border portfolio allocation, and provide market insights covering West African, East African, and emerging market opportunities based on your risk profile and investment objectives."
       }
     ]
   },

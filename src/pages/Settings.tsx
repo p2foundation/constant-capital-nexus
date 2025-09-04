@@ -13,8 +13,11 @@ import Footer from '@/components/Footer';
 import ThemeToggler from '@/components/ThemeToggler';
 import { Bell, Mail, Lock, User, Globe, Shield, CreditCard, PanelTop } from 'lucide-react';
 import { toast } from "sonner";
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 const Settings = () => {
+  useAnalytics();
+  
   const { profile, user, updateProfile } = useAuth();
   
   const handleSaveProfile = async (e: React.FormEvent<HTMLFormElement>) => {

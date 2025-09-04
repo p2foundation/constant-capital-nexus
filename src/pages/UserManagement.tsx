@@ -27,6 +27,7 @@ import UserTable from '@/components/user-management/UserTable';
 import ActivitiesTable from '@/components/user-management/ActivitiesTable';
 import AccountOpeningsSection from '@/components/user-management/AccountOpeningsSection';
 import EditUserDialog from '@/components/user-management/EditUserDialog';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 interface User {
   id: string;
@@ -72,6 +73,8 @@ interface AccountOpening {
 }
 
 const UserManagement = () => {
+  useAnalytics();
+  
   const { isAdmin } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [activities, setActivities] = useState<UserActivity[]>([]);
@@ -129,10 +132,10 @@ const UserManagement = () => {
         return;
       }
 
-      // Type assertion and fix data mapping
+      // Type assertion and fix data mapping - map job_position to position
       const typedUsers = (data || []).map((user: any) => ({
         ...user,
-        position: user.position || '', // Use position directly from database
+        position: user.job_position || '', // Map job_position to position for frontend
         role: user.role as 'Admin' | 'Developer' | 'Analyst' | 'Customer' | 'User' | 'Client'
       }));
 

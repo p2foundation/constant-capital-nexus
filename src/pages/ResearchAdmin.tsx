@@ -2,11 +2,14 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import AdminNavbar from '@/components/admin/AdminNavbar';
+import { useAnalytics } from '@/hooks/useAnalytics';
 import AdminFooter from '@/components/admin/AdminFooter';
 import ResearchReportManager from '@/components/admin/ResearchReportManager';
 import { AdminProvider } from '@/contexts/AdminContext';
 
 const ResearchAdmin = () => {
+  useAnalytics();
+  
   return (
     <AdminProvider>
       <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-cc-navy/95">

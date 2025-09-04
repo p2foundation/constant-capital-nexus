@@ -7,10 +7,10 @@ const HeroContent = () => {
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
 
   const messages = [
-    "Constant Capital is a full-service securities firm offering a broad range of investment banking services to private and public clients.",
-    "Our professionals deliver the experience and insights required to access investment markets, raise capital, and mitigate risk.",
-    "We work closely with our clients to develop innovative solutions that effectively meet their financing, investment, and strategic priorities.",
-    "We strive to be a long-term trusted adviser and financier to our clients."
+    "Constant Capital is a full-service securities firm offering a broad range of investment banking services to international and local clients.",
+    "Our professionals deliver the experience and insights required to access African investment markets, raise capital, and mitigate risk globally.",
+    "We work closely with clients worldwide to develop innovative solutions that effectively meet their financing, investment, and strategic priorities.",
+    "We strive to be a long-term trusted adviser and financier to our clients across Africa and beyond."
   ];
 
   useEffect(() => {
@@ -24,7 +24,7 @@ const HeroContent = () => {
   return (
     <div className="animate-fade-in">
       <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-cc-navy dark:text-white leading-tight mb-4 sm:mb-6">
-        Ghana's Leading <span className="text-gradient">Investment</span> Brokerage
+        West Africa's Gateway to <span className="text-gradient">Global Investment</span>
       </h1>
 
       {/* Flashing/rotating messages */}
@@ -48,16 +48,16 @@ const HeroContent = () => {
 
       <div className="mt-8 sm:mt-12 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
         <div className="flex flex-col items-center text-center">
-          <div className="text-xl sm:text-2xl font-bold text-cc-navy dark:text-white">Global</div>
-          <div className="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">Expertise</div>
+          <div className="text-xl sm:text-2xl font-bold text-cc-navy dark:text-white">15+</div>
+          <div className="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">African Markets</div>
         </div>
         <div className="flex flex-col items-center text-center">
-          <div className="text-xl sm:text-2xl font-bold text-cc-navy dark:text-white">100%</div>
-          <div className="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">Client Focus</div>
+          <div className="text-xl sm:text-2xl font-bold text-cc-navy dark:text-white">Global</div>
+          <div className="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">Standards</div>
         </div>
         <div className="flex flex-col items-center text-center">
           <div className="text-xl sm:text-2xl font-bold text-cc-navy dark:text-white">₵2B+</div>
-          <div className="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">Equities Traded</div>
+          <div className="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">Assets Managed</div>
         </div>
         <div className="flex flex-col items-center text-center">
           <div className="text-xl sm:text-2xl font-bold text-cc-navy dark:text-white">SEC</div>

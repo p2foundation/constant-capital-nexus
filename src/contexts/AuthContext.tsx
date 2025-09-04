@@ -255,7 +255,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { success: false, error: errorMessage };
       }
 
-      // Sign up without emailRedirectTo to prevent Supabase's automatic email
+      // Sign up and immediately create profile with all provided data
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -267,7 +267,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             company: profileData.company,
             position: profileData.position,
             industry: profileData.industry,
-            role: 'User'
+            bio: profileData.bio,
+            role: profileData.role || 'User'
           }
         }
       });
@@ -337,34 +338,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { success: false, error: errorMessage };
       }
       
-      // The profile is auto-created by the trigger, but we need to update it with provided data
-      if (data.user) {
-        // Wait a moment for the trigger to create the profile
-        setTimeout(async () => {
-          try {
-            const profileDataToUpdate: any = {
-              first_name: profileData.first_name,
-              last_name: profileData.last_name,
-              company: profileData.company || null,
-              position: profileData.position || null,
-              industry: profileData.industry || null,
-              phone: profileData.phone || null,
-              bio: profileData.bio || null,
-              role: profileData.role || 'User'
-            };
+      // Create profile immediately with all provided data
+      if (data.user && !error) {
+        try {
+          // Create profile with complete data immediately
+          const profileDataToInsert = {
+            id: data.user.id,
+            first_name: profileData.first_name,
+            last_name: profileData.last_name,
+            company: profileData.company || null,
+            position: profileData.position || null,
+            industry: profileData.industry || null,
+            phone: profileData.phone || null,
+            bio: profileData.bio || null,
+            role: profileData.role || 'User'
+          };
 
-            const { error: profileError } = await supabase
-              .from('profiles')
-              .update(profileDataToUpdate)
-              .eq('id', data.user.id);
-              
-            if (profileError) {
-              console.error('Error updating profile:', profileError);
-            }
-          } catch (updateError) {
-            console.error('Error in profile update:', updateError);
+          // Use upsert to handle potential duplicate from trigger
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .upsert(profileDataToInsert, {
+              onConflict: 'id',
+              ignoreDuplicates: false
+            });
+            
+          if (profileError) {
+            console.error('Error creating/updating profile:', profileError);
+          } else {
+            console.log('Profile created successfully with data:', profileDataToInsert);
           }
-        }, 2000);
+        } catch (updateError) {
+          console.error('Error in profile creation:', updateError);
+        }
       }
       
       toast.success('Account created successfully! Please check your email to confirm your account.');

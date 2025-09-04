@@ -13,8 +13,11 @@ import EmailTestingPanel from '@/components/auth/EmailTestingPanel';
 import { AdminProvider } from '@/contexts/AdminContext';
 import { FileText, ChartBar, Settings, Layout, Database, Calendar, TrendingUp, Mail } from 'lucide-react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 const AdminDashboard = () => {
+  useAnalytics();
+  
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get('tab') || 'content';
   const navigate = useNavigate();

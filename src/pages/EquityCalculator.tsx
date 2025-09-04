@@ -10,6 +10,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 // Stock price data - Based on GSE listings with realistic price estimates
 const stocks = {
@@ -47,6 +48,8 @@ const stocks = {
 };
 
 const EquityCalculator = () => {
+  useAnalytics();
+  
   const [selectedStock, setSelectedStock] = useState<string>('MTNGH');
   const [buyPrice, setBuyPrice] = useState<string>('');
   const [currentPrice, setCurrentPrice] = useState<string>('');
