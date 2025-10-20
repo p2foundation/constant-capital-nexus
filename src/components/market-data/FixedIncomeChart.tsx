@@ -7,10 +7,15 @@ import { useMarketData } from '@/contexts/MarketDataContext';
 const FixedIncomeChart: React.FC = () => {
   const { marketData } = useMarketData();
   
+  // Filter to last 60 days
+  const sixtyDaysAgo = new Date();
+  sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
+  const recentData = marketData.fixedIncome.filter(item => new Date(item.date) >= sixtyDaysAgo);
+  
   // Process market data for charting or use mock data
-  const chartData = marketData.fixedIncome.length > 0 ? 
-    [...new Set(marketData.fixedIncome.map(item => item.date))].map(date => {
-      const dateItems = marketData.fixedIncome.filter(d => d.date === date);
+  const chartData = recentData.length > 0 ? 
+    [...new Set(recentData.map(item => item.date))].map(date => {
+      const dateItems = recentData.filter(d => d.date === date);
       return {
         name: new Date(date).toLocaleDateString('en-GB', { month: 'short', day: 'numeric' }),
         yield91: dateItems.find(i => i.ticker_symbol === '91-day')?.value,

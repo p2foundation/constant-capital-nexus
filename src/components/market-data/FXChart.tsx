@@ -7,17 +7,62 @@ import { useMarketData } from '@/contexts/MarketDataContext';
 const FXChart: React.FC = () => {
   const { marketData } = useMarketData();
   
-  // Process market data for charting or use mock data
-  const chartData = marketData.fx.length > 0 ? 
-    [...new Set(marketData.fx.map(item => item.date))].map(date => {
-      const dateItems = marketData.fx.filter(d => d.date === date);
-      return {
-        name: new Date(date).toLocaleDateString('en-GB', { month: 'short', day: 'numeric' }),
-        usd: dateItems.find(i => i.ticker_symbol === 'USD')?.value,
-        eur: dateItems.find(i => i.ticker_symbol === 'EUR')?.value,
-        gbp: dateItems.find(i => i.ticker_symbol === 'GBP')?.value
-      };
-    }) : fxData;
+  // Build chart data with robust fallbacks
+  const sixtyDaysAgo = new Date();
+  sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
+
+  const buildFrom = (items: typeof marketData.fx) => {
+    const dateMap: Record<string, any> = {};
+    items.forEach(item => {
+      const dateKey = new Date(item.date).toISOString().split('T')[0];
+      if (!dateMap[dateKey]) {
+        dateMap[dateKey] = {
+          date: new Date(item.date),
+          name: new Date(item.date).toLocaleDateString('en-GB', { month: 'short', day: 'numeric' }),
+          values: {} as Record<string, number>
+        };
+      }
+      const symbol = (item.ticker_symbol || '').toUpperCase();
+      if (['USD','EUR','GBP'].includes(symbol)) {
+        // Last write wins per date/symbol
+        dateMap[dateKey].values[symbol] = Number(item.value);
+      }
+    });
+    return Object.values(dateMap)
+      .sort((a: any, b: any) => a.date.getTime() - b.date.getTime())
+      .map((item: any) => ({
+        name: item.name,
+        usd: item.values['USD'],
+        eur: item.values['EUR'],
+        gbp: item.values['GBP']
+      }));
+  };
+
+  const recentData = marketData.fx.filter(item => new Date(item.date) >= sixtyDaysAgo);
+  console.log('FX - Recent data count:', recentData.length);
+
+  let chartData = buildFrom(recentData);
+
+  if (chartData.length === 0 && marketData.fx.length > 0) {
+    // Use most recent 60 unique dates from all FX data
+    const sortedAll = [...marketData.fx].sort((a,b)=> new Date(b.date).getTime() - new Date(a.date).getTime());
+    const seen = new Set<string>();
+    const subset: typeof marketData.fx = [];
+    for (const item of sortedAll) {
+      const key = new Date(item.date).toISOString().split('T')[0];
+      if (!seen.has(key)) seen.add(key);
+      if (seen.size <= 60) subset.push(item);
+      else break;
+    }
+    chartData = buildFrom(subset);
+  }
+
+  if (chartData.length === 0) {
+    // Final fallback: map mock fxData to expected keys
+    chartData = fxData.map((d: any) => ({ name: d.name, usd: d.uv, eur: d.pv, gbp: d.amt }));
+  }
+
+  console.log('FX - Chart data:', chartData);
   
   // Calculate min and max for the Y axis domain
   const allValues = chartData.flatMap(item => [item.usd, item.eur, item.gbp].filter(Boolean));

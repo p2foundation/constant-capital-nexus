@@ -2,16 +2,50 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 import GSEChart from './market-data/GSEChart';
 import FixedIncomeChart from './market-data/FixedIncomeChart';
 import FXChart from './market-data/FXChart';
 import EquitiesChart from './market-data/EquitiesChart';
 import EurobondsChart from './market-data/EurobondsChart';
 import { useMarketData } from '@/contexts/MarketDataContext';
-import { Loader2 } from 'lucide-react';
+import { Loader2, RefreshCw } from 'lucide-react';
+import { toast } from 'sonner';
 
 const MarketData = () => {
-  const { isLoading, error, latestData } = useMarketData();
+  const { isLoading, error, latestData, refreshMarketData, marketData } = useMarketData();
+  const [isRefreshing, setIsRefreshing] = React.useState(false);
+
+  // Get the most recent data date
+  const getLastUpdated = () => {
+    const dates = [
+      ...marketData.gse.map(item => new Date(item.date)),
+      ...marketData.equities.map(item => new Date(item.date)),
+      ...marketData.fixedIncome.map(item => new Date(item.date)),
+      ...marketData.eurobonds.map(item => new Date(item.date)),
+      ...marketData.fx.map(item => new Date(item.date))
+    ].filter(date => !isNaN(date.getTime()));
+    
+    if (dates.length === 0) return null;
+    
+    const maxDate = new Date(Math.max(...dates.map(d => d.getTime())));
+    return maxDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  };
+
+  const lastUpdated = getLastUpdated();
+  const isDataStale = lastUpdated && new Date(lastUpdated).getTime() < Date.now() - 7 * 24 * 60 * 60 * 1000;
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    try {
+      await refreshMarketData();
+      toast.success('Market data updated successfully');
+    } catch (err) {
+      toast.error('Failed to refresh market data');
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   // Log any errors or data for debugging
   React.useEffect(() => {
@@ -36,10 +70,30 @@ const MarketData = () => {
         
         <Card className="border-gray-100 shadow-md dark:bg-gray-800 dark:border-gray-700">
           <CardHeader>
-            <CardTitle className="text-left dark:text-white">Market Performance</CardTitle>
-            <CardDescription className="text-left dark:text-gray-300">
-              Track key market indicators across different asset classes
-            </CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-left dark:text-white">Market Performance</CardTitle>
+                <CardDescription className="text-left dark:text-gray-300">
+                  Track key market indicators across different asset classes
+                  {lastUpdated && (
+                    <span className={`block mt-1 text-sm ${isDataStale ? 'text-amber-600 dark:text-amber-400' : 'text-gray-500 dark:text-gray-400'}`}>
+                      Last updated: {lastUpdated}
+                      {isDataStale && ' (Data may be outdated)'}
+                    </span>
+                  )}
+                </CardDescription>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleRefresh}
+                disabled={isRefreshing || isLoading}
+                className="gap-2"
+              >
+                <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                Refresh
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
             {isLoading ? (

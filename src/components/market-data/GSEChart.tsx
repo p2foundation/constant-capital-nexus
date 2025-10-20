@@ -7,9 +7,16 @@ import { useMarketData } from '@/contexts/MarketDataContext';
 const GSEChart: React.FC = () => {
   const { marketData } = useMarketData();
   
+  // Filter data to show only last 60 days
+  const filterRecentData = (data: any[]) => {
+    const sixtyDaysAgo = new Date();
+    sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
+    return data.filter(item => new Date(item.date) >= sixtyDaysAgo);
+  };
+  
   // Format GSE data for the chart or use mock data if no real data is available
   const chartData = marketData.gse.length > 0 ? 
-    marketData.gse.map(item => ({
+    filterRecentData(marketData.gse).map(item => ({
       name: new Date(item.date).toLocaleDateString('en-GB', { month: 'short', day: 'numeric' }),
       value: item.value,
       change_percent: item.change_percent || 0

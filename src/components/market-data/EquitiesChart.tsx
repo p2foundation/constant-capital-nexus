@@ -9,34 +9,83 @@ const EquitiesChart: React.FC = () => {
   
   // Process market data for charting or use mock data
   const chartData = React.useMemo(() => {
-    if (marketData.equities.length === 0) return equitiesData;
+    const buildFrom = (source: typeof marketData.equities) => {
+      const dateMap = new Map<string, any>();
+      source.forEach(item => {
+        if (!item.date || !item.ticker_symbol) return;
+        const date = new Date(item.date);
+        const dateKey = date.toISOString().split('T')[0];
+        const dateStr = date.toLocaleDateString('en-GB', { month: 'short', day: 'numeric' });
+        if (!dateMap.has(dateKey)) {
+          dateMap.set(dateKey, { 
+            name: dateStr, 
+            sortDate: date.getTime(),
+            symbols: new Map<string, number>()
+          });
+        }
+        const entry = dateMap.get(dateKey);
+        const symbol = item.ticker_symbol.toLowerCase();
+        const aliasMap: Record<string, string> = { eti: 'egh' };
+        const normalized = aliasMap[symbol] || symbol;
+        const allowed = ['gcb', 'scb', 'egh', 'mtngh', 'total'];
+        if (allowed.includes(normalized)) {
+          entry.symbols.set(normalized, parseFloat((item.value as any).toString()));
+        }
+      });
+      return Array.from(dateMap.values())
+        .sort((a, b) => a.sortDate - b.sortDate)
+        .map(({ sortDate, symbols, ...rest }) => {
+          const data: any = { ...rest };
+          symbols.forEach((value: number, sym: string) => {
+            data[sym] = value;
+          });
+          return data;
+        });
+    };
+
+    // If no market data at all, return normalized mock data
+    if (marketData.equities.length === 0) {
+      return equitiesData
+        .map((d: any) => ({ ...d, egh: d.egh ?? d.eti }))
+        .map(({ eti, ...rest }: any) => rest);
+    }
     
-    const dateMap = new Map<string, any>();
-    
-    // Group by date
-    marketData.equities.forEach(item => {
-      if (!item.date || !item.ticker_symbol) return;
-      
-      const dateStr = new Date(item.date).toLocaleDateString('en-GB', { month: 'short', day: 'numeric' });
-      if (!dateMap.has(dateStr)) {
-        dateMap.set(dateStr, { name: dateStr });
+    // Try last 60 days first
+    const sixtyDaysAgo = new Date();
+    sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
+    const recentData = marketData.equities.filter(item => new Date(item.date) >= sixtyDaysAgo);
+    console.log('Equities - Recent data count:', recentData.length);
+
+    let result = buildFrom(recentData);
+
+    // Fallback: most recent 60 unique dates if nothing in last 60 days
+    if (result.length === 0) {
+      const sortedAll = [...marketData.equities]
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      const seen = new Set<string>();
+      const subset: typeof marketData.equities = [];
+      for (const item of sortedAll) {
+        const key = new Date(item.date).toISOString().split('T')[0];
+        if (!seen.has(key)) seen.add(key);
+        if (seen.size <= 60) subset.push(item);
+        else break;
       }
-      
-      const entry = dateMap.get(dateStr);
-      const symbol = item.ticker_symbol.toLowerCase();
-      entry[symbol] = parseFloat(item.value.toString());
-    });
-    
-    // Convert to array and sort by date
-    return Array.from(dateMap.values()).sort((a, b) => {
-      const dateA = new Date(a.name.split(' ')[1] + ' ' + a.name.split(' ')[0]);
-      const dateB = new Date(b.name.split(' ')[1] + ' ' + b.name.split(' ')[0]);
-      return dateA.getTime() - dateB.getTime();
-    });
+      result = buildFrom(subset);
+    }
+
+    // Final fallback: normalized mock data
+    if (result.length === 0) {
+      return equitiesData
+        .map((d: any) => ({ ...d, egh: d.egh ?? d.eti }))
+        .map(({ eti, ...rest }: any) => rest);
+    }
+
+    console.log('Equities - Chart data:', result);
+    return result;
   }, [marketData.equities]);
   
   // Calculate min and max for the Y axis domain - now includes 5 major companies
-  const allValues = chartData.flatMap(item => ['gcb', 'scb', 'eti', 'mtngh', 'total'].map(key => item[key]).filter(Boolean));
+  const allValues = chartData.flatMap(item => ['gcb', 'scb', 'egh', 'mtngh', 'total'].map(key => item[key]).filter(Boolean));
   const minValue = allValues.length ? Math.min(...allValues) * 0.98 : 0;
   const maxValue = allValues.length ? Math.max(...allValues) * 1.02 : 30;
   
@@ -94,7 +143,7 @@ const EquitiesChart: React.FC = () => {
           />
           <Area 
             type="monotone" 
-            dataKey="eti" 
+            dataKey="egh" 
             name="Ecobank Ghana" 
             stroke="#F2981D" 
             fillOpacity={1} 

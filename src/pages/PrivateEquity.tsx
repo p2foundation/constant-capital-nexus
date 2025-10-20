@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useAnalytics } from '@/hooks/useAnalytics';
@@ -8,9 +8,33 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, Briefcase, TrendingUp, BarChart3, Building, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import TeamMemberCard from '@/components/private-equity/TeamMemberCard';
+import TeamMemberModal from '@/components/private-equity/TeamMemberModal';
+import { privateEquityTeam } from '@/data/privateEquityTeam';
 
 const PrivateEquity = () => {
   useAnalytics();
+  const [selectedMemberIndex, setSelectedMemberIndex] = useState<number | null>(null);
+
+  const handleMemberClick = (index: number) => {
+    setSelectedMemberIndex(index);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedMemberIndex(null);
+  };
+
+  const handleNextMember = () => {
+    if (selectedMemberIndex !== null) {
+      setSelectedMemberIndex((selectedMemberIndex + 1) % privateEquityTeam.length);
+    }
+  };
+
+  const handlePrevMember = () => {
+    if (selectedMemberIndex !== null) {
+      setSelectedMemberIndex(selectedMemberIndex === 0 ? privateEquityTeam.length - 1 : selectedMemberIndex - 1);
+    }
+  };
   
   return (
     <div className="flex flex-col min-h-screen dark:bg-gray-950">
@@ -456,45 +480,24 @@ const PrivateEquity = () => {
             </div>
           </div>
           
-          {/* Team */}
+          {/* Investment Team */}
           <div className="my-16">
-            <h2 className="text-3xl font-bold mb-8 text-cc-navy text-left dark:text-white">Investment Team</h2>
-            <p className="text-leftmax-w-3xl mx-auto mb-12 dark:text-gray-300">
-              Our private equity team combines deep financial expertise with local market knowledge and operational experience to support portfolio companies through their growth journey.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <div className="bg-white p-6 rounded-lg shadow-sm text-center dark:bg-gray-700">
-                <div className="w-24 h-24 rounded-full bg-gray-100 mx-auto mb-4 overflow-hidden dark:bg-gray-600">
-                  <img src="/placeholder.svg" alt="Team Member" className="w-full h-full object-cover" />
-                </div>
-                <h3 className="text-lg font-bold text-cc-navy mb-1 dark:text-white">John Ebow Gaisie</h3>
-                <p className="text-sm text-cc-gold mb-3">Head of Private Equity</p>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  15+ years of private equity and investment banking experience across African markets.
-                </p>
-              </div>
-              
-              <div className="bg-white p-6 rounded-lg shadow-sm text-center dark:bg-gray-700">
-                <div className="w-24 h-24 rounded-full bg-gray-100 mx-auto mb-4 overflow-hidden dark:bg-gray-600">
-                  <img src="/placeholder.svg" alt="Team Member" className="w-full h-full object-cover" />
-                </div>
-                <h3 className="text-lg font-bold text-cc-navy mb-1 dark:text-white">Harriet Boadu</h3>
-                <p className="text-sm text-cc-gold mb-3">Investment Trader</p>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  Expertise in financial services and consumer sectors with focus on operational improvements.
-                </p>
-              </div>
-              
-              <div className="bg-white p-6 rounded-lg shadow-sm text-center dark:bg-gray-700">
-                <div className="w-24 h-24 rounded-full bg-gray-100 mx-auto mb-4 overflow-hidden dark:bg-gray-600">
-                  <img src="/placeholder.svg" alt="Team Member" className="w-full h-full object-cover" />
-                </div>
-                <h3 className="text-lg font-bold text-cc-navy mb-1 dark:text-white">Stephen Missah</h3>
-                <p className="text-sm text-cc-gold mb-3">Head of Trading</p>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  Specialized in healthcare investments and digital transformation strategies.
-                </p>
-              </div>
+            <div className="text-left mb-12">
+              <div className="text-cc-gold dark:text-cc-orange uppercase tracking-wide font-medium mb-2">OUR EXPERTS</div>
+              <h2 className="text-3xl md:text-4xl font-bold text-cc-navy dark:text-white mb-4">Investment Team</h2>
+              <p className="max-w-2xl text-gray-600 dark:text-gray-300">
+                Our private equity team combines deep financial expertise with local market knowledge and operational experience to support portfolio companies through their growth journey.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+              {privateEquityTeam.map((member, index) => (
+                <TeamMemberCard
+                  key={index}
+                  member={member}
+                  onClick={() => handleMemberClick(index)}
+                />
+              ))}
             </div>
           </div>
           
@@ -519,6 +522,20 @@ const PrivateEquity = () => {
           </div>
         </div>
       </div>
+
+      {/* Team Member Modal */}
+      {selectedMemberIndex !== null && (
+        <TeamMemberModal
+          member={privateEquityTeam[selectedMemberIndex]}
+          isOpen={selectedMemberIndex !== null}
+          onClose={handleCloseModal}
+          onNext={handleNextMember}
+          onPrev={handlePrevMember}
+          currentIndex={selectedMemberIndex}
+          totalMembers={privateEquityTeam.length}
+        />
+      )}
+
       <Footer />
     </div>
   );

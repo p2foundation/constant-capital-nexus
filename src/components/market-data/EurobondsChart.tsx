@@ -16,10 +16,15 @@ interface EurobondChartDataPoint {
 const EurobondsChart: React.FC = () => {
   const { marketData } = useMarketData();
   
+  // Filter to last 60 days
+  const sixtyDaysAgo = new Date();
+  sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
+  const recentData = marketData.eurobonds.filter(item => new Date(item.date) >= sixtyDaysAgo);
+  
   // Process market data for charting or use mock data
-  const chartData: EurobondChartDataPoint[] = marketData.eurobonds.length > 0 ? 
-    [...new Set(marketData.eurobonds.map(item => item.date))].map(date => {
-      const dateItems = marketData.eurobonds.filter(d => d.date === date);
+  const chartData: EurobondChartDataPoint[] = recentData.length > 0 ? 
+    [...new Set(recentData.map(item => item.date))].map(date => {
+      const dateItems = recentData.filter(d => d.date === date);
       return {
         name: new Date(date).toLocaleDateString('en-GB', { month: 'short', day: 'numeric' }),
         ghana29: dateItems.find(i => i.ticker_symbol === 'Ghana-2029')?.value,
