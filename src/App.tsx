@@ -12,6 +12,7 @@ import Index from "@/pages/Index";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 import SecuritiesTrading from "@/pages/SecuritiesTrading";
+import FXTrading from "@/pages/FXTrading";
 import PrivateEquity from "@/pages/PrivateEquity";
 import StrategicAdvisory from "@/pages/StrategicAdvisory";
 import FinancingsCapitalMarkets from "@/pages/FinancingsCapitalMarkets";
@@ -43,9 +44,12 @@ import AccountOpening from "@/pages/AccountOpening";
 import FAQs from "@/pages/FAQs";
 import EmailConfirm from "@/pages/EmailConfirm";
 import Rewards from "@/pages/Rewards";
+import Careers from "@/pages/Careers";
+import CareerDetail from "@/pages/CareerDetail";
 
 // Components
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import CookieConsent from "@/components/CookieConsent";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 
@@ -72,6 +76,7 @@ function App() {
                 
                 {/* Services Routes */}
                 <Route path="/securities-trading" element={<SecuritiesTrading />} />
+                <Route path="/fx-trading" element={<FXTrading />} />
                 <Route path="/private-equity" element={<PrivateEquity />} />
                 <Route path="/strategic-advisory" element={<StrategicAdvisory />} />
                 <Route path="/capital-markets" element={<CapitalMarkets />} />
@@ -84,6 +89,10 @@ function App() {
                 <Route path="/research/:id" element={<ResearchDetail />} />
                 <Route path="/research-services" element={<ResearchServices />} />
                 <Route path="/full-market-report" element={<FullMarketReport />} />
+                
+                {/* Careers Routes */}
+                <Route path="/careers" element={<Careers />} />
+                <Route path="/careers/:id" element={<CareerDetail />} />
                 
                 {/* Legal Pages */}
                 <Route path="/terms-of-service" element={<TermsOfService />} />
@@ -159,6 +168,7 @@ function App() {
                 <Route path="*" element={<NotFound />} />
               </Routes>
               
+              <CookieConsent />
               <Toaster />
               <SonnerToaster />
             </MarketDataProvider>

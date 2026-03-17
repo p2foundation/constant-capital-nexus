@@ -119,12 +119,12 @@ const TBillCalculator = () => {
                     <Table>
                       <TableBody>
                         <TableRow>
-                          <TableCell className="font-medium">Purchase Price</TableCell>
-                          <TableCell className="text-right">GHS {purchasePrice.toLocaleString()}</TableCell>
+                          <TableCell className="font-medium">Purchase Price (You Pay)</TableCell>
+                          <TableCell className="text-right">GHS {purchasePrice.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</TableCell>
                         </TableRow>
                         <TableRow>
-                          <TableCell className="font-medium">Profit at Maturity</TableCell>
-                          <TableCell className="text-right">GHS {profit.toLocaleString()}</TableCell>
+                          <TableCell className="font-medium">Interest Earned</TableCell>
+                          <TableCell className="text-right text-green-600">GHS {profit.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</TableCell>
                         </TableRow>
                         <TableRow>
                           <TableCell className="font-medium">Annualized Return</TableCell>
@@ -132,6 +132,17 @@ const TBillCalculator = () => {
                         </TableRow>
                       </TableBody>
                     </Table>
+                    
+                    {/* Final Total Highlight */}
+                    <div className="mt-4 p-4 bg-cc-navy dark:bg-cc-navy/90 rounded-lg">
+                      <div className="flex justify-between items-center">
+                        <span className="text-white font-medium">Maturity Value (You Receive)</span>
+                        <span className="text-cc-gold text-xl font-bold">
+                          GHS {parseFloat(faceValue || '0').toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                        </span>
+                      </div>
+                      <p className="text-gray-300 text-xs mt-1">After {term} days</p>
+                    </div>
                   </div>
                 </div>
               </CardContent>

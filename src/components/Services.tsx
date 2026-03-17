@@ -78,6 +78,12 @@ const Services = () => {
       link: "/securities-trading"
     },
     {
+      title: "FX Trading",
+      description: "Licensed foreign exchange services with competitive rates, institutional trading, hedging solutions, and expert forex advisory for businesses and institutions.",
+      imageUrl: "/lovable-uploads/5d82ecc8-34e0-4284-9c90-434650eaf740.png",
+      link: "/fx-trading"
+    },
+    {
       title: "Investment Research",
       description: "Comprehensive market intelligence and analysis covering Ghana, West African markets, and emerging African investment opportunities for global investors.",
       imageUrl: "/lovable-uploads/749a8bb6-9f9d-4731-8233-2a3459f75e84.png",
@@ -86,7 +92,7 @@ const Services = () => {
     {
       title: "Financings & Capital Markets",
       description: "International capital raising solutions through debt and equity offerings, connecting African companies with global investors and capital markets.",
-      imageUrl: "/lovable-uploads/5d82ecc8-34e0-4284-9c90-434650eaf740.png",
+      imageUrl: "/lovable-uploads/c6aad7a5-3482-484a-91dc-b2b0dadbb844.png",
       link: "/capital-markets"
     },
     {

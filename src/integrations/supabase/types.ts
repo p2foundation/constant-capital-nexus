@@ -700,7 +700,7 @@ export type Database = {
           activity_type: string
           created_at: string
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           timestamp: string
           user_agent: string | null
           user_id: string
@@ -709,7 +709,7 @@ export type Database = {
           activity_type: string
           created_at?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           timestamp?: string
           user_agent?: string | null
           user_id: string
@@ -718,7 +718,7 @@ export type Database = {
           activity_type?: string
           created_at?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           timestamp?: string
           user_agent?: string | null
           user_id?: string
@@ -793,16 +793,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      admin_delete_user: {
-        Args: { target_user_id: string }
-        Returns: boolean
-      }
-      admin_manually_confirm_user: {
-        Args:
-          | { confirmed_by_user_id: string; target_user_id: string }
-          | { target_user_id: string }
-        Returns: boolean
-      }
+      admin_delete_user: { Args: { target_user_id: string }; Returns: boolean }
+      admin_manually_confirm_user:
+        | { Args: { target_user_id: string }; Returns: boolean }
+        | {
+            Args: { confirmed_by_user_id: string; target_user_id: string }
+            Returns: boolean
+          }
       award_points: {
         Args: {
           activity_details_param?: Json
@@ -812,20 +809,11 @@ export type Database = {
         }
         Returns: boolean
       }
-      can_approve_content: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      can_edit_content: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      can_view_premium_content: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
+      can_approve_content: { Args: never; Returns: boolean }
+      can_edit_content: { Args: never; Returns: boolean }
+      can_view_premium_content: { Args: never; Returns: boolean }
       get_user_activities_with_emails: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           activity_timestamp: string
           activity_type: string
@@ -839,12 +827,9 @@ export type Database = {
           user_last_name: string
         }[]
       }
-      get_user_role: {
-        Args: { user_id?: string }
-        Returns: string
-      }
+      get_user_role: { Args: { user_id?: string }; Returns: string }
       get_user_statistics: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           activated_users: number
           pending_activations: number
@@ -852,7 +837,7 @@ export type Database = {
         }[]
       }
       get_users_with_profiles: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           company: string
           created_at: string

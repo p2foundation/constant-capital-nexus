@@ -19,8 +19,8 @@ const Index = () => {
   return (
     <div className="flex flex-col min-h-screen dark:bg-gray-950">
       <Helmet>
-        <title>Constant Capital - West Africa's Gateway to Global Investment | Securities Trading & Research</title>
-        <meta name="description" content="West Africa's premier investment brokerage connecting African opportunities with global capital. SEC-licensed securities trading on GSE and African markets, investment research, strategic advisory, and capital markets services for international clients." />
+        <title>Constant Capital - Ghana's Premier Investment & Capital Markets Partner | Securities Trading, FX & Primary Dealership</title>
+        <meta name="description" content="Ghana's premier investment and capital markets partner. SEC-licensed securities trading, primary dealership, FX trading, investment research, and strategic advisory services." />
         <meta name="keywords" content="African investment, West African markets, Ghana investment, GSE trading, securities broker, African capital markets, emerging markets, cross-border investment, international trading Africa, African stock exchange, regional trading hub, investment research, strategic advisory, SEC licensed" />
         <link rel="canonical" href="https://constantcap.com.gh/" />
       </Helmet>

@@ -207,7 +207,7 @@ const EquityCalculator = () => {
                             </TableCell>
                           </TableRow>
                           <TableRow>
-                            <TableCell className="font-medium">Capital Gain</TableCell>
+                            <TableCell className="font-medium">Capital Gain/Loss</TableCell>
                             <TableCell className={`text-right ${capitalGain >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                               GHS {capitalGain.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
                             </TableCell>
@@ -220,18 +220,29 @@ const EquityCalculator = () => {
                           </TableRow>
                           <TableRow>
                             <TableCell className="font-medium">Total Return</TableCell>
-                            <TableCell className={`text-right font-bold ${totalReturn >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            <TableCell className={`text-right ${totalReturn >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                               GHS {totalReturn.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
                             </TableCell>
                           </TableRow>
                           <TableRow>
                             <TableCell className="font-medium">Return Percentage</TableCell>
-                            <TableCell className={`text-right font-bold ${returnPercentage >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            <TableCell className={`text-right ${returnPercentage >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                               {returnPercentage.toFixed(2)}%
                             </TableCell>
                           </TableRow>
                         </TableBody>
                       </Table>
+                      
+                      {/* Final Total Highlight */}
+                      <div className="mt-4 p-4 bg-cc-navy dark:bg-cc-navy/90 rounded-lg">
+                        <div className="flex justify-between items-center">
+                          <span className="text-white font-medium">Current Portfolio Value</span>
+                          <span className="text-cc-gold text-xl font-bold">
+                            GHS {(parseFloat(currentPrice || '0') * parseInt(shares || '0')).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                          </span>
+                        </div>
+                        <p className="text-gray-300 text-xs mt-1">{shares} shares × GHS {parseFloat(currentPrice || '0').toFixed(2)} per share</p>
+                      </div>
                     </div>
                   </div>
                 </CardContent>

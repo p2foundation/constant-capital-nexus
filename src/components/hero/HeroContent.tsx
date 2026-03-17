@@ -24,7 +24,7 @@ const HeroContent = () => {
   return (
     <div className="animate-fade-in">
       <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-cc-navy dark:text-white leading-tight mb-4 sm:mb-6">
-        West Africa's Gateway to <span className="text-gradient">Global Investment</span>
+        Ghana's Premier Investment & <span className="text-gradient">Capital Markets Partner</span>
       </h1>
 
       {/* Flashing/rotating messages */}

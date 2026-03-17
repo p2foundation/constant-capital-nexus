@@ -68,6 +68,14 @@ const Footer = () => {
                   T-Bill Calculator
                 </Link>
               </li>
+              <li>
+                <Link
+                  to="/careers"
+                  className="hover:text-cc-gold transition-colors"
+                >
+                  Careers
+                </Link>
+              </li>
             </ul>
           </div>
 

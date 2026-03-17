@@ -41,6 +41,10 @@ const suggestedQuestions: SuggestedQuestion[] = [
     keywords: ["advisory", "strategic", "consulting", "guidance"]
   },
   {
+    text: "Tell me about your FX trading services",
+    keywords: ["fx", "forex", "foreign", "exchange", "currency", "trading"]
+  },
+  {
     text: "What markets do you trade on?",
     keywords: ["markets", "gse", "trading", "stocks", "securities"]
   }

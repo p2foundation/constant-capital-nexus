@@ -27,6 +27,15 @@ const AboutDropdown = () => {
               Meet our experienced management team
             </div>
           </Link>
+          <Link to="/careers" className="flex flex-col p-3 rounded-md hover:bg-cc-light-blue dark:hover:bg-cc-navy/80 bg-cc-gold/10 border border-cc-gold/20">
+            <div className="font-medium text-cc-navy dark:text-white flex items-center gap-2">
+              Careers
+              <span className="bg-cc-gold text-cc-navy text-[10px] px-1.5 py-0.5 rounded font-semibold">HIRING</span>
+            </div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">
+              Join our team — explore open positions
+            </div>
+          </Link>
         </div>
       </NavigationMenuContent>
     </NavigationMenuItem>

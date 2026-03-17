@@ -38,6 +38,20 @@ const ServicesDropdown = () => {
           </li>
           <li>
             <Link
+              to="/fx-trading"
+              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground bg-cc-gold/10 border border-cc-gold/20"
+            >
+              <div className="text-sm font-medium leading-none flex items-center gap-2">
+                FX Trading
+                <span className="bg-cc-gold text-cc-navy text-[10px] px-1.5 py-0.5 rounded font-semibold">NEW</span>
+              </div>
+              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                Licensed forex trading with competitive rates
+              </p>
+            </Link>
+          </li>
+          <li>
+            <Link
               to="/investment-research"
               className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
             >

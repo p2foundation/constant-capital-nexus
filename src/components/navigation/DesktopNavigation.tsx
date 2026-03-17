@@ -23,6 +23,7 @@ const DesktopNavigation = () => {
           <CalculatorsDropdown />
         </NavigationMenuList>
       </NavigationMenu>
+      <NavigationItem to="/careers">Careers</NavigationItem>
       <NavigationItem to="/faqs">FAQs</NavigationItem>
       <NavigationItem to="/contact">Contact Us</NavigationItem>
     </div>

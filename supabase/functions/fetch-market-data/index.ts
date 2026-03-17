@@ -50,7 +50,7 @@ serve(async (req) => {
       const { error } = await supabaseClient
         .from('market_data')
         .upsert(marketData, { 
-          onConflict: 'id',
+          onConflict: 'data_type,ticker_symbol,date',
           ignoreDuplicates: false 
         });
 

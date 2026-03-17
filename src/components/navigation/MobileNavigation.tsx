@@ -125,6 +125,14 @@ const MobileNavigation = ({ isMenuOpen, toggleMenu }: MobileNavigationProps) => 
           >
             Leadership
           </Link>
+          <Link
+            to="/careers"
+            className="flex items-center px-5 py-3 rounded-lg text-sm font-medium text-cc-navy hover:bg-cc-light-blue dark:text-white dark:hover:bg-cc-navy/80 transition-colors min-h-[44px]"
+            onClick={toggleMenu}
+          >
+            Careers
+            <span className="ml-2 bg-cc-gold text-cc-navy text-[10px] px-1.5 py-0.5 rounded font-semibold">HIRING</span>
+          </Link>
         </div>
         
         {/* Other Links */}
