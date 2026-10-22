@@ -30,14 +30,14 @@ const TeamMemberModal: React.FC<TeamMemberModalProps> = ({
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-900">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white dark:bg-background">
         <DialogHeader className="relative">
           <div className="flex items-center justify-between">
             <DialogTitle className="text-2xl font-bold text-cc-navy dark:text-white">
               Team Member Profile
             </DialogTitle>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-500 dark:text-gray-400">
+              <span className="text-sm text-gray-500 dark:text-muted-foreground">
                 {currentIndex + 1} of {totalMembers}
               </span>
               <Button
@@ -80,7 +80,7 @@ const TeamMemberModal: React.FC<TeamMemberModalProps> = ({
                 <Star className="h-5 w-5 mr-2 text-cc-gold" />
                 Biography
               </h3>
-              <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+              <p className="text-gray-700 dark:text-muted-foreground leading-relaxed">
                 {member.bio}
               </p>
             </div>
@@ -92,7 +92,7 @@ const TeamMemberModal: React.FC<TeamMemberModalProps> = ({
                   <GraduationCap className="h-5 w-5 mr-2 text-cc-gold" />
                   Education
                 </h3>
-                <p className="text-gray-700 dark:text-gray-300">
+                <p className="text-gray-700 dark:text-muted-foreground">
                   {member.education}
                 </p>
               </div>
@@ -130,7 +130,7 @@ const TeamMemberModal: React.FC<TeamMemberModalProps> = ({
               {member.experience.map((exp, index) => (
                 <div key={index} className="flex items-start">
                   <div className="w-2 h-2 bg-cc-gold rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                  <p className="text-gray-700 dark:text-gray-300">{exp}</p>
+                  <p className="text-gray-700 dark:text-muted-foreground">{exp}</p>
                 </div>
               ))}
             </div>
@@ -148,7 +148,7 @@ const TeamMemberModal: React.FC<TeamMemberModalProps> = ({
               {member.achievements.map((achievement, index) => (
                 <div key={index} className="flex items-start">
                   <div className="w-2 h-2 bg-cc-gold rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                  <p className="text-gray-700 dark:text-gray-300">{achievement}</p>
+                  <p className="text-gray-700 dark:text-muted-foreground">{achievement}</p>
                 </div>
               ))}
             </div>
@@ -156,7 +156,7 @@ const TeamMemberModal: React.FC<TeamMemberModalProps> = ({
         )}
 
         {/* Navigation */}
-        <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+        <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200 dark:border-border">
           <Button
             onClick={onPrev}
             variant="outline"

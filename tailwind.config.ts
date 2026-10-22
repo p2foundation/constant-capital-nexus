@@ -64,10 +64,10 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				// Updated custom colors
-				'cc-navy': '#0f102f',
-				'cc-blue': '#0f102f',
-				'cc-gold': '#f7821e',
-				'cc-orange': '#f7821e',
+				'cc-navy': '#0B1A2E',
+				'cc-blue': '#14263F',
+				'cc-gold': '#F28C28',
+				'cc-orange': '#F28C28',
 				'cc-light-blue': '#E1F2F7',
 				'cc-gray': '#F6F8FA',
 			},
@@ -110,11 +110,11 @@ export default {
 			},
 			fontFamily: {
 				// Constant Capital Ghana brand fonts
-				'heading': ['Optima', 'Montserrat', 'Arial Black', 'sans-serif'],
-				'body': ['Myriad Pro', 'Source Sans Pro', 'Arial', 'sans-serif'],
+				'heading': ['Sora', 'sans-serif'],
+				'body': ['Manrope', 'sans-serif'],
 				// Keep semantic names for better maintainability
-				serif: ['Optima', 'Montserrat', 'serif'],
-				sans: ['Myriad Pro', 'Source Sans Pro', 'sans-serif']
+				serif: ['Sora', 'serif'],
+				sans: ['Manrope', 'sans-serif']
 			}
 		}
 	},

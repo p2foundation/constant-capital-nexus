@@ -9,8 +9,7 @@ export const prepareDataForSaving = (
   processedData: ProcessedEquitiesData[],
   unsavedChanges: EquitiesDataPoint[]
 ): ProcessedEquitiesData[] => {
-  // Create a copy of the existing data
-  const allData: ProcessedEquitiesData[] = [...processedData];
+  const allData: ProcessedEquitiesData[] = [];
   
   // Update existing entries and create new ones
   unsavedChanges.forEach(change => {
@@ -32,7 +31,7 @@ export const prepareDataForSaving = (
     }
   });
 
-  console.log("Prepared data for saving:", allData);
+  console.log("Prepared analyst corrections for saving:", allData);
   return allData;
 };
 

@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { researchReportsAPI } from '@/services/api/researchReports';
 import { useAuth } from '@/contexts/AuthContext';
 import { canAccessPremiumContent } from '@/utils/premiumAccess';
+import { toast } from 'sonner';
 
 interface ReportFile {
   id: string;
@@ -78,15 +79,17 @@ const ResearchDetailFiles = ({ pdfUrl, files = [], isPremium = false }: Research
           variant="outline" 
           size="sm" 
           className="flex gap-2" 
-          asChild
+          onClick={async () => {
+            try {
+              const url = await researchReportsAPI.getFileDownloadUrl(file.file_path, file.file_name);
+              window.open(url, '_blank', 'noopener');
+            } catch {
+              toast.error('Could not download this file. Please sign in or try again.');
+            }
+          }}
         >
-          <a href={researchReportsAPI.getFileDownloadUrl(file.file_path)} 
-             target="_blank" 
-             rel="noopener noreferrer" 
-             download={file.file_name}>
-            <Download className="h-4 w-4" />
-            Download {file.file_name}
-          </a>
+          <Download className="h-4 w-4" />
+          Download {file.file_name}
         </Button>
       ))}
     </div>

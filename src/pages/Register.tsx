@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import RegisterForm from '@/components/auth/RegisterForm';
 import EmailConfirmationAlert from '@/components/auth/EmailConfirmationAlert';
 import { ArrowLeft } from 'lucide-react';
@@ -10,6 +10,7 @@ const Register = () => {
   useAnalytics();
   
   const location = useLocation();
+  const navigate = useNavigate();
   const state = location.state as { 
     showEmailConfirmation?: boolean; 
     userEmail?: string; 
@@ -18,7 +19,7 @@ const Register = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="bg-white/90 backdrop-blur-sm fixed w-full z-50 border-b border-gray-100 shadow-sm py-4 dark:bg-cc-navy/90 dark:border-gray-800">
+      <div className="bg-white/90 backdrop-blur-sm fixed w-full z-50 border-b border-gray-100 shadow-sm py-4 dark:bg-card dark:border-border">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
           <Link to="/" className="flex items-center">
             <span className="text-2xl font-serif font-bold text-cc-navy dark:text-white">
@@ -36,7 +37,7 @@ const Register = () => {
         {state?.showEmailConfirmation && state?.userEmail ? (
           <EmailConfirmationAlert 
             email={state.userEmail}
-            onDismiss={() => window.location.href = '/login'}
+            onDismiss={() => navigate('/login', { state: { email: state.userEmail } })}
           />
         ) : (
           <div className="w-full">
@@ -45,7 +46,7 @@ const Register = () => {
         )}
       </div>
       
-      <div className="bg-white border-t border-gray-100 py-4 text-center text-sm text-gray-500 dark:bg-cc-navy/90 dark:border-gray-800 dark:text-gray-400">
+      <div className="bg-white border-t border-gray-100 py-4 text-center text-sm text-gray-500 dark:bg-card dark:border-border dark:text-muted-foreground">
         &copy; {new Date().getFullYear()} Constant Capital (Ghana) Limited
       </div>
     </div>

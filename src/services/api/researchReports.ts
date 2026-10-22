@@ -1,6 +1,7 @@
 
 // Research Reports API service
 import { apiRequest } from './utils';
+import { supabase } from '@/integrations/supabase/client';
 
 // Types for report creation and update
 export interface CreateReportData {
@@ -74,7 +75,12 @@ export const researchReportsAPI = {
   getReportStats: () => 
     apiRequest("/research/reports/stats"),
     
-  // Get the download URL for a report file
-  getFileDownloadUrl: (filePath: string) => 
-    `https://estbtjkwlgefncxmxzta.supabase.co/storage/v1/object/public/research_reports/${filePath}`
+  // Get a short-lived signed download URL for a report file (bucket is private)
+  getFileDownloadUrl: async (filePath: string, fileName?: string) => {
+    const { data, error } = await supabase.storage
+      .from('research_reports')
+      .createSignedUrl(filePath, 300, { download: fileName || true });
+    if (error) throw error;
+    return data.signedUrl;
+  }
 };

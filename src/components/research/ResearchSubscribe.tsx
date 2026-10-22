@@ -52,9 +52,9 @@ const ResearchSubscribe: React.FC = () => {
   };
 
   return (
-    <div className="border border-gray-200 dark:border-gray-700 p-6 rounded-lg">
+    <div className="border border-gray-200 dark:border-border p-6 rounded-lg">
       <h3 className="font-medium text-cc-navy dark:text-white mb-4 text-left">Subscribe to Research</h3>
-      <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 text-left">
+      <p className="text-sm text-gray-600 dark:text-muted-foreground mb-4 text-left">
         Get premium research reports delivered directly to your inbox.
         Subscribe to our research newsletter for market insights.
       </p>

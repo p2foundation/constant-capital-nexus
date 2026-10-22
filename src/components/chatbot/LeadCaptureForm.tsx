@@ -63,8 +63,8 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
   };
 
   return (
-    <div className="space-y-4 p-4 border rounded-lg bg-gray-50 dark:bg-gray-800">
-      <div className="text-sm text-gray-600 dark:text-gray-300">
+    <div className="space-y-4 p-4 border rounded-lg bg-gray-50 dark:bg-card">
+      <div className="text-sm text-gray-600 dark:text-muted-foreground">
         I'd love to connect you with our investment team. Please share your contact details:
       </div>
       

@@ -6,9 +6,9 @@ import { Link } from 'react-router-dom';
 
 const ResearchLoginPrompt: React.FC = () => {
   return (
-    <div className="bg-cc-light-blue dark:bg-cc-navy dark:border dark:border-cc-gold/30 p-6 rounded-lg mb-8">
+    <div className="bg-cc-light-blue dark:bg-card dark:border dark:border-cc-gold/30 p-6 rounded-lg mb-8">
       <h3 className="font-medium text-cc-navy dark:text-white mb-4 text-left">Research Team Access</h3>
-      <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 text-left">
+      <p className="text-sm text-gray-600 dark:text-muted-foreground mb-4 text-left">
         Members of our research team can log in to upload and publish reports,
         market updates, and investment recommendations.
       </p>

@@ -59,6 +59,9 @@ export interface FormData {
   issueDate2: string;
   expiringDate2: string;
   idDocument2?: File[];
+  ghanaCardFront?: File[];
+  ghanaCardBack?: File[];
+  passportDocument?: File[];
   
   // Next of Kin
   nokTitle: string;
@@ -137,6 +140,10 @@ export interface FormData {
   signatureDate: string;
   applicantSignature?: File[];
   witnessSignature?: File[];
+
+  // Saved file paths (uploaded during drafting) and progress tracking
+  _uploaded?: Record<string, string>;
+  _progress?: { startedAt?: string; lastActivityAt?: string; currentStep?: number; percent?: number; missing?: string[]; events?: { at: string; event: string }[] };
 }
 
 export interface StepProps {

@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { Facebook } from "lucide-react";
+import { Facebook, MapPin, Phone, Mail } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -118,20 +118,20 @@ const Footer = () => {
             <h3 className="font-medium text-lg mb-4">Contact Us</h3>
             <ul className="space-y-2 text-gray-300 mb-6">
               <li className="flex items-start">
-                <span className="mr-2">📍</span>
+                <MapPin className="mr-2 mt-0.5 h-4 w-4 shrink-0 text-cc-gold" aria-hidden="true" />
                 <span>6 Tanbu Link, East Legon, Accra, Ghana</span>
               </li>
               <li className="flex items-center">
-                <span className="mr-2">📞</span>
+                <Phone className="mr-2 h-4 w-4 shrink-0 text-cc-gold" aria-hidden="true" />
                 <a
-                  href="tel:+233302738242"
+                  href="tel:+233302500386"
                   className="hover:text-cc-gold transition-colors duration-300"
                 >
                   +233 302 500 386
                 </a>
               </li>
               <li className="flex items-center">
-                <span className="mr-2">📧</span>
+                <Mail className="mr-2 h-4 w-4 shrink-0 text-cc-gold" aria-hidden="true" />
                 <a
                   href="mailto:info@constantcapital.com.gh?subject=Inquiry from Website"
                   className="hover:text-cc-gold transition-colors duration-300"

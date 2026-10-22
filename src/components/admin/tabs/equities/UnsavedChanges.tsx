@@ -23,7 +23,7 @@ const UnsavedChanges: React.FC<UnsavedChangesProps> = ({ unsavedChanges, onDelet
         You have {unsavedChanges.length} unsaved data point{unsavedChanges.length > 1 ? 's' : ''}. Click Save Changes to persist them to the database.
       </p>
       
-      <div className="max-h-60 overflow-y-auto border rounded-md bg-white dark:bg-gray-800">
+      <div className="max-h-60 overflow-y-auto border rounded-md bg-white dark:bg-card">
         <Table>
           <TableHeader>
             <TableRow>

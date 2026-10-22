@@ -150,11 +150,11 @@ const InvestmentProfileStep: React.FC<StepProps> = ({ formData, setFormData }) =
       </div>
 
       {/* FATCA Information */}
-      <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+      <div className="p-4 bg-gray-50 dark:bg-card rounded-lg">
         <h3 className="text-lg font-medium mb-4 text-gray-900 dark:text-gray-100">
           CLIENT ADDITIONAL INFORMATION
         </h3>
-        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+        <p className="text-sm text-gray-600 dark:text-muted-foreground mb-4">
           The following questions are designed to capture information for common reporting standards as well as FATCA (Foreign Account Tax Compliance Act)
         </p>
         
@@ -197,7 +197,7 @@ const InvestmentProfileStep: React.FC<StepProps> = ({ formData, setFormData }) =
                   </Label>
                 </div>
               </div>
-              <Label className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+              <Label className="text-sm text-gray-700 dark:text-muted-foreground leading-relaxed">
                 {item.label}
               </Label>
             </div>
@@ -208,7 +208,7 @@ const InvestmentProfileStep: React.FC<StepProps> = ({ formData, setFormData }) =
         {(formData.citizenOfAnotherCountry || formData.foreignPassport || formData.greenCard || 
           formData.residentInForeignCountry || formData.spentDaysInForeignCountry) && (
           <div className="mt-6 space-y-4">
-            <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <p className="text-sm font-medium text-gray-700 dark:text-muted-foreground">
               If the response to any of the above questions is Yes, please provide the following information:
             </p>
             

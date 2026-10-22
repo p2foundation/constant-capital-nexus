@@ -12,7 +12,7 @@ import CTASection from '@/components/advisory/CTASection';
 
 const InvestmentAdvisory = () => {
   return (
-    <div className="flex flex-col min-h-screen dark:bg-gray-950">
+    <div className="flex flex-col min-h-screen dark:bg-background">
       <Helmet>
         <title>Investment Advisory Services | Portfolio Management | Constant Capital Ghana</title>
         <meta name="description" content="Tailored investment advisory services in Ghana. Expert portfolio management, financial planning, and investment strategies for institutional and individual clients." />

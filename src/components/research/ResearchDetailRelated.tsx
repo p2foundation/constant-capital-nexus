@@ -5,7 +5,7 @@ import { FileText } from 'lucide-react';
 
 const ResearchDetailRelated = () => {
   return (
-    <div className="border-t border-gray-100 dark:border-gray-800 pt-4 mt-6">
+    <div className="border-t border-gray-100 dark:border-border pt-4 mt-6">
       <h3 className="font-medium mb-2 flex items-center gap-2">
         <FileText className="h-4 w-4" /> Related Research
       </h3>

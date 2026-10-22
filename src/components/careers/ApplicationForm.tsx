@@ -7,8 +7,9 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
-import { Mail, Upload, CheckCircle, User, Briefcase, FileText, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Mail, Upload, CheckCircle, User, Briefcase, FileText, ArrowRight, ArrowLeft, Loader2 } from 'lucide-react';
 import { JobListing } from '@/data/careers';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ApplicationFormProps {
   job: JobListing;
@@ -23,6 +24,7 @@ const ApplicationForm = ({ job, visible }: ApplicationFormProps) => {
   const { toast } = useToast();
   const [step, setStep] = useState<Step>(1);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
   const [formData, setFormData] = useState({
     fullName: '',
@@ -43,32 +45,40 @@ const ApplicationForm = ({ job, visible }: ApplicationFormProps) => {
 
   const canProceedStep1 = formData.fullName && formData.email && formData.phone;
   const canProceedStep2 = formData.yearsExperience;
-  const canSubmit = formData.coverLetter && agreedToPrivacy;
+  const canSubmit = formData.coverLetter && agreedToPrivacy && !submitting;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitting(true);
 
-    const body = `Full Name: ${formData.fullName}
-Email: ${formData.email}
-Phone: ${formData.phone}
-Current Role: ${formData.currentRole}
-Years of Experience: ${formData.yearsExperience}
-Notice Period: ${formData.noticePeriod}
-Expected Salary: ${formData.expectedSalary}
-LinkedIn: ${formData.linkedIn}
-Portfolio: ${formData.portfolio}
-How did you hear about us: ${formData.heardFrom}
+    try {
+      const { error } = await supabase.functions.invoke('send-career-application', {
+        body: {
+          jobId: job.id,
+          jobTitle: job.title,
+          applicationEmail: job.applicationEmail,
+          subjectLine: job.subjectLine,
+          ...formData,
+        },
+      });
 
-Cover Letter:
-${formData.coverLetter}`;
+      if (error) throw error;
 
-    window.location.href = `mailto:${job.applicationEmail}?subject=${encodeURIComponent(job.subjectLine)}&body=${encodeURIComponent(body)}`;
-
-    setSubmitted(true);
-    toast({
-      title: "Application Started",
-      description: "Your email client should open. Please attach your CV before sending.",
-    });
+      setSubmitted(true);
+      toast({
+        title: "Application Submitted!",
+        description: "We've received your application. Check your email for confirmation and next steps.",
+      });
+    } catch (err: any) {
+      console.error('Application submission error:', err);
+      toast({
+        title: "Submission failed",
+        description: "Something went wrong. Please try again or email us directly.",
+        variant: "destructive",
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (!visible) return null;
@@ -83,7 +93,7 @@ ${formData.coverLetter}`;
         {/* Header */}
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-foreground">Apply for {job.title}</h2>
-          <p className="text-sm text-muted-foreground mt-1">Complete the form below. Your email client will open with details pre-filled.</p>
+          <p className="text-sm text-muted-foreground mt-1">Complete the form below. Your application will be sent directly to our recruitment team.</p>
         </div>
 
         {/* Success State */}
@@ -97,21 +107,30 @@ ${formData.coverLetter}`;
               <div className="w-16 h-16 bg-green-500/15 rounded-full flex items-center justify-center mx-auto mb-4">
                 <CheckCircle className="w-8 h-8 text-green-500" />
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-2">Application Ready!</h3>
+              <h3 className="text-xl font-bold text-foreground mb-2">Application Submitted!</h3>
               <p className="text-muted-foreground max-w-md mx-auto mb-4">
-                Your email client should have opened with your details pre-filled. <strong>Don't forget to attach your CV/resume</strong> before sending.
+                Thank you, <strong>{formData.fullName.split(' ')[0]}</strong>. We've received your application and sent a confirmation to <strong>{formData.email}</strong>.
               </p>
-              <div className="bg-muted/50 rounded-lg p-4 text-sm text-muted-foreground max-w-sm mx-auto">
-                <p className="font-medium text-foreground mb-1">Didn't open?</p>
-                Send your CV manually to{' '}
+              <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4 text-sm text-amber-700 dark:text-amber-400 max-w-md mx-auto">
+                <p className="font-medium mb-1">📎 One more step</p>
+                Please email your <strong>CV/resume</strong> to{' '}
                 <a href={`mailto:${job.applicationEmail}?subject=${encodeURIComponent(job.subjectLine)}`} className="text-cc-gold hover:underline font-medium">
                   {job.applicationEmail}
-                </a>
+                </a>{' '}
+                with subject: <em>{job.subjectLine}</em>
               </div>
               <Button
                 variant="outline"
-                className="mt-4"
-                onClick={() => { setSubmitted(false); setStep(1); }}
+                className="mt-6"
+                onClick={() => {
+                  setSubmitted(false);
+                  setStep(1);
+                  setFormData({
+                    fullName: '', email: '', phone: '', currentRole: '', yearsExperience: '',
+                    linkedIn: '', portfolio: '', coverLetter: '', heardFrom: '', noticePeriod: '', expectedSalary: '',
+                  });
+                  setAgreedToPrivacy(false);
+                }}
               >
                 Submit Another Application
               </Button>
@@ -270,7 +289,7 @@ ${formData.coverLetter}`;
 
                       <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4 text-sm text-amber-700 dark:text-amber-400">
                         <Upload className="w-4 h-4 inline mr-1.5" />
-                        <strong>Important:</strong> Your email client will open with details pre-filled. Please <strong>attach your CV/resume</strong> and any supporting documents before sending.
+                        <strong>Next step after submitting:</strong> You'll receive a confirmation email with instructions to send your <strong>CV/resume</strong> to <strong>{job.applicationEmail}</strong>.
                       </div>
 
                       {/* Summary */}
@@ -299,7 +318,11 @@ ${formData.coverLetter}`;
                           <ArrowLeft className="w-4 h-4 mr-1" /> Back
                         </Button>
                         <Button type="submit" disabled={!canSubmit} className="bg-cc-gold hover:bg-cc-gold/90 text-cc-navy font-bold">
-                          <Mail className="w-4 h-4 mr-2" /> Submit Application
+                          {submitting ? (
+                            <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Submitting...</>
+                          ) : (
+                            <><Mail className="w-4 h-4 mr-2" /> Submit Application</>
+                          )}
                         </Button>
                       </div>
                     </motion.div>

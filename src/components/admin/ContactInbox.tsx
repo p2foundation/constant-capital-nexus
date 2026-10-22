@@ -191,7 +191,7 @@ const ContactInbox = () => {
                         {formatDate(message.created_at)}
                       </span>
                     </div>
-                    <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">
+                    <div className="text-sm text-gray-600 dark:text-muted-foreground mb-1">
                       {message.subject}
                     </div>
                     <div className="text-xs text-gray-500 truncate">
@@ -274,7 +274,7 @@ const ContactInbox = () => {
                     <MessageSquare className="w-4 h-4 mr-2 text-gray-400 mt-0.5" />
                     <span className="font-medium text-sm">Message:</span>
                   </div>
-                  <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                  <div className="bg-gray-50 dark:bg-card p-4 rounded-lg">
                     <p className="whitespace-pre-wrap text-sm leading-relaxed">
                       {selectedMessage.message}
                     </p>

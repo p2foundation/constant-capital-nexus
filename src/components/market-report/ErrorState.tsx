@@ -9,7 +9,7 @@ interface ErrorStateProps {
 
 const ErrorState: React.FC<ErrorStateProps> = ({ error }) => {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-cc-navy/95">
+    <div className="min-h-screen bg-gray-50 dark:bg-card">
       <Navbar />
       <div className="container mx-auto py-20 px-4">
         <div className="flex flex-col items-center justify-center py-20">

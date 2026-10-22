@@ -74,7 +74,7 @@ const LoginForm = () => {
       <div className="mb-8 text-center">
         <ShieldCheck className="h-12 w-12 mx-auto mb-4 text-cc-navy dark:text-white" />
         <h2 className="text-2xl font-bold text-cc-navy dark:text-white mb-2">Sign In</h2>
-        <p className="text-gray-600 dark:text-gray-300">
+        <p className="text-gray-600 dark:text-muted-foreground">
           Access Constant Capital research and market data
         </p>
       </div>
@@ -92,7 +92,7 @@ const LoginForm = () => {
                     placeholder="your.email@example.com"
                     {...field}
                     disabled={isLoading}
-                    className="dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                    className="dark:bg-card dark:border-border dark:text-white"
                   />
                 </FormControl>
                 <FormMessage />
@@ -112,7 +112,7 @@ const LoginForm = () => {
                     placeholder="••••••••"
                     {...field}
                     disabled={isLoading}
-                    className="dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                    className="dark:bg-card dark:border-border dark:text-white"
                   />
                 </FormControl>
                 <FormMessage />
@@ -148,7 +148,7 @@ const LoginForm = () => {
       </Form>
       
       <div className="mt-6 text-center">
-        <div className="text-sm text-gray-600 dark:text-gray-300">
+        <div className="text-sm text-gray-600 dark:text-muted-foreground">
           Don't have an account?{" "}
           <button 
             className="text-cc-blue hover:text-cc-navy dark:text-cc-gold dark:hover:text-white hover:underline"
@@ -157,7 +157,7 @@ const LoginForm = () => {
             Register
           </button>
         </div>
-        <div className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+        <div className="mt-2 text-sm text-gray-600 dark:text-muted-foreground">
           Forgot your password?{" "}
           <button
             className="text-cc-blue hover:text-cc-navy dark:text-cc-gold dark:hover:text-white hover:underline"

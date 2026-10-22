@@ -60,8 +60,8 @@ const SuggestedQuestions: React.FC<SuggestedQuestionsProps> = ({ onQuestionClick
   const randomQuestions = getRandomQuestions();
 
   return (
-    <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg space-y-3">
-      <p className="text-sm text-gray-600 dark:text-gray-300 font-medium">
+    <div className="bg-gray-50 dark:bg-card p-4 rounded-lg space-y-3">
+      <p className="text-sm text-gray-600 dark:text-muted-foreground font-medium">
         Here are some questions I can help you with:
       </p>
       <div className="space-y-2">

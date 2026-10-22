@@ -25,7 +25,7 @@ const ResearchTabs: React.FC<ResearchTabsProps> = ({
   return (
     <div className="lg:w-2/3">
       <Tabs defaultValue="featured" className="w-full">
-        <TabsList className="mb-6">
+        <TabsList className="mb-6 h-auto w-full justify-start overflow-x-auto flex-nowrap sm:w-auto">
           <TabsTrigger value="featured">Featured</TabsTrigger>
           <TabsTrigger value="equities">Equities</TabsTrigger>
           <TabsTrigger value="fixedincome">Fixed Income</TabsTrigger>
@@ -53,7 +53,7 @@ const ResearchTabs: React.FC<ResearchTabsProps> = ({
               
               {latestReports.length === 0 && (
                 <div className="text-center py-12">
-                  <p className="text-gray-500 dark:text-gray-400">No featured reports available.</p>
+                  <p className="text-gray-500 dark:text-muted-foreground">No featured reports available.</p>
                 </div>
               )}
             </TabsContent>
@@ -73,7 +73,7 @@ const ResearchTabs: React.FC<ResearchTabsProps> = ({
               
               {getReportsByType('equities').length === 0 && (
                 <div className="text-center py-12">
-                  <p className="text-gray-500 dark:text-gray-400">No equity research reports available.</p>
+                  <p className="text-gray-500 dark:text-muted-foreground">No equity research reports available.</p>
                 </div>
               )}
             </TabsContent>
@@ -93,7 +93,7 @@ const ResearchTabs: React.FC<ResearchTabsProps> = ({
               
               {getReportsByType('fixedincome').length === 0 && (
                 <div className="text-center py-12">
-                  <p className="text-gray-500 dark:text-gray-400">No fixed income reports available.</p>
+                  <p className="text-gray-500 dark:text-muted-foreground">No fixed income reports available.</p>
                 </div>
               )}
             </TabsContent>
@@ -113,7 +113,7 @@ const ResearchTabs: React.FC<ResearchTabsProps> = ({
               
               {getReportsByType('macroeconomic').length === 0 && (
                 <div className="text-center py-12">
-                  <p className="text-gray-500 dark:text-gray-400">No macroeconomic reports available.</p>
+                  <p className="text-gray-500 dark:text-muted-foreground">No macroeconomic reports available.</p>
                 </div>
               )}
             </TabsContent>

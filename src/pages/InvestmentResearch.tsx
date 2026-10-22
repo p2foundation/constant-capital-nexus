@@ -13,7 +13,7 @@ const InvestmentResearch = () => {
   useAnalytics();
   
   return (
-    <div className="flex flex-col min-h-screen dark:bg-gray-950">
+    <div className="flex flex-col min-h-screen dark:bg-background">
       <Navbar />
       <div className="pt-16">
         <HeroSection />

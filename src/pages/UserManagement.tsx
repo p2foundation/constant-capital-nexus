@@ -409,7 +409,7 @@ const UserManagement = () => {
         <div className="text-center">
           <Shield className="h-12 w-12 text-red-500 mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Access Denied</h1>
-          <p className="text-gray-600 dark:text-gray-400">You don't have permission to access this page.</p>
+          <p className="text-gray-600 dark:text-muted-foreground">You don't have permission to access this page.</p>
         </div>
       </div>
     );
@@ -417,12 +417,12 @@ const UserManagement = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-cc-navy/95">
+      <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-card">
         <Navbar />
         <div className="container mx-auto px-4 py-8 flex-grow pt-20 flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cc-gold mx-auto mb-4"></div>
-            <p className="text-gray-600 dark:text-gray-400">Loading user data...</p>
+            <p className="text-gray-600 dark:text-muted-foreground">Loading user data...</p>
           </div>
         </div>
         <Footer />
@@ -431,13 +431,13 @@ const UserManagement = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-cc-navy/95">
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-card">
       <Navbar />
       
       <div className="container mx-auto px-4 py-8 flex-grow pt-20">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-cc-navy dark:text-white mb-2">User Management Dashboard</h1>
-          <p className="text-gray-600 dark:text-gray-300">
+          <p className="text-gray-600 dark:text-muted-foreground">
             Manage users, monitor activities, and oversee account openings
           </p>
           

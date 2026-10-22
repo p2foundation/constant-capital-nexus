@@ -74,7 +74,7 @@ const services = [
 
 const FXServicesGrid = () => {
   return (
-    <section className="py-20 bg-cc-gray dark:bg-gray-900">
+    <section className="py-20 bg-cc-gray dark:bg-background">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -82,11 +82,11 @@ const FXServicesGrid = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <span className="text-cc-gold font-medium text-sm uppercase tracking-wider">Our FX Services</span>
-          <h2 className="text-3xl md:text-4xl font-bold text-cc-navy dark:text-white mt-2 mb-4">
+          <span className="text-accent font-medium text-sm uppercase tracking-wider">Our FX Services</span>
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-2 mb-4">
             Comprehensive Foreign Exchange Solutions
           </h2>
-          <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          <p className="text-gray-600 dark:text-muted-foreground max-w-2xl mx-auto">
             From simple currency conversions to complex hedging strategies, 
             we provide the full spectrum of FX services to meet your needs.
           </p>
@@ -101,7 +101,7 @@ const FXServicesGrid = () => {
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
             >
-              <Card className="h-full bg-white dark:bg-gray-800 border-none shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden">
+              <Card className="h-full bg-card border-none shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden">
                 <CardContent className="p-6 relative">
                   {/* Background Gradient */}
                   <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${service.color} rounded-full blur-3xl opacity-50 group-hover:opacity-75 transition-opacity`} />
@@ -111,11 +111,11 @@ const FXServicesGrid = () => {
                       <service.icon className={`h-7 w-7 ${service.iconColor}`} />
                     </div>
                     
-                    <h3 className="text-lg font-bold text-cc-navy dark:text-white mb-2">
+                    <h3 className="text-lg font-bold text-foreground mb-2">
                       {service.title}
                     </h3>
                     
-                    <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                    <p className="text-gray-600 dark:text-muted-foreground text-sm leading-relaxed">
                       {service.description}
                     </p>
                   </div>

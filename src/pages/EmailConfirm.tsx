@@ -89,8 +89,8 @@ const EmailConfirm = () => {
           
           // Redirect after a short delay
           setTimeout(() => {
-            navigate('/');
-          }, 3000);
+            navigate(data.session ? '/account-opening' : '/login');
+          }, 2500);
         } else {
           setError('Confirmation completed but user data is missing. Please try signing in.');
         }

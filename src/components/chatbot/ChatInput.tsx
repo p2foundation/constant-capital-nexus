@@ -25,7 +25,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
 
   return (
     <div className="flex p-4 border-t mt-auto">
-      <div className="flex w-full gap-0 items-center bg-white dark:bg-gray-950 border rounded-md overflow-hidden pr-1">
+      <div className="flex w-full gap-0 items-center bg-white dark:bg-background border rounded-md overflow-hidden pr-1">
         <Input
           placeholder="Ask Ako about our services..."
           value={inputValue}

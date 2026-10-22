@@ -4,6 +4,9 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import FileUpload from '../FileUpload';
 import { StepProps } from '../types';
+import SignaturePad from '../SignaturePad';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const DeclarationStep: React.FC<StepProps> = ({ formData, setFormData }) => {
   const handleChange = (field: string, value: string | boolean) => {
@@ -20,14 +23,21 @@ const DeclarationStep: React.FC<StepProps> = ({ formData, setFormData }) => {
     });
   };
 
+  const sigFile = formData.applicantSignature?.[0];
+  const sigUrl = React.useMemo(() => (sigFile ? URL.createObjectURL(sigFile) : ''), [sigFile]);
+  React.useEffect(() => {
+    if (!formData.signatureDate) handleChange('signatureDate', new Date().toISOString().slice(0, 10));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="space-y-6">
-      <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+      <div className="p-4 bg-gray-50 dark:bg-card rounded-lg">
         <h3 className="text-lg font-medium mb-4 text-gray-900 dark:text-gray-100">
           DECLARATION
         </h3>
         
-        <div className="space-y-4 text-sm text-gray-700 dark:text-gray-300">
+        <div className="space-y-4 text-sm text-gray-700 dark:text-muted-foreground">
           <p>
             I/We hereby declare that all the information submitted by me/us on the form are 
             correct, true and valid, that by my/our request, to open and maintain securities 
@@ -59,122 +69,37 @@ const DeclarationStep: React.FC<StepProps> = ({ formData, setFormData }) => {
         </div>
       </div>
 
-      <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-        <h3 className="text-lg font-medium mb-4 text-gray-900 dark:text-gray-100">
-          DIGITAL SIGNATURES
-        </h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <FileUpload
-              label="Applicant Signature"
-              accept="image/*"
-              onFileSelect={(files) => handleFileUpload('applicantSignature', files)}
-              selectedFiles={formData.applicantSignature || []}
-              description="Upload your signature image"
-            />
+      <div className="p-4 bg-gray-50 dark:bg-card rounded-lg space-y-4">
+        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">YOUR SIGNATURE *</h3>
+        <p className="text-sm text-muted-foreground">Sign with your finger or mouse, or upload a photo of your signature on white paper.</p>
+        {sigFile ? (
+          <div className="flex items-center gap-4">
+            <img src={sigUrl} alt="Your signature" className="h-20 bg-white rounded border border-border p-2" />
+            <Button type="button" variant="outline" size="sm" onClick={() => handleFileUpload('applicantSignature', [])}>Change signature</Button>
           </div>
-
-          <div>
-            <FileUpload
-              label="Witness Signature (Optional)"
-              accept="image/*"
-              onFileSelect={(files) => handleFileUpload('witnessSignature', files)}
-              selectedFiles={formData.witnessSignature || []}
-              description="Upload witness signature if available"
-            />
+        ) : formData._uploaded?.applicantSignature ? (
+          <div className="flex items-center gap-4">
+            <p className="text-sm text-primary">Signature already saved.</p>
+            <Button type="button" variant="outline" size="sm" onClick={() => setFormData({ ...formData, _uploaded: { ...formData._uploaded, applicantSignature: '' } })}>Sign again</Button>
           </div>
+        ) : (
+          <Tabs defaultValue="draw">
+            <TabsList>
+              <TabsTrigger value="draw">Draw</TabsTrigger>
+              <TabsTrigger value="upload">Upload</TabsTrigger>
+            </TabsList>
+            <TabsContent value="draw"><SignaturePad onSave={(f) => handleFileUpload('applicantSignature', [f])} /></TabsContent>
+            <TabsContent value="upload">
+              <FileUpload label="Signature image" accept="image/*"
+                onFileSelect={(files) => handleFileUpload('applicantSignature', files)}
+                selectedFiles={[]} description="PNG or JPG" />
+            </TabsContent>
+          </Tabs>
+        )}
+        <div className="max-w-xs">
+          <Label htmlFor="signatureDate">Date</Label>
+          <Input id="signatureDate" type="date" value={formData.signatureDate} onChange={(e) => handleChange('signatureDate', e.target.value)} />
         </div>
-      </div>
-
-      <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-        <h3 className="text-lg font-medium mb-4 text-gray-900 dark:text-gray-100">
-          ACCOUNT MANDATE
-        </h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <Label htmlFor="signatory1">Name of Signatory</Label>
-            <Input
-              id="signatory1"
-              placeholder="Enter signatory name"
-            />
-          </div>
-
-          <div>
-            <Label>Signature Specimen</Label>
-            <div className="h-20 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg flex items-center justify-center text-sm text-gray-500 dark:text-gray-400">
-              Signature Area
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-          <div>
-            <Label htmlFor="signatory2">Name of Signatory</Label>
-            <Input
-              id="signatory2"
-              placeholder="Enter signatory name"
-            />
-          </div>
-
-          <div>
-            <Label>Signature Specimen</Label>
-            <div className="h-20 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg flex items-center justify-center text-sm text-gray-500 dark:text-gray-400">
-              Signature Area
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-4 space-y-2">
-          <div className="flex items-center space-x-4">
-            <Checkbox id="oneToSign" />
-            <Label htmlFor="oneToSign" className="text-sm">One to sign</Label>
-            
-            <Checkbox id="eitherToSign" />
-            <Label htmlFor="eitherToSign" className="text-sm">Either to sign</Label>
-            
-            <Checkbox id="bothToSign" />
-            <Label htmlFor="bothToSign" className="text-sm">Both to sign</Label>
-          </div>
-        </div>
-      </div>
-
-      <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-        <h3 className="text-lg font-medium mb-4 text-gray-900 dark:text-gray-100">
-          Compliance Checklist
-        </h3>
-        
-        <div className="space-y-3">
-          {[
-            'Passport-sized photographs (Account holders / Beneficiaries)',
-            'Proof of identity (Account holder)',
-            'Proof of identity (Account beneficiary/ ITF)',
-            'Proof of address',
-            'Signed CSD account opening form',
-            'Resident permit (foreign residents)',
-            'Proof of foreign address (non-resident clients)',
-            'Email indemnity form'
-          ].map((item, index) => (
-            <div key={index} className="flex items-center space-x-3">
-              <Checkbox id={`checklist-${index}`} />
-              <Label htmlFor={`checklist-${index}`} className="text-sm">
-                {index + 1}. {item}
-              </Label>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <Label htmlFor="signatureDate">Date</Label>
-        <Input
-          id="signatureDate"
-          type="date"
-          value={formData.signatureDate}
-          onChange={(e) => handleChange('signatureDate', e.target.value)}
-          required
-        />
       </div>
     </div>
   );

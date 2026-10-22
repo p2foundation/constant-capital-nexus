@@ -110,13 +110,13 @@ const AuthButtons = () => {
                 <span className="text-cc-navy dark:text-white font-medium text-sm">
                   {profile?.first_name || 'User'}
                 </span>
-                <span className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-32">
+                <span className="text-xs text-gray-500 dark:text-muted-foreground truncate max-w-32">
                   {user.email}
                 </span>
               </div>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-72 p-2 mt-2 dark:bg-gray-800 dark:border-gray-700">
+          <DropdownMenuContent align="end" className="w-72 p-2 mt-2 dark:bg-card dark:border-border">
             <div className="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50 mb-2">
               <div className="flex items-center justify-center w-12 h-12 rounded-full bg-cc-gold text-white text-lg font-medium">
                 {profile?.first_name?.charAt(0) || user.email?.charAt(0) || 'U'}
@@ -127,7 +127,7 @@ const AuthButtons = () => {
                     ? `${profile.first_name} ${profile.last_name}`
                     : profile?.first_name || 'User'}
                 </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                <p className="text-xs text-gray-500 dark:text-muted-foreground truncate">
                   {user.email}
                 </p>
                 {profile?.role && (

@@ -32,7 +32,7 @@ const ResearchReportCard: React.FC<ResearchReportCardProps> = ({
             <Badge variant="outline" className="text-xs font-normal capitalize">
               {type}
             </Badge>
-            <span className="text-xs text-gray-500 dark:text-gray-400">{date}</span>
+            <span className="text-xs text-gray-500 dark:text-muted-foreground">{date}</span>
             {isPremium && (
               <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-1 text-xs font-medium text-amber-800">
                 Premium
@@ -42,9 +42,9 @@ const ResearchReportCard: React.FC<ResearchReportCardProps> = ({
         </div>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">{preview}</p>
+        <p className="text-sm text-gray-600 dark:text-muted-foreground mb-4">{preview}</p>
         <div className="flex justify-between items-center">
-          <div className="text-xs text-gray-500 dark:text-gray-400">Login required for full access</div>
+          <div className="text-xs text-gray-500 dark:text-muted-foreground">Login required for full access</div>
           <Link to={`/research/${id}`}>
             <Button variant="ghost" size="sm" className="text-cc-blue hover:text-cc-navy dark:text-cc-gold dark:hover:text-cc-gold/80">
               <Book className="h-4 w-4 mr-1" /> View Report

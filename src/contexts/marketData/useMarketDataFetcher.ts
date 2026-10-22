@@ -24,27 +24,19 @@ export const useMarketDataFetcher = () => {
       setError(null);
       
       // Check if we should auto-fetch from external APIs
-      const { data: sourceData } = await supabase
+      const { data: sourceData, error: sourceError } = await supabase
         .from('settings')
         .select('value')
         .eq('key', 'market_data_source')
-        .single();
+        .maybeSingle();
+      if (sourceError) {
+        console.error('Unable to read market data source setting:', sourceError);
+        throw sourceError;
+      }
       
       const dataSource = sourceData?.value as string || 'manual';
       
-      // If not manual mode, try to fetch fresh data from external API
-      if (dataSource !== 'manual') {
-        try {
-          console.log(`Auto-fetching data from ${dataSource}...`);
-          await supabase.functions.invoke('fetch-market-data', {
-            body: { dataSource }
-          });
-        } catch (apiError) {
-          console.warn('Auto-fetch failed, using cached data:', apiError);
-          // Continue with database fetch even if API fails
-        }
-      }
-      
+      // Scheduled and explicit admin refreshes update external data. Page loads read the persisted dataset only.
       // Fetch GSE index data - using 'as any' to bypass TypeScript errors
       const { data: gseData, error: gseError } = await supabase
         .from('market_data')

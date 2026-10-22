@@ -24,6 +24,7 @@ const EquitiesTableBody: React.FC<EquitiesTableBodyProps> = ({
         return symbolKeys.map((symbol, index) => {
           const value = dateEntry[symbol];
           const change = dateEntry[`${symbol}_change`] || 0;
+          const source = String(dateEntry[`${symbol}_source`] || 'unknown');
           
           return (
             <EquityTableRow
@@ -32,6 +33,7 @@ const EquitiesTableBody: React.FC<EquitiesTableBodyProps> = ({
               symbol={symbol}
               value={value}
               change={change}
+              source={source}
               isFirstInDate={index === 0}
               dateRowSpan={symbolKeys.length}
               onDelete={onDeleteDataPoint}

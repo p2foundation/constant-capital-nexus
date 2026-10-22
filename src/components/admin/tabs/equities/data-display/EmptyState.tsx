@@ -7,7 +7,7 @@ interface EmptyStateProps {
 
 const EmptyState: React.FC<EmptyStateProps> = ({ message }) => {
   return (
-    <div className="p-8 text-center text-gray-500 dark:text-gray-400">
+    <div className="p-8 text-center text-gray-500 dark:text-muted-foreground">
       {message}
     </div>
   );

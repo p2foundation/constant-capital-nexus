@@ -1,167 +1,52 @@
-
-import React, { useState } from 'react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  Carousel, 
-  CarouselContent, 
-  CarouselItem, 
-  CarouselNext, 
-  CarouselPrevious 
-} from '@/components/ui/carousel';
-import ImageGenerator from '@/components/ImageGenerator';
+import { BarChart3, ArrowLeftRight, Landmark, FileText, Briefcase, ArrowRight, Handshake } from 'lucide-react';
 
-// Service card component for the Goldman Sachs style design
-const ServiceCard = ({ 
-  title, 
-  description,
-  imageUrl,
-  link = "#",
-  onImageGenerated,
-  showImageGenerator = false
-}: { 
-  title: string; 
-  description: string;
-  imageUrl: string;
-  link?: string;
-  onImageGenerated?: (imageUrl: string) => void;
-  showImageGenerator?: boolean;
-}) => {
-  return (
-    <div className="bg-white dark:bg-cc-navy/60 h-full shadow-md rounded-sm overflow-hidden border border-transparent dark:border-cc-gold/20">
-      <div className="h-[200px] sm:h-[250px] md:h-[300px] overflow-hidden relative">
-        <img 
-          src={imageUrl} 
-          alt={title} 
-          className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-        />
-        {showImageGenerator && onImageGenerated && (
-          <div className="absolute bottom-2 right-2">
-            <ImageGenerator
-              onImageGenerated={onImageGenerated}
-              buttonText="New Image"
-              imageType="strategic-advisory"
-              className="text-xs bg-white/90 hover:bg-white"
-            />
-          </div>
-        )}
+const services = [
+  { title: 'Securities Trading', icon: BarChart3, link: '/securities-trading', description: 'Expert execution on the Ghana Stock Exchange and other African markets, with competitive commissions.' },
+  { title: 'FX Trading', icon: ArrowLeftRight, link: '/fx-trading', description: 'Licensed foreign exchange with competitive rates and hedging solutions for businesses and institutions.' },
+  { title: 'Primary Dealer & Capital Markets', icon: Landmark, link: '/capital-markets', description: 'Licensed primary-dealer access to Government of Ghana T-Bills and bonds for individuals and institutions.' },
+  { title: 'Investment Research', icon: FileText, link: '/investment-research', description: 'Data-driven macro reports and equity analysis covering Ghana and emerging African markets.' },
+  { title: 'Investment Advisory', icon: Briefcase, link: '/investment-advisory', description: 'Tailored portfolio strategies for institutions, family offices and high-net-worth investors.' },
+  { title: 'Strategic Advisory & Private Equity', icon: Handshake, link: '/strategic-advisory', description: 'Guidance on mergers, acquisitions and restructuring, and growth capital for promising businesses.' },
+];
+
+const Services = () => (
+  <section className="bg-background py-20 sm:py-24">
+    <div className="mx-auto max-w-7xl px-6 sm:px-12 lg:px-16">
+      <div className="mb-14">
+        <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-accent">What we do</p>
+        <h2 className="font-heading mb-4 text-3xl font-bold text-foreground md:text-4xl">Comprehensive Solutions</h2>
+        <div className="h-1.5 w-20 bg-accent" />
       </div>
-      <div className="p-4 sm:p-6 lg:p-8">
-        <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 dark:text-white">{title}</h3>
-        <p className="text-gray-700 dark:text-gray-300 mb-4 sm:mb-6 text-sm sm:text-base leading-relaxed">
-          {description}
-        </p>
-        <Link 
-          to={link}
-          className="inline-flex items-center text-cc-navy dark:text-cc-gold hover:text-cc-gold dark:hover:text-white transition-colors min-h-[44px]"
-        >
-          <ArrowRight className="h-5 w-5" />
+
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+        {services.map(({ title, icon: Icon, link, description }) => (
+          <Link
+            key={title}
+            to={link}
+            className="group rounded-2xl border border-border bg-card p-8 transition-all duration-500 hover:-translate-y-1 hover:border-accent/50 lg:p-10"
+          >
+            <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-lg bg-accent/10 text-accent transition-transform group-hover:scale-110">
+              <Icon className="h-6 w-6" />
+            </div>
+            <h3 className="font-heading mb-3 text-xl font-bold text-card-foreground">{title}</h3>
+            <p className="leading-relaxed text-muted-foreground">{description}</p>
+            <span className="mt-6 inline-flex items-center text-sm font-semibold text-accent opacity-0 transition-opacity group-hover:opacity-100">
+              Learn more <ArrowRight className="ml-1 h-4 w-4" />
+            </span>
+          </Link>
+        ))}
+      </div>
+
+      <div className="mt-8 flex flex-col items-center justify-between gap-6 rounded-2xl bg-accent p-8 text-accent-foreground sm:flex-row lg:p-10">
+        <h3 className="font-heading text-2xl font-bold">Ready to grow your wealth?</h3>
+        <Link to="/account-opening" className="rounded-full bg-background px-8 py-3 font-bold text-foreground transition-transform hover:scale-105">
+          Get Started Now
         </Link>
       </div>
     </div>
-  );
-};
-
-const Services = () => {
-  const [strategicAdvisoryImage, setStrategicAdvisoryImage] = useState("https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&w=800&q=80");
-
-  const handleStrategicAdvisoryImageGenerated = (imageUrl: string) => {
-    setStrategicAdvisoryImage(imageUrl);
-  };
-
-  // Define service items with the new uploaded images
-  const services = [
-    {
-      title: "Securities Trading",
-      description: "Access to Ghana Stock Exchange and other African markets with competitive commission rates for institutional and international clients seeking African market exposure.",
-      imageUrl: "/lovable-uploads/19a0a23f-1474-49a7-a0fc-4b62e718b6e7.png",
-      link: "/securities-trading"
-    },
-    {
-      title: "FX Trading",
-      description: "Licensed foreign exchange services with competitive rates, institutional trading, hedging solutions, and expert forex advisory for businesses and institutions.",
-      imageUrl: "/lovable-uploads/5d82ecc8-34e0-4284-9c90-434650eaf740.png",
-      link: "/fx-trading"
-    },
-    {
-      title: "Investment Research",
-      description: "Comprehensive market intelligence and analysis covering Ghana, West African markets, and emerging African investment opportunities for global investors.",
-      imageUrl: "/lovable-uploads/749a8bb6-9f9d-4731-8233-2a3459f75e84.png",
-      link: "/investment-research"
-    },
-    {
-      title: "Financings & Capital Markets",
-      description: "International capital raising solutions through debt and equity offerings, connecting African companies with global investors and capital markets.",
-      imageUrl: "/lovable-uploads/c6aad7a5-3482-484a-91dc-b2b0dadbb844.png",
-      link: "/capital-markets"
-    },
-    {
-      title: "Investment Advisory",
-      description: "Tailored investment strategies and African market portfolio management for institutional clients, family offices, and international high-net-worth individuals.",
-      imageUrl: "/lovable-uploads/1f153fc7-d536-4eab-8f5c-6527267e1769.png",
-      link: "/investment-advisory"
-    },
-    {
-      title: "Strategic Advisory",
-      description: "Expert guidance on cross-border mergers, acquisitions, corporate restructuring, and strategic business initiatives across African markets.",
-      imageUrl: strategicAdvisoryImage,
-      link: "/strategic-advisory",
-      showImageGenerator: true,
-      onImageGenerated: handleStrategicAdvisoryImageGenerated
-    },
-    {
-      title: "Private Equity",
-      description: "Alternative investment solutions focusing on growth capital for promising businesses across key sectors in Ghana, West Africa, and emerging African markets.",
-      imageUrl: "/lovable-uploads/3722b840-57e0-4fc4-8378-9ee194fd4491.png",
-      link: "/private-equity"
-    }
-  ];
-
-  return (
-    <div className="py-12 sm:py-16 bg-cc-gray dark:bg-cc-navy/90">
-      <div className="container mx-auto px-4">
-        <div className="mb-12 sm:mb-16 text-center sm:text-left">
-          <h2 className="text-sm font-medium uppercase tracking-wider text-cc-gold mb-2">WHAT WE DO</h2>
-          <h3 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-cc-navy dark:text-white mb-4 sm:mb-6">Delivering for Our Global Clients</h3>
-          <p className="text-gray-600 dark:text-gray-300 text-lg max-w-3xl">
-            Connecting African opportunities with international capital through expert financial services and deep market knowledge.
-          </p>
-        </div>
-        
-        <Carousel
-          opts={{
-            align: "start",
-            loop: true,
-          }}
-          className="w-full"
-        >
-          <CarouselContent className="-ml-2 sm:-ml-4">
-            {services.map((service, index) => (
-              <CarouselItem key={index} className="pl-2 sm:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
-                <ServiceCard
-                  title={service.title}
-                  description={service.description}
-                  imageUrl={service.imageUrl}
-                  link={service.link}
-                  showImageGenerator={service.showImageGenerator}
-                  onImageGenerated={service.onImageGenerated}
-                />
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          
-          <div className="flex items-center justify-center gap-3 mt-6 sm:mt-8">
-            <CarouselPrevious className="static transform-none flex h-12 w-12 sm:h-10 sm:w-10 items-center justify-center border border-cc-navy text-cc-navy dark:border-cc-gold dark:text-cc-gold hover:bg-cc-navy hover:text-white dark:hover:bg-cc-gold dark:hover:text-cc-navy transition-colors">
-              <ArrowLeft className="h-5 w-5 sm:h-6 sm:w-6" />
-            </CarouselPrevious>
-            <CarouselNext className="static transform-none flex h-12 w-12 sm:h-10 sm:w-10 items-center justify-center border border-cc-navy text-cc-navy dark:border-cc-gold dark:text-cc-gold hover:bg-cc-navy hover:text-white dark:hover:bg-cc-gold dark:hover:text-cc-navy transition-colors">
-              <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6" />
-            </CarouselNext>
-          </div>
-        </Carousel>
-      </div>
-    </div>
-  );
-};
+  </section>
+);
 
 export default Services;

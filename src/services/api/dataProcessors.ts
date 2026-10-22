@@ -34,7 +34,8 @@ export const processMarketDataForDB = (data: any[], dataType: string, selectedIt
             ticker_symbol: symbol,
             date: itemDate,  // Already formatted in base.ts
             value: Number(item[symbolLower]) || 0,
-            change_percent: changePercent
+            change_percent: changePercent,
+            source: 'manual'
           });
         }
       });
@@ -46,9 +47,11 @@ export const processMarketDataForDB = (data: any[], dataType: string, selectedIt
     data.forEach(item => {
       processedData.push({
         data_type: dataType,
+        ticker_symbol: 'GSE-CI',
         date: item.date || today,
         value: Number(item.value) || 0,
-        change_percent: Number(item.change_percent) || 0
+        change_percent: Number(item.change_percent) || 0,
+        source: 'manual'
       });
     });
   } else if (dataType === 'fixed_income') {
@@ -74,7 +77,8 @@ export const processMarketDataForDB = (data: any[], dataType: string, selectedIt
             ticker_symbol: term.key, // Use the standard term name as ticker
             date: item.date || today,
             value: Number(item[term.field]) || 0,
-            change_percent: Number(item[`${term.field}_change`]) || 0
+            change_percent: Number(item[`${term.field}_change`]) || 0,
+            source: 'manual'
           });
         }
       });
@@ -96,7 +100,8 @@ export const processMarketDataForDB = (data: any[], dataType: string, selectedIt
             ticker_symbol: bond.key,
             date: item.date || today,
             value: Number(item[bond.field]) || 0,
-            change_percent: Number(item[`${bond.field}_change`]) || 0
+            change_percent: Number(item[`${bond.field}_change`]) || 0,
+            source: 'manual'
           });
         }
       });
@@ -117,7 +122,8 @@ export const processMarketDataForDB = (data: any[], dataType: string, selectedIt
             ticker_symbol: currency.key,
             date: item.date || today,
             value: Number(item[currency.field]) || 0,
-            change_percent: Number(item[`${currency.field}_change`]) || 0
+            change_percent: Number(item[`${currency.field}_change`]) || 0,
+            source: 'manual'
           });
         }
       });

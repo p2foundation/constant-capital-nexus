@@ -1,83 +1,71 @@
-import "https://deno.land/x/xhr@0.1.0/mod.ts";
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
+import { createClient } from 'npm:@supabase/supabase-js@2';
 import { MarketDataRecord } from './types.ts';
-import { fetchFromFinancialModelingPrep } from './financial-modeling-prep.ts';
-import { fetchFromYahooFinance } from './yahoo-finance.ts';
-import { fetchFromGSEOfficial } from './gse-official.ts';
+import { fetchGhanaLive } from './ghana-live.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+const json = (status: number, body: unknown) =>
+  new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
+const MIN_SCHEDULED_GAP_MS = 30 * 60 * 1000;
+const VALID = ['financial_modeling_prep', 'yahoo_finance', 'gse_official'];
+
+Deno.serve(async (req) => {
+  if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
 
   try {
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    );
+    const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
 
-    const { dataSource = 'manual' } = await req.json().catch(() => ({ dataSource: 'manual' }));
-    
-    console.log(`Fetching market data using source: ${dataSource}`);
-    
-    if (dataSource === 'manual') {
-      return new Response(JSON.stringify({ 
-        message: 'Manual mode - no external data fetched',
-        success: true 
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    // Is the caller signed-in research staff? (manual "Fetch now")
+    let isStaff = false;
+    const auth = req.headers.get('Authorization') ?? '';
+    if (auth.startsWith('Bearer ')) {
+      const userClient = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_ANON_KEY')!, {
+        global: { headers: { Authorization: auth } },
       });
+      const { data } = await userClient.rpc('can_edit_content');
+      isStaff = data === true;
     }
 
-    let marketData: MarketDataRecord[] = [];
+    const { data: rows } = await admin.from('settings').select('key,value')
+      .in('key', ['market_data_source', 'market_data_auto_sync', 'market_data_last_fetch']);
+    const s = Object.fromEntries((rows ?? []).map((r) => [r.key, r.value]));
+    const source = String(s.market_data_source ?? 'manual');
 
-    if (dataSource === 'financial_modeling_prep') {
-      marketData = await fetchFromFinancialModelingPrep();
-    } else if (dataSource === 'yahoo_finance') {
-      marketData = await fetchFromYahooFinance();
-    } else if (dataSource === 'gse_official') {
-      marketData = await fetchFromGSEOfficial();
+    if (!isStaff) {
+      // Scheduled / anonymous calls: only when auto-sync is on, and at most every 30 minutes
+      if (s.market_data_auto_sync !== true) return json(200, { success: true, skipped: 'auto-sync off' });
+      const last = s.market_data_last_fetch ? Date.parse(String(s.market_data_last_fetch)) : 0;
+      if (Date.now() - last < MIN_SCHEDULED_GAP_MS) return json(200, { success: true, skipped: 'recently fetched' });
     }
+
+    if (!VALID.includes(source)) return json(200, { success: true, message: 'Manual mode - no external data fetched' });
+
+    // Every automatic source now uses real published Ghana data (no simulated values)
+    const { records: marketData, errors } = await fetchGhanaLive();
 
     if (marketData.length > 0) {
-      // Store fetched data in the database
-      const { error } = await supabaseClient
-        .from('market_data')
-        .upsert(marketData, { 
-          onConflict: 'data_type,ticker_symbol,date',
-          ignoreDuplicates: false 
-        });
-
-      if (error) {
-        console.error('Database error:', error);
-        throw error;
-      }
-
-      console.log(`Successfully stored ${marketData.length} market data records`);
+      // Tagged 'auto': the database keeps any admin-entered (manual) row unchanged
+      const tagged = marketData.map((r) => ({ ...r, source: 'auto' }));
+      const { error } = await admin.from('market_data').upsert(tagged, {
+        onConflict: 'data_type,ticker_symbol,date',
+        ignoreDuplicates: false,
+      });
+      if (error) throw error;
     }
 
-    return new Response(JSON.stringify({ 
-      message: `Successfully fetched and stored ${marketData.length} records from ${dataSource}`,
-      recordCount: marketData.length,
-      success: true 
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    await admin.from('settings').upsert({ key: 'market_data_last_fetch', value: new Date().toISOString() });
 
-  } catch (error) {
-    console.error('Error in fetch-market-data function:', error);
-    return new Response(JSON.stringify({ 
-      error: error.message,
-      success: false 
-    }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    return json(200, {
+      message: `Fetched ${marketData.length} live records. Manual corrections were kept.`,
+      errors,
+      recordCount: marketData.length,
+      success: true,
     });
+  } catch (error) {
+    console.error('fetch-market-data error:', error);
+    return json(500, { error: (error as Error).message, success: false });
   }
 });

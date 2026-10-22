@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -137,12 +137,15 @@ const DataPointForm: React.FC<DataPointFormProps> = ({
   const visibleFields = dataFields.filter(field => field.type !== 'hidden');
   
   return (
-    <div className="flex flex-col gap-4 pb-4">
-      <h3 className="text-lg font-medium">Add New Data Point</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="rounded-lg border bg-muted/20 p-4 sm:p-5">
+      <div className="mb-4">
+        <h3 className="font-heading text-base font-semibold">Add manual correction</h3>
+        <p className="text-xs text-muted-foreground">Saved values are labelled manual and protected from live-source replacement.</p>
+      </div>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {showDatePicker ? (
           <div className="w-full">
-            <label className="text-sm font-medium mb-1 block">Date/Period</label>
+            <label className="mb-1.5 block text-xs font-semibold uppercase text-muted-foreground">Date/Period</label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -170,7 +173,7 @@ const DataPointForm: React.FC<DataPointFormProps> = ({
         ) : (
           visibleFields[0] && (
             <div className="w-full">
-              <label className="text-sm font-medium mb-1 block">{visibleFields[0].label}</label>
+              <label className="mb-1.5 block text-xs font-semibold uppercase text-muted-foreground">{visibleFields[0].label}</label>
               <Input 
                 type={visibleFields[0].type}
                 placeholder={`e.g. ${visibleFields[0].type === 'number' ? '100.00' : 'May 2025'}`}
@@ -183,7 +186,7 @@ const DataPointForm: React.FC<DataPointFormProps> = ({
         
         {visibleFields.slice(showDatePicker ? 1 : 1).map((field) => (
           <div key={field.name} className="w-full">
-            <label className="text-sm font-medium mb-1 block">{field.label}</label>
+            <label className="mb-1.5 block text-xs font-semibold uppercase text-muted-foreground">{field.label}</label>
             <Input 
               type={field.type}
               placeholder={`e.g. ${field.type === 'number' ? '100.00' : 'May 2025'}`}
@@ -195,7 +198,7 @@ const DataPointForm: React.FC<DataPointFormProps> = ({
         
         <div className="flex items-end w-full">
           <Button onClick={handleAddDataPoint} className="w-full">
-            Add Data Point
+            <Plus className="mr-2 h-4 w-4" /> Stage data point
           </Button>
         </div>
       </div>

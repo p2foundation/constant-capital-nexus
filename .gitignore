@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Alternate package manager lockfiles
+bun.lock
+bun.lockb
+pnpm-lock.yaml
+pnpm-workspace.yaml

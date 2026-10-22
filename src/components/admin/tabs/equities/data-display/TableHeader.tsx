@@ -10,6 +10,7 @@ const EquitiesTableHeader: React.FC = () => {
         <TableHead>Company</TableHead>
         <TableHead>Value (GHS)</TableHead>
         <TableHead>Change %</TableHead>
+        <TableHead>Source</TableHead>
         <TableHead className="text-right">Actions</TableHead>
       </TableRow>
     </TableHeader>

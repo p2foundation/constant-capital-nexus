@@ -7,14 +7,15 @@ interface SaveButtonProps {
   title: string;
   isSaving: boolean;
   onSave: () => void;
+  disabled?: boolean;
 }
 
-const SaveButton: React.FC<SaveButtonProps> = ({ title, isSaving, onSave }) => {
+const SaveButton: React.FC<SaveButtonProps> = ({ title, isSaving, onSave, disabled = false }) => {
   return (
     <div className="pt-4 flex justify-end">
       <Button 
         onClick={onSave} 
-        disabled={isSaving}
+        disabled={isSaving || disabled}
         className="flex items-center gap-2"
       >
         {isSaving ? (

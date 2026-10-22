@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Mail, TestTube, AlertCircle, CheckCircle } from 'lucide-react';
+import { Mail, TestTube, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 
 const EmailTestingPanel = () => {
   const [testEmail, setTestEmail] = useState('');
@@ -24,11 +24,11 @@ const EmailTestingPanel = () => {
     const results: string[] = [];
 
     try {
-      results.push('🔄 Starting email system test...');
+      results.push('Starting email system test...');
       setTestResults([...results]);
 
       // Test 1: Check if custom email function exists
-      results.push('✅ Testing custom email function...');
+      results.push('Testing custom email function...');
       setTestResults([...results]);
 
       const { data: customEmailResult, error: customEmailError } = await supabase.functions.invoke('send-custom-auth-email', {
@@ -42,10 +42,10 @@ const EmailTestingPanel = () => {
       });
 
       if (customEmailError) {
-        results.push(`❌ Custom email function failed: ${customEmailError.message}`);
+        results.push(`Custom email function failed: ${customEmailError.message}`);
         
         // Test 2: Fallback to Supabase native email
-        results.push('🔄 Testing Supabase fallback email...');
+        results.push('Testing fallback email...');
         setTestResults([...results]);
 
         const { error: fallbackError } = await supabase.auth.resend({
@@ -57,31 +57,31 @@ const EmailTestingPanel = () => {
         });
 
         if (fallbackError) {
-          results.push(`❌ Fallback email also failed: ${fallbackError.message}`);
+          results.push(`Fallback email also failed: ${fallbackError.message}`);
         } else {
-          results.push('✅ Fallback email sent successfully');
+          results.push('Fallback email sent successfully');
         }
       } else {
-        results.push('✅ Custom email function working correctly');
+        results.push('Custom email function working correctly');
       }
 
       // Test 3: Check domain configuration
-      results.push('🔄 Checking domain configuration...');
+      results.push('Checking domain configuration...');
       const currentDomain = window.location.origin;
-      results.push(`📍 Current domain: ${currentDomain}`);
+      results.push(`Current domain: ${currentDomain}`);
       
       if (currentDomain.includes('lovable.app')) {
-        results.push('⚠️ Running on Lovable domain - emails may not work in production');
+        results.push('Preview domain detected; confirm delivery again after publishing.');
       } else if (currentDomain.includes('localhost')) {
-        results.push('⚠️ Running on localhost - check Supabase redirect URLs');
+        results.push('Local preview detected; check redirect URLs.');
       } else {
-        results.push('✅ Running on production domain');
+        results.push('Production domain detected.');
       }
 
-      results.push('🎉 Test completed! Check your email inbox and spam folder.');
+      results.push('Test completed. Check the inbox and spam folder.');
       
     } catch (error: any) {
-      results.push(`❌ Unexpected error: ${error.message}`);
+      results.push(`Unexpected error: ${error.message}`);
     } finally {
       setTestResults(results);
       setIsTesting(false);
@@ -89,18 +89,16 @@ const EmailTestingPanel = () => {
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <div className="mx-auto w-full max-w-3xl">
       <CardHeader>
         <div className="flex items-center space-x-2">
-          <TestTube className="h-5 w-5 text-blue-600" />
-          <CardTitle>Email System Testing Panel</CardTitle>
+          <TestTube className="h-5 w-5 text-primary" />
+          <CardTitle>Email delivery test</CardTitle>
         </div>
-        <CardDescription>
-          Test the email confirmation system to diagnose any issues
-        </CardDescription>
+        <p className="text-sm text-muted-foreground">Send one real confirmation test and inspect the delivery result.</p>
       </CardHeader>
       <CardContent className="space-y-4">
-        <Alert className="border-amber-200 bg-amber-50 dark:bg-amber-900/20">
+        <Alert className="bg-muted/30">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
             <strong>Admin Tool:</strong> This panel helps test and troubleshoot email delivery issues.
@@ -127,7 +125,7 @@ const EmailTestingPanel = () => {
         >
           {isTesting ? (
             <>
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Running Tests...
             </>
           ) : (
@@ -139,7 +137,7 @@ const EmailTestingPanel = () => {
         </Button>
 
         {testResults.length > 0 && (
-          <Card className="bg-slate-50 dark:bg-slate-900">
+          <Card className="bg-muted/30">
             <CardHeader>
               <CardTitle className="text-sm font-medium">Test Results</CardTitle>
             </CardHeader>
@@ -155,7 +153,7 @@ const EmailTestingPanel = () => {
           </Card>
         )}
 
-        <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-900/20">
+        <Alert className="bg-muted/30">
           <CheckCircle className="h-4 w-4" />
           <AlertDescription className="text-sm">
             <strong>What to check after testing:</strong>
@@ -168,7 +166,7 @@ const EmailTestingPanel = () => {
           </AlertDescription>
         </Alert>
       </CardContent>
-    </Card>
+    </div>
   );
 };
 

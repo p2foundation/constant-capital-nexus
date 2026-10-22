@@ -2,7 +2,6 @@
 import React from 'react';
 import MarketDataEditor from '../MarketDataEditor';
 import { marketDataAPI } from '@/services/api';
-import { fxData } from '@/components/market-data/mock-data';
 import { useMarketData } from '@/contexts/MarketDataContext';
 import { toast } from 'sonner';
 
@@ -10,8 +9,7 @@ const FXTab: React.FC = () => {
   const { marketData, refreshMarketData } = useMarketData();
   
   // Format FX data for the editor
-  const formattedData = marketData.fx.length > 0 ? 
-    [...new Set(marketData.fx.map(item => item.date))].map(date => {
+  const formattedData = [...new Set(marketData.fx.map(item => item.date))].map(date => {
       const dateItems = marketData.fx.filter(d => d.date === date);
       return {
         name: new Date(date).toLocaleDateString('en-GB'),
@@ -25,16 +23,7 @@ const FXTab: React.FC = () => {
         gbp_change: dateItems.find(i => i.ticker_symbol === 'GBP')?.change_percent || 0,
         gbp_positive: (dateItems.find(i => i.ticker_symbol === 'GBP')?.change_percent || 0) >= 0
       };
-    }) : 
-    fxData.map(item => ({
-      ...item,
-      usd_change: 0,
-      usd_positive: true,
-      eur_change: 0,
-      eur_positive: true,
-      gbp_change: 0,
-      gbp_positive: true
-    }));
+    });
 
   return (
     <MarketDataEditor
@@ -53,10 +42,7 @@ const FXTab: React.FC = () => {
         { name: 'gbp_positive', label: 'GBP Change Direction', type: 'hidden' }
       ]}
       fetchFn={async () => {
-        if (marketData.fx.length > 0) {
-          return formattedData;
-        }
-        return marketDataAPI.getFXData().then(data => data || fxData);
+        return marketDataAPI.getFXData().then(data => data || []);
       }}
       updateFn={async (data) => {
         try {

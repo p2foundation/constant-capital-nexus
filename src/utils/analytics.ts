@@ -9,18 +9,22 @@ declare global {
 
 export const GA_TRACKING_ID = 'G-61N6JDY12W';
 
+const hasAnalyticsConsent = () => localStorage.getItem('cookieConsent') === 'accepted';
+
 // Initialize Google Analytics
 export const initGA = () => {
+  if (!hasAnalyticsConsent() || document.querySelector(`script[data-ga-id="${GA_TRACKING_ID}"]`)) return;
   // Create and load the Google Analytics script
   const script1 = document.createElement('script');
   script1.async = true;
   script1.src = `https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`;
+  script1.dataset.gaId = GA_TRACKING_ID;
   document.head.appendChild(script1);
 
   // Initialize dataLayer and gtag function
   window.dataLayer = window.dataLayer || [];
-  window.gtag = function gtag() {
-    window.dataLayer.push(arguments);
+  window.gtag = function gtag(...args: any[]) {
+    window.dataLayer.push(args);
   };
 
   // Configure Google Analytics
@@ -35,7 +39,7 @@ export const initGA = () => {
 
 // Track page views
 export const trackPageView = (url: string, title?: string) => {
-  if (typeof window.gtag !== 'undefined') {
+  if (hasAnalyticsConsent() && typeof window.gtag !== 'undefined') {
     window.gtag('config', GA_TRACKING_ID, {
       page_path: url,
       page_title: title || document.title,
@@ -47,7 +51,7 @@ export const trackPageView = (url: string, title?: string) => {
 
 // Track custom events
 export const trackEvent = (action: string, category: string, label?: string, value?: number) => {
-  if (typeof window.gtag !== 'undefined') {
+  if (hasAnalyticsConsent() && typeof window.gtag !== 'undefined') {
     window.gtag('event', action, {
       event_category: category,
       event_label: label,

@@ -11,7 +11,7 @@ const FAQs = () => {
   useAnalytics();
   
   return (
-    <div className="flex flex-col min-h-screen dark:bg-gray-950">
+    <div className="flex flex-col min-h-screen dark:bg-background">
       <Helmet>
         <title>Frequently Asked Questions | Investment Services FAQ | Constant Capital</title>
         <meta name="description" content="Find answers to common questions about our investment services, trading accounts, research reports, and how to get started with Constant Capital Ghana." />

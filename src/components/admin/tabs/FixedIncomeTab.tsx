@@ -2,15 +2,13 @@
 import React from 'react';
 import MarketDataEditor from '../MarketDataEditor';
 import { marketDataAPI } from '@/services/api';
-import { fixedIncomeData } from '@/components/market-data/mock-data';
 import { useMarketData } from '@/contexts/MarketDataContext';
 
 const FixedIncomeTab: React.FC = () => {
   const { marketData, refreshMarketData } = useMarketData();
   
   // Format fixed income data for the editor
-  const formattedData = marketData.fixedIncome.length > 0 ? 
-    [...new Set(marketData.fixedIncome.map(item => item.date))].map(date => {
+  const formattedData = [...new Set(marketData.fixedIncome.map(item => item.date))].map(date => {
       const dateItems = marketData.fixedIncome.filter(d => d.date === date);
       return {
         name: new Date(date).toLocaleDateString('en-GB'),
@@ -24,16 +22,7 @@ const FixedIncomeTab: React.FC = () => {
         yield364_change: dateItems.find(i => i.ticker_symbol === '364-day')?.change_percent || 0,
         yield364_positive: (dateItems.find(i => i.ticker_symbol === '364-day')?.change_percent || 0) >= 0
       };
-    }) : 
-    fixedIncomeData.map(item => ({
-      ...item,
-      yield91_change: 0,
-      yield91_positive: true,
-      yield182_change: 0,
-      yield182_positive: true,
-      yield364_change: 0,
-      yield364_positive: true
-    }));
+    });
 
   return (
     <MarketDataEditor
@@ -52,14 +41,11 @@ const FixedIncomeTab: React.FC = () => {
         { name: 'yield364_positive', label: '364-Day Change Direction', type: 'hidden' }
       ]}
       fetchFn={async () => {
-        if (marketData.fixedIncome.length > 0) {
-          return formattedData;
-        }
-        return marketDataAPI.getFixedIncomeData().then(data => data || fixedIncomeData);
+        return marketDataAPI.getFixedIncomeData().then(data => data || []);
       }}
       updateFn={async (data) => {
         await marketDataAPI.updateFixedIncomeData(data);
-        refreshMarketData();
+        await refreshMarketData();
         return data;
       }}
       showDatePicker={true}

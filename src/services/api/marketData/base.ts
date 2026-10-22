@@ -87,51 +87,10 @@ export const updateMarketData = async (
     
     console.log(`Processed ${processedData.length} records for database update`);
     
-    // For equity data, we need special handling for the ticker symbols
-    if (dataType === 'equity' || dataType === 'equities') {
-      // Get unique ticker symbols in the new data
-      const tickerSymbols = [...new Set(processedData.map((item: any) => item.ticker_symbol))];
-      
-      // Get unique dates in the new data
-      const dates = [...new Set(processedData.map((item: any) => item.date))];
-      
-      console.log("Updating data for tickers:", tickerSymbols);
-      console.log("Updating data for dates:", dates);
-      
-      // Delete existing data for these tickers and dates only
-      if (tickerSymbols.length > 0 && dates.length > 0) {
-        console.log("Deleting existing data for these tickers and dates");
-        const { error: deleteError } = await supabase
-          .from('market_data')
-          .delete()
-          .eq('data_type', 'equity' as any) // Using type assertion to fix TypeScript error
-          .in('ticker_symbol', tickerSymbols)
-          .in('date', dates);
-        
-        if (deleteError) {
-          console.error("Error deleting existing equity data:", deleteError);
-          throw deleteError;
-        }
-      }
-    } else {
-      // For other data types, we can delete all existing data
-      console.log(`Deleting all existing ${dataType} data`);
-      const { error: deleteError } = await supabase
-        .from('market_data')
-        .delete()
-        .eq('data_type', dataType as any); // Using type assertion to fix TypeScript error
-      
-      if (deleteError) {
-        console.error(`Error deleting existing ${dataType} data:`, deleteError);
-        throw deleteError;
-      }
-    }
-    
-    // Insert the new data
-    console.log("Inserting new data:", processedData.length, "records");
+    console.log("Upserting manual data:", processedData.length, "records");
     const { data: insertedData, error: insertError } = await supabase
       .from('market_data')
-      .insert(processedData)
+      .upsert(processedData, { onConflict: 'data_type,ticker_symbol,date' })
       .select();
     
     if (insertError) {

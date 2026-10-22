@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { ChartLine, TrendingUp, TrendingDown, Loader2, ExternalLink } from 'lucide-react';
+import { ChartLine, TrendingUp, TrendingDown, Loader2, ArrowRight } from 'lucide-react';
 import {
   Carousel,
   CarouselContent,
@@ -20,66 +19,81 @@ interface MarketSummaryCardProps {
 const MarketSummaryCard = ({ isLoading, marketSummaryData }: MarketSummaryCardProps) => {
   return (
     <div className="relative">
-      <div className="absolute -left-4 -top-4 w-24 h-24 bg-cc-gold opacity-20 rounded-full blur-2xl"></div>
-      <div className="absolute -right-4 -bottom-4 w-32 h-32 bg-cc-blue opacity-20 rounded-full blur-2xl"></div>
-      
-      <div className="bg-white dark:bg-cc-navy/60 shadow-xl rounded-xl overflow-hidden border border-gray-100 dark:border-cc-gold/20">
+      <div className="pointer-events-none absolute -left-6 -top-6 h-28 w-28 rounded-full bg-cc-gold/25 blur-2xl" aria-hidden="true" />
+      <div className="pointer-events-none absolute -right-6 -bottom-6 h-36 w-36 rounded-full bg-cc-blue/25 blur-2xl" aria-hidden="true" />
+
+      <div className="relative rounded-2xl border border-gray-200/80 dark:border-cc-gold/20 bg-white/90 dark:bg-card backdrop-blur-sm shadow-2xl shadow-cc-navy/10 overflow-hidden">
         {isLoading ? (
           <div className="p-12 flex flex-col items-center justify-center">
             <Loader2 className="h-8 w-8 animate-spin text-cc-navy dark:text-white" />
-            <p className="mt-4 text-gray-600 dark:text-gray-300">Loading market data...</p>
+            <p className="mt-4 text-sm text-gray-600 dark:text-muted-foreground">Loading market data…</p>
           </div>
         ) : (
-          <Carousel
-            opts={{
-              align: "start",
-              loop: true,
-            }}
-            className="w-full"
-          >
-            <CarouselContent>
+          <Carousel opts={{ align: "start", loop: true }} className="w-full">
+            {/* Header with inline navigation — keeps arrows off the CTA */}
+            <div className="flex items-center justify-between gap-3 px-5 py-4 bg-cc-navy dark:bg-card text-white">
+              <h3 className="text-base sm:text-lg font-bold flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cc-gold opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-cc-gold" />
+                </span>
+                <ChartLine className="h-5 w-5" />
+                Market Summary
+              </h3>
+              <div className="flex gap-2">
+                <CarouselPrevious className="relative left-0 top-0 h-8 w-8 translate-y-0 border-white/25 bg-white/10 text-white hover:bg-white/20 hover:text-white" />
+                <CarouselNext className="relative right-0 top-0 h-8 w-8 translate-y-0 border-white/25 bg-white/10 text-white hover:bg-white/20 hover:text-white" />
+              </div>
+            </div>
+
+            <CarouselContent className="ml-0">
               {marketSummaryData.map((section, index) => (
-                <CarouselItem key={index}>
-                  <div>
-                    <div className="p-6 bg-cc-navy dark:bg-cc-navy/80 text-white">
-                      <h3 className="text-xl font-bold flex items-center">
-                        <ChartLine className="h-5 w-5 mr-2" />
+                <CarouselItem key={index} className="pl-0">
+                  <div className="p-5 sm:p-6 dark:bg-card">
+                    {section.title.trim().toLowerCase() !== 'market summary' && (
+                      <p className="mb-4 text-xs font-semibold uppercase tracking-[0.14em] text-cc-blue dark:text-cc-gold">
                         {section.title}
-                      </h3>
-                    </div>
-                    <div className="p-6 dark:bg-cc-navy/40">
-                      <div className="space-y-4">
-                        {section.items.map((item, idx) => (
-                          <div key={idx} className="flex justify-between items-center pb-2 border-b border-gray-100 dark:border-gray-700">
-                            <div>
-                              <div className="text-gray-600 dark:text-gray-400 text-sm">{item.label}</div>
-                              <div className="font-medium dark:text-white">{item.value}</div>
-                            </div>
-                            <div className={`${item.isPositive ? 'text-green-600' : 'text-red-600'} flex items-center`}>
-                              {item.isPositive ? (
-                                <TrendingUp className="h-3 w-3 mr-1" />
-                              ) : (
-                                <TrendingDown className="h-3 w-3 mr-1" />
-                              )}
-                              {item.change}
-                            </div>
+                      </p>
+                    )}
+
+                    <div className="space-y-1">
+                      {section.items.map((item, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center justify-between gap-3 rounded-lg px-2 py-2.5 transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
+                        >
+                          <div className="min-w-0">
+                            <div className="truncate text-sm text-gray-600 dark:text-muted-foreground">{item.label}</div>
+                            <div className="font-semibold tabular-nums text-cc-navy dark:text-white">{item.value}</div>
                           </div>
-                        ))}
-                      </div>
-                      <Button variant="outline" asChild className="w-full mt-6 text-cc-blue border-cc-blue dark:text-cc-gold dark:border-cc-gold hover:bg-cc-light-blue dark:hover:bg-cc-navy/70">
-                        <Link to="/full-market-report" className="flex items-center justify-center">
-                          <ExternalLink className="h-4 w-4 mr-2" />
-                          Full Market Report
-                        </Link>
-                      </Button>
+                          <div
+                            className={`flex shrink-0 items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold tabular-nums ${
+                              item.isPositive
+                                ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'
+                                : 'bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-400'
+                            }`}
+                          >
+                            {item.isPositive ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                            {item.change}
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <div className="absolute top-4 right-4 flex gap-2 sm:bottom-4 sm:left-1/2 sm:-translate-x-1/2 sm:right-auto sm:top-auto">
-              <CarouselPrevious className="relative translate-y-0 left-0 h-8 w-8 sm:h-10 sm:w-10 dark:bg-cc-navy/70 dark:text-white dark:border-cc-gold/30 dark:hover:bg-cc-gold/20" />
-              <CarouselNext className="relative translate-y-0 right-0 h-8 w-8 sm:h-10 sm:w-10 dark:bg-cc-navy/70 dark:text-white dark:border-cc-gold/30 dark:hover:bg-cc-gold/20" />
+
+            <div className="border-t border-gray-100 px-5 py-4 dark:border-white/10 dark:bg-card">
+              <Button
+                asChild
+                className="group w-full bg-cc-navy text-white hover:bg-cc-blue dark:bg-cc-gold dark:text-cc-navy dark:hover:bg-cc-gold/90"
+              >
+                <Link to="/full-market-report" className="flex items-center justify-center">
+                  View Full Market Report
+                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Link>
+              </Button>
             </div>
           </Carousel>
         )}

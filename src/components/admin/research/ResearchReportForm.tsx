@@ -128,6 +128,8 @@ const ResearchReportForm = ({
           setPreview={setPreview}
           content={content}
           setContent={setContent}
+          title={title}
+          type={type}
         />
         
         <AuthorSettings

@@ -23,6 +23,7 @@ import { Progress } from "@/components/ui/progress";
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import PasswordChangeModal from '@/components/profile/PasswordChangeModal';
+import ApplicationTracker from '@/components/account-opening/ApplicationTracker';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { 
   Building2, 
@@ -39,7 +40,8 @@ import {
   Edit3,
   Save,
   Settings,
-  Bell
+  Bell,
+  ClipboardCheck
 } from 'lucide-react';
 import { toast } from "sonner";
 import { format } from 'date-fns';
@@ -162,13 +164,13 @@ const UserProfile = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex flex-col dark:bg-gray-950">
+      <div className="min-h-screen flex flex-col dark:bg-background">
         <Navbar />
         <main className="flex-1 pt-16 container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto mt-12 text-center">
             <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
             <h1 className="text-2xl font-bold text-cc-navy dark:text-white mb-2">Access Denied</h1>
-            <p className="text-gray-500 dark:text-gray-400">
+            <p className="text-gray-500 dark:text-muted-foreground">
               You must be logged in to view your profile.
             </p>
           </div>
@@ -219,10 +221,14 @@ const UserProfile = () => {
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4">
               <TabsTrigger value="profile" className="gap-2">
                 <User className="h-4 w-4" />
                 Profile
+              </TabsTrigger>
+              <TabsTrigger value="onboarding" className="gap-2">
+                <ClipboardCheck className="h-4 w-4" />
+                Onboarding
               </TabsTrigger>
               <TabsTrigger value="settings" className="gap-2">
                 <Settings className="h-4 w-4" />
@@ -578,6 +584,10 @@ const UserProfile = () => {
                   </Card>
                 </div>
               </div>
+            </TabsContent>
+
+            <TabsContent value="onboarding" className="mt-6">
+              <ApplicationTracker />
             </TabsContent>
 
             <TabsContent value="settings" className="mt-6">

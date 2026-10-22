@@ -87,10 +87,10 @@ const PasswordChangeModal = ({ isOpen, onClose }: PasswordChangeModalProps) => {
 
   return (
     <AlertDialog open={isOpen} onOpenChange={handleClose}>
-      <AlertDialogContent className="sm:max-w-md dark:bg-gray-800 dark:border-gray-700">
+      <AlertDialogContent className="sm:max-w-md dark:bg-card dark:border-border">
         <AlertDialogHeader>
           <AlertDialogTitle className="dark:text-white">Change Password</AlertDialogTitle>
-          <AlertDialogDescription className="dark:text-gray-300">
+          <AlertDialogDescription className="dark:text-muted-foreground">
             Enter your current password and choose a new password.
           </AlertDialogDescription>
         </AlertDialogHeader>
@@ -114,7 +114,7 @@ const PasswordChangeModal = ({ isOpen, onClose }: PasswordChangeModalProps) => {
                       <button
                         type="button"
                         onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-muted-foreground dark:hover:text-gray-300"
                       >
                         {showCurrentPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </button>
@@ -142,7 +142,7 @@ const PasswordChangeModal = ({ isOpen, onClose }: PasswordChangeModalProps) => {
                       <button
                         type="button"
                         onClick={() => setShowNewPassword(!showNewPassword)}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-muted-foreground dark:hover:text-gray-300"
                       >
                         {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </button>
@@ -170,7 +170,7 @@ const PasswordChangeModal = ({ isOpen, onClose }: PasswordChangeModalProps) => {
                       <button
                         type="button"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-muted-foreground dark:hover:text-gray-300"
                       >
                         {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </button>

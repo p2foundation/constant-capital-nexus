@@ -38,7 +38,7 @@ const EmailConfirmationAlert: React.FC<EmailConfirmationAlertProps> = ({
       const { error: customEmailError } = await supabase.functions.invoke('send-custom-auth-email', {
         body: {
           email,
-          confirmationUrl: `https://constantcap.com.gh/email-confirm`,
+          confirmationUrl: `${window.location.origin}/email-confirm`,
           type: 'signup'
         }
       });
@@ -50,7 +50,7 @@ const EmailConfirmationAlert: React.FC<EmailConfirmationAlertProps> = ({
           type: 'signup',
           email: email,
           options: {
-            emailRedirectTo: `https://constantcap.com.gh/email-confirm`
+            emailRedirectTo: `${window.location.origin}/email-confirm`
           }
         });
 
@@ -86,8 +86,8 @@ const EmailConfirmationAlert: React.FC<EmailConfirmationAlertProps> = ({
           <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800">
             <AlertCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
             <AlertDescription className="text-blue-800 dark:text-blue-200">
-              <strong>Important:</strong> Email confirmation is currently experiencing issues. 
-              Please check your spam folder and try the troubleshooting steps below.
+              <strong>One last step:</strong> your account is created, but you need to confirm
+              your email address before you can sign in. The link opens straight back here.
             </AlertDescription>
           </Alert>
 
@@ -156,7 +156,7 @@ const EmailConfirmationAlert: React.FC<EmailConfirmationAlertProps> = ({
               size="sm" 
               className="w-full mt-4"
             >
-              Continue without confirming (limited access)
+              I've confirmed my email — go to sign in
             </Button>
           )}
         </CardContent>

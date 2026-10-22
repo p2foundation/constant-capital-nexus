@@ -1,285 +1,213 @@
-
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Calculator, ChevronDown } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Calculator, Search, TrendingDown, TrendingUp } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { toast } from 'sonner';
 import { useAnalytics } from '@/hooks/useAnalytics';
+import { DIVIDEND_WHT, GseQuote, ghs, loadGseQuotes } from '@/lib/gseStocks';
 
-// Stock price data - Based on GSE listings with realistic price estimates
-const stocks = {
-  "ACCESS": 9.20,
-  "ADB": 0.50,
-  "AGA": 45.00,
-  "ALLGH": 1.25,
-  "ALW": 0.80,
-  "ASG": 2.10,
-  "BOPP": 15.50,
-  "CAL": 0.95,
-  "CLYD": 0.30,
-  "CMLT": 0.12,
-  "CPC": 0.25,
-  "DASPHARM": 0.38,
-  "EGH": 12.80,
-  "EGL": 3.20,
-  "ETI": 20.50,
-  "FML": 4.80,
-  "GCB": 7.60,
-  "GGBL": 8.40,
-  "GOIL": 1.77,
-  "MAC": 0.15,
-  "MTNGH": 3.30,
-  "PBC": 1.80,
-  "RBGH": 1.50,
-  "SCB": 22.00,
-  "SIC": 0.85,
-  "SOGEGH": 1.20,
-  "SWL": 0.18,
-  "TBL": 0.45,
-  "TLW": 35.00,
-  "TOTAL": 25.00,
-  "UNIL": 19.54
-};
+const num = (s: string) => { const n = parseFloat(s); return isFinite(n) ? n : 0; };
+
+const Field = ({ id, label, hint, ...p }: { id: string; label: string; hint?: string } & React.ComponentProps<typeof Input>) => (
+  <div className="space-y-1.5">
+    <Label htmlFor={id}>{label}</Label>
+    <Input id={id} type="number" inputMode="decimal" min="0" {...p} />
+    {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
+  </div>
+);
 
 const EquityCalculator = () => {
   useAnalytics();
-  
-  const [selectedStock, setSelectedStock] = useState<string>('MTNGH');
-  const [buyPrice, setBuyPrice] = useState<string>('');
-  const [currentPrice, setCurrentPrice] = useState<string>('');
-  const [shares, setShares] = useState<string>('1000');
-  const [dividend, setDividend] = useState<string>('0.12');
-  const [capitalGain, setCapitalGain] = useState<number>(0);
-  const [dividendIncome, setDividendIncome] = useState<number>(0);
-  const [totalReturn, setTotalReturn] = useState<number>(0);
-  const [returnPercentage, setReturnPercentage] = useState<number>(0);
-
-  // Set initial price when stock selection changes
-  useEffect(() => {
-    if (selectedStock) {
-      const stockPrice = stocks[selectedStock as keyof typeof stocks];
-      setCurrentPrice(stockPrice.toString());
-      
-      // Set a default buy price slightly lower than current price for demonstration
-      const defaultBuyPrice = (stockPrice * 0.9).toFixed(2);
-      setBuyPrice(defaultBuyPrice);
-    }
-  }, [selectedStock]);
-
-  const calculateEquityReturn = () => {
-    const buyPriceNum = parseFloat(buyPrice);
-    const currentPriceNum = parseFloat(currentPrice);
-    const sharesNum = parseInt(shares);
-    const dividendNum = parseFloat(dividend);
-    
-    if (isNaN(buyPriceNum) || isNaN(currentPriceNum) || isNaN(sharesNum) || isNaN(dividendNum)) {
-      return;
-    }
-    
-    const calculatedCapitalGain = (currentPriceNum - buyPriceNum) * sharesNum;
-    const calculatedDividendIncome = dividendNum * sharesNum;
-    const calculatedTotalReturn = calculatedCapitalGain + calculatedDividendIncome;
-    const initialInvestment = buyPriceNum * sharesNum;
-    const calculatedReturnPercentage = (calculatedTotalReturn / initialInvestment) * 100;
-    
-    setCapitalGain(parseFloat(calculatedCapitalGain.toFixed(2)));
-    setDividendIncome(parseFloat(calculatedDividendIncome.toFixed(2)));
-    setTotalReturn(parseFloat(calculatedTotalReturn.toFixed(2)));
-    setReturnPercentage(parseFloat(calculatedReturnPercentage.toFixed(2)));
+  const [quotes, setQuotes] = useState<GseQuote[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [symbol, setSymbol] = useState('MTNGH');
+  const [amount, setAmount] = useState('10000');
+  const [buyPrice, setBuyPrice] = useState('');
+  const [sellPrice, setSellPrice] = useState('');
+  const [months, setMonths] = useState('12');
+  const [dps, setDps] = useState('0');
+  const [fee, setFee] = useState('0');
+  const [query, setQuery] = useState('');
+  const [tab, setTab] = useState('calculator');
+  const pick = (q: GseQuote) => {
+    setSymbol(q.symbol);
+    setTab('calculator');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    toast.success(`${q.symbol} selected`, { description: `${q.name} at ${ghs(q.price)} loaded into the calculator.` });
   };
 
   useEffect(() => {
-    if (buyPrice && currentPrice && shares && dividend) {
-      calculateEquityReturn();
-    }
-  }, [selectedStock, buyPrice, currentPrice, shares, dividend]);
+    loadGseQuotes().then(setQuotes).catch(console.error).finally(() => setLoading(false));
+  }, []);
+
+  const stock = quotes.find((q) => q.symbol === symbol);
+
+  useEffect(() => {
+    if (!stock) return;
+    setBuyPrice(stock.price.toFixed(2));
+    setSellPrice(stock.price.toFixed(2));
+    setDps(String(stock.dps ?? 0));
+  }, [stock?.symbol, stock?.price]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const r = useMemo(() => {
+    const buy = num(buyPrice), sell = num(sellPrice), f = num(fee) / 100, years = Math.max(num(months), 1) / 12;
+    const shares = buy > 0 ? Math.floor(num(amount) / (buy * (1 + f))) : 0;
+    const cost = shares * buy * (1 + f);
+    const proceeds = shares * sell * (1 - f);
+    const capital = proceeds - cost;
+    const divGross = num(dps) * shares * years;
+    const divNet = divGross * (1 - DIVIDEND_WHT);
+    const total = capital + divNet;
+    const pct = cost > 0 ? (total / cost) * 100 : 0;
+    const annual = cost > 0 && cost + total > 0 ? (Math.pow((cost + total) / cost, 1 / years) - 1) * 100 : 0;
+    const yieldPct = buy > 0 ? (num(dps) / buy) * 100 : 0;
+    return { shares, cost, proceeds, capital, divGross, divNet, total, pct, annual, yieldPct, leftover: num(amount) - cost };
+  }, [amount, buyPrice, sellPrice, months, dps, fee]);
+
+  const filtered = quotes.filter((q) =>
+    `${q.symbol} ${q.name} ${q.sector}`.toLowerCase().includes(query.toLowerCase()));
+  const asOf = quotes[0]?.date ? new Date(quotes.reduce((m, q) => (q.date > m ? q.date : m), quotes[0].date)).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : null;
 
   return (
-    <div className="flex flex-col min-h-screen dark:bg-gray-950">
+    <div className="flex min-h-screen flex-col bg-background">
       <Navbar />
-      <main className="flex-1 container mx-auto px-4 py-8 mt-16">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold text-center text-cc-navy dark:text-white mb-8">
-            Equity Investment Calculator
-          </h1>
+      <main className="container mx-auto mt-16 flex-1 px-4 py-12">
+        <div className="mx-auto max-w-6xl">
+          <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-accent">Calculators</p>
+          <h1 className="font-heading mb-3 text-3xl font-bold text-foreground md:text-4xl">Equity investment calculator</h1>
+          <p className="mb-8 max-w-2xl text-muted-foreground">
+            Pick any Ghana Stock Exchange share, enter how much you want to invest, and see your shares, dividends after tax and total return.
+            {asOf && <> Prices as of <span className="font-medium text-foreground">{asOf}</span>.</>}
+          </p>
 
-          <Tabs defaultValue="calculator" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+          <Tabs value={tab} onValueChange={setTab}>
+            <TabsList className="mb-6 grid w-full grid-cols-2 sm:w-auto sm:inline-grid">
               <TabsTrigger value="calculator">Calculator</TabsTrigger>
-              <TabsTrigger value="stocks">Stock Prices</TabsTrigger>
+              <TabsTrigger value="stocks">All GSE shares ({quotes.length})</TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="calculator">
-              <Card>
-                <CardHeader className="bg-cc-navy dark:bg-cc-navy/80 text-white">
-                  <CardTitle className="flex items-center">
-                    <Calculator className="mr-2 h-5 w-5" /> 
-                    Stock Return Calculator
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-6">
-                  <div className="grid gap-6 md:grid-cols-2">
-                    <div className="space-y-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="stock">Select Stock</Label>
-                        <Select 
-                          value={selectedStock}
-                          onValueChange={setSelectedStock}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select stock" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              {Object.keys(stocks).map(stock => (
-                                <SelectItem key={stock} value={stock}>{stock}</SelectItem>
-                              ))}
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="buyPrice">Buying Price (GHS)</Label>
-                        <Input
-                          id="buyPrice"
-                          type="number"
-                          value={buyPrice}
-                          onChange={(e) => setBuyPrice(e.target.value)}
-                          step="0.01"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="currentPrice">Current Price (GHS)</Label>
-                        <Input
-                          id="currentPrice"
-                          type="number"
-                          value={currentPrice}
-                          onChange={(e) => setCurrentPrice(e.target.value)}
-                          step="0.01"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="shares">Number of Shares</Label>
-                        <Input
-                          id="shares"
-                          type="number"
-                          value={shares}
-                          onChange={(e) => setShares(e.target.value)}
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="dividend">Dividend per Share (GHS)</Label>
-                        <Input
-                          id="dividend"
-                          type="number"
-                          value={dividend}
-                          onChange={(e) => setDividend(e.target.value)}
-                          step="0.01"
-                        />
-                      </div>
-                      
-                      <Button 
-                        onClick={calculateEquityReturn}
-                        className="w-full bg-cc-gold text-cc-navy hover:bg-cc-gold/90 dark:bg-cc-gold dark:text-cc-navy dark:hover:bg-cc-gold/90"
-                      >
-                        Calculate
-                      </Button>
-                    </div>
-                    
-                    <div className="bg-gray-50 p-4 rounded-lg dark:bg-gray-800/50">
-                      <h3 className="text-lg font-medium mb-4 text-cc-navy dark:text-white">Results</h3>
-                      <Table>
-                        <TableBody>
-                          <TableRow>
-                            <TableCell className="font-medium">Initial Investment</TableCell>
-                            <TableCell className="text-right">
-                              GHS {(parseFloat(buyPrice || '0') * parseInt(shares || '0')).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
-                            </TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="font-medium">Capital Gain/Loss</TableCell>
-                            <TableCell className={`text-right ${capitalGain >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                              GHS {capitalGain.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
-                            </TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="font-medium">Dividend Income</TableCell>
-                            <TableCell className="text-right text-green-600">
-                              GHS {dividendIncome.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
-                            </TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="font-medium">Total Return</TableCell>
-                            <TableCell className={`text-right ${totalReturn >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                              GHS {totalReturn.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
-                            </TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="font-medium">Return Percentage</TableCell>
-                            <TableCell className={`text-right ${returnPercentage >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                              {returnPercentage.toFixed(2)}%
-                            </TableCell>
-                          </TableRow>
-                        </TableBody>
-                      </Table>
-                      
-                      {/* Final Total Highlight */}
-                      <div className="mt-4 p-4 bg-cc-navy dark:bg-cc-navy/90 rounded-lg">
-                        <div className="flex justify-between items-center">
-                          <span className="text-white font-medium">Current Portfolio Value</span>
-                          <span className="text-cc-gold text-xl font-bold">
-                            GHS {(parseFloat(currentPrice || '0') * parseInt(shares || '0')).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
-                          </span>
-                        </div>
-                        <p className="text-gray-300 text-xs mt-1">{shares} shares × GHS {parseFloat(currentPrice || '0').toFixed(2)} per share</p>
-                      </div>
-                    </div>
+              <div className="grid gap-6 lg:grid-cols-5">
+                <div className="space-y-5 rounded-2xl border border-border bg-card p-6 lg:col-span-3">
+                  <div className="space-y-1.5">
+                    <Label>Share</Label>
+                    <Select value={symbol} onValueChange={(v) => { const q = quotes.find((x) => x.symbol === v); if (q) pick(q); }} disabled={loading}>
+                      <SelectTrigger><SelectValue placeholder={loading ? 'Loading shares…' : 'Select a share'} /></SelectTrigger>
+                      <SelectContent className="max-h-80">
+                        {quotes.map((q) => (
+                          <SelectItem key={q.symbol} value={q.symbol}>
+                            {q.symbol} · {q.name} · {ghs(q.price)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
-                </CardContent>
-                <CardFooter className="bg-gray-50 border-t dark:bg-gray-800/30 dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400 flex flex-col items-start py-4">
-                  <p>Formula: Total Return = (Current Price - Buying Price) × Number of Shares + Total Dividends</p>
-                  <p>Note: This is a simplified calculation that doesn't account for factors like transaction fees, taxes, or time value of money.</p>
-                </CardFooter>
-              </Card>
+
+                  {stock && (
+                    <div className="grid grid-cols-2 gap-3 rounded-xl bg-muted/50 p-4 text-sm sm:grid-cols-4">
+                      <div><p className="text-muted-foreground">Price</p><p className="font-semibold text-foreground">{ghs(stock.price)}</p></div>
+                      <div><p className="text-muted-foreground">Day change</p>
+                        <p className={`flex items-center gap-1 font-semibold ${stock.changePercent < 0 ? 'text-destructive' : 'text-accent'}`}>
+                          {stock.changePercent < 0 ? <TrendingDown className="h-4 w-4" /> : <TrendingUp className="h-4 w-4" />}{stock.changePercent.toFixed(2)}%
+                        </p></div>
+                      <div><p className="text-muted-foreground">Sector</p><p className="font-semibold text-foreground">{stock.sector}</p></div>
+                      <div><p className="text-muted-foreground">Last dividend</p>
+                        <p className="font-semibold text-foreground">{stock.dps ? ghs(stock.dps) : 'Not on record'}</p></div>
+                      {stock.dpsLabel && <p className="col-span-full text-xs text-muted-foreground">Dividend: {stock.dpsLabel}</p>}
+                    </div>
+                  )}
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <Field id="amount" label="Amount to invest (GH₵)" value={amount} onChange={(e) => setAmount(e.target.value)} />
+                    <Field id="months" label="Holding period (months)" value={months} onChange={(e) => setMonths(e.target.value)} />
+                    <Field id="buy" label="Buying price (GH₵)" step="0.01" value={buyPrice} onChange={(e) => setBuyPrice(e.target.value)} hint="Defaults to the latest price" />
+                    <Field id="sell" label="Expected selling price (GH₵)" step="0.01" value={sellPrice} onChange={(e) => setSellPrice(e.target.value)} hint="Your target price when you sell" />
+                    <Field id="dps" label="Dividend per share per year (GH₵)" step="0.001" value={dps} onChange={(e) => setDps(e.target.value)} hint={`Yield at buying price: ${r.yieldPct.toFixed(2)}%`} />
+                    <Field id="fee" label="Transaction costs (% per trade)" step="0.01" value={fee} onChange={(e) => setFee(e.target.value)} hint="Brokerage and levies — ask us for current rates" />
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-4 lg:col-span-2">
+                  <div className="rounded-2xl border border-border bg-card p-6">
+                    <h2 className="font-heading mb-4 flex items-center gap-2 text-lg font-semibold text-foreground">
+                      <Calculator className="h-5 w-5 text-accent" /> Your results
+                    </h2>
+                    <dl className="space-y-3 text-sm">
+                      {[
+                        ['Shares you can buy', r.shares.toLocaleString()],
+                        ['Total cost incl. fees', ghs(r.cost)],
+                        ['Cash left over', ghs(r.leftover)],
+                        ['Capital gain / loss', ghs(r.capital), r.capital < 0],
+                        ['Dividends (gross)', ghs(r.divGross)],
+                        [`Dividends after ${DIVIDEND_WHT * 100}% tax`, ghs(r.divNet)],
+                        ['Total return', `${ghs(r.total)} (${r.pct.toFixed(2)}%)`, r.total < 0],
+                        ['Annualised return', `${r.annual.toFixed(2)}%`, r.annual < 0],
+                      ].map(([k, v, neg]) => (
+                        <div key={k as string} className="flex justify-between gap-4 border-b border-border pb-2 last:border-0">
+                          <dt className="text-muted-foreground">{k}</dt>
+                          <dd className={`text-right font-medium ${neg ? 'text-destructive' : 'text-foreground'}`}>{v}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </div>
+                  <div className="rounded-2xl bg-accent p-6 text-accent-foreground">
+                    <p className="text-sm font-medium opacity-90">Value when you sell (incl. dividends)</p>
+                    <p className="font-heading text-3xl font-bold">{ghs(r.proceeds + r.divNet)}</p>
+                    <p className="mt-1 text-xs opacity-90">{r.shares.toLocaleString()} shares × {ghs(num(sellPrice))} after {months || 0} months</p>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Dividends assume the same payout each year. Ghana deducts {DIVIDEND_WHT * 100}% withholding tax on dividends as a final tax. Past dividends do not guarantee future payouts. For illustration only, not investment advice.
+                  </p>
+                </div>
+              </div>
             </TabsContent>
-            
+
             <TabsContent value="stocks">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Current Stock Prices</CardTitle>
-                </CardHeader>
-                <CardContent>
+              <div className="rounded-2xl border border-border bg-card p-4 sm:p-6">
+                <div className="relative mb-4 max-w-sm">
+                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input className="pl-9" placeholder="Search by name, symbol or sector" value={query} onChange={(e) => setQuery(e.target.value)} />
+                </div>
+                <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
                       <TableRow>
                         <TableHead>Symbol</TableHead>
-                        <TableHead className="text-right">Price (GHS)</TableHead>
+                        <TableHead>Company</TableHead>
+                        <TableHead className="hidden md:table-cell">Sector</TableHead>
+                        <TableHead className="text-right">Price (GH₵)</TableHead>
+                        <TableHead className="text-right">Change</TableHead>
+                        <TableHead className="text-right">Dividend</TableHead>
+                        <TableHead className="text-right">Yield</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {Object.entries(stocks).map(([symbol, price]) => (
-                        <TableRow key={symbol}>
-                          <TableCell className="font-medium">{symbol}</TableCell>
-                          <TableCell className="text-right">{price.toFixed(2)}</TableCell>
+                      {filtered.map((q) => (
+                        <TableRow key={q.symbol} className={`cursor-pointer ${q.symbol === symbol ? 'bg-accent/10' : ''}`} onClick={() => pick(q)} title="Use in calculator">
+                          <TableCell className="font-semibold">{q.symbol}</TableCell>
+                          <TableCell>{q.name}</TableCell>
+                          <TableCell className="hidden text-muted-foreground md:table-cell">{q.sector}</TableCell>
+                          <TableCell className="text-right">{q.price.toFixed(2)}</TableCell>
+                          <TableCell className={`text-right ${q.changePercent < 0 ? 'text-destructive' : q.changePercent > 0 ? 'text-accent' : ''}`}>{q.changePercent.toFixed(2)}%</TableCell>
+                          <TableCell className="text-right">{q.dps ? q.dps.toFixed(3) : '—'}</TableCell>
+                          <TableCell className="text-right">{q.dps ? `${((q.dps / q.price) * 100).toFixed(2)}%` : '—'}</TableCell>
                         </TableRow>
                       ))}
+                      {!loading && filtered.length === 0 && (
+                        <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground">No shares found</TableCell></TableRow>
+                      )}
                     </TableBody>
                   </Table>
-                </CardContent>
-                <CardFooter className="text-sm text-gray-500">
-                  Stock prices are for demonstration purposes only.
-                </CardFooter>
-              </Card>
+                </div>
+                <p className="mt-4 text-xs text-muted-foreground">
+                  Prices from the Ghana Stock Exchange daily feed. Tap a row to use it in the calculator. "—" means no dividend on our records for the last financial year.
+                </p>
+              </div>
             </TabsContent>
           </Tabs>
         </div>

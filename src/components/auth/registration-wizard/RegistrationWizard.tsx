@@ -148,7 +148,11 @@ const RegistrationWizard = () => {
 
       const result = await signUp(data.email, data.password, profileData);
       
-      if (result.success) {
+      if (result.success && result.hasSession) {
+        // Already signed in (email confirmation not required)
+        localStorage.removeItem('registration-progress');
+        navigate('/account-opening');
+      } else if (result.success) {
         // Clear saved progress
         localStorage.removeItem('registration-progress');
         

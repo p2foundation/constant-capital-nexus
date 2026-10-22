@@ -63,7 +63,7 @@ const ResearchPage: React.FC = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center mb-12">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-cc-navy dark:text-white">Research Portal</h1>
-            <p className="mt-4 text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <p className="mt-4 text-gray-600 dark:text-muted-foreground max-w-2xl mx-auto">
               Access premier market research, analysis and investment insights from Constant Capital's research team.
             </p>
           </div>

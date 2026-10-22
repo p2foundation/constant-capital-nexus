@@ -17,14 +17,14 @@ interface SummaryCardProps {
 
 const SummaryCard: React.FC<SummaryCardProps> = ({ title, items }) => {
   return (
-    <Card className="shadow-md dark:bg-cc-navy/80 dark:border-cc-gold/20 print:shadow-none print:break-inside-avoid">
+    <Card className="shadow-md dark:bg-card dark:border-cc-gold/20 print:shadow-none print:break-inside-avoid">
       <CardHeader>
         <CardTitle className="dark:text-white">{title}</CardTitle>
       </CardHeader>
       <CardContent className="pt-0">
         <div className="space-y-4">
           {items.map((item, index) => (
-            <div key={index} className="flex justify-between items-center border-b pb-3 border-gray-200 dark:border-gray-700">
+            <div key={index} className="flex justify-between items-center border-b pb-3 border-gray-200 dark:border-border">
               <div>
                 <p className="font-medium dark:text-white">{item.name}</p>
                 <p className="text-2xl font-bold mt-1 dark:text-white">

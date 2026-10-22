@@ -7,6 +7,7 @@ export interface MarketDataPoint {
   value: number;
   change_percent?: number | null;
   ticker_symbol?: string | null;
+  source?: string | null;
   additional_data?: any;
 }
 

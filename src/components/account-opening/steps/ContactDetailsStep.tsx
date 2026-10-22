@@ -111,7 +111,7 @@ const ContactDetailsStep: React.FC<StepProps> = ({ formData, setFormData }) => {
       </div>
 
       {/* Emergency Contact Details */}
-      <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+      <div className="p-4 bg-gray-50 dark:bg-card rounded-lg">
         <h3 className="text-lg font-medium mb-4 text-gray-900 dark:text-gray-100">
           Contact Details (in case of emergency)
         </h3>

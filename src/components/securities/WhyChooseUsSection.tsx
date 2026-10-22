@@ -1,49 +1,52 @@
-
 import React from 'react';
-import { BarChart3, AreaChart, ChartLine } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { BarChart3, AreaChart, ChartLine, ArrowRight } from 'lucide-react';
+
+const reasons = [
+  {
+    icon: BarChart3,
+    title: 'Expertise & Experience',
+    description: 'Our team has extensive knowledge of African markets and global financial trends.',
+  },
+  {
+    icon: AreaChart,
+    title: 'Advanced Technology',
+    description: 'State-of-the-art trading platforms and execution systems.',
+  },
+  {
+    icon: ChartLine,
+    title: 'Market Insights',
+    description: 'Regular market updates and investment research to guide your decisions.',
+  },
+];
 
 const WhyChooseUsSection = () => {
   return (
-    <div className="bg-gray-50 p-8 rounded-lg dark:bg-gray-800">
-      <h3 className="text-2xl font-bold mb-6 text-cc-navy dark:text-white">Why Choose Us</h3>
-      
+    <div className="rounded-2xl border border-border bg-card p-8">
+      <h3 className="font-heading mb-8 text-2xl font-bold text-foreground">Why Choose Us</h3>
+
       <div className="space-y-6">
-        <div className="flex items-start">
-          <div className="mr-4 bg-cc-navy p-3 rounded-full dark:bg-cc-gold">
-            <BarChart3 className="h-6 w-6 text-white dark:text-cc-navy" />
+        {reasons.map(({ icon: Icon, title, description }) => (
+          <div key={title} className="group flex items-start">
+            <div className="mr-4 flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent transition-transform group-hover:scale-110">
+              <Icon className="h-6 w-6" />
+            </div>
+            <div>
+              <h4 className="mb-1 font-bold text-foreground">{title}</h4>
+              <p className="leading-relaxed text-muted-foreground">{description}</p>
+            </div>
           </div>
-          <div>
-            <h4 className="text-xl font-medium mb-2 dark:text-white">Expertise & Experience</h4>
-            <p className="text-gray-600 dark:text-gray-300">Our team has extensive knowledge of African markets and global financial trends.</p>
-          </div>
-        </div>
-        
-        <div className="flex items-start">
-          <div className="mr-4 bg-cc-navy p-3 rounded-full dark:bg-cc-gold">
-            <AreaChart className="h-6 w-6 text-white dark:text-cc-navy" />
-          </div>
-          <div>
-            <h4 className="text-xl font-medium mb-2 dark:text-white">Advanced Technology</h4>
-            <p className="text-gray-600 dark:text-gray-300">State-of-the-art trading platforms and execution systems.</p>
-          </div>
-        </div>
-        
-        <div className="flex items-start">
-          <div className="mr-4 bg-cc-navy p-3 rounded-full dark:bg-cc-gold">
-            <ChartLine className="h-6 w-6 text-white dark:text-cc-navy" />
-          </div>
-          <div>
-            <h4 className="text-xl font-medium mb-2 dark:text-white">Market Insights</h4>
-            <p className="text-gray-600 dark:text-gray-300">Regular market updates and investment research to guide your decisions.</p>
-          </div>
-        </div>
+        ))}
       </div>
-      
-      <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-        <h4 className="text-lg font-medium mb-4 dark:text-white">Ready to start trading?</h4>
-        <button className="bg-cc-navy hover:bg-blue-900 text-white font-medium py-3 px-6 rounded dark:bg-cc-gold dark:text-cc-navy dark:hover:bg-cc-gold/80">
-          Contact Our Trading Desk
-        </button>
+
+      <div className="mt-8 border-t border-border pt-6">
+        <h4 className="mb-4 font-bold text-foreground">Ready to start trading?</h4>
+        <Link
+          to="/contact"
+          className="inline-flex items-center justify-center rounded-xl bg-accent px-6 py-3 font-bold text-accent-foreground transition-all duration-300 hover:-translate-y-0.5 hover:bg-accent/90"
+        >
+          Contact Our Trading Desk <ArrowRight className="ml-2 h-4 w-4" />
+        </Link>
       </div>
     </div>
   );

@@ -247,7 +247,7 @@ const PersonalInfoStep: React.FC<StepProps> = ({ formData, setFormData }) => {
       </div>
 
       {/* Permit Information (for non-Ghanaians) */}
-      <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+      <div className="p-4 bg-gray-50 dark:bg-card rounded-lg">
         <h3 className="font-medium mb-4 text-gray-900 dark:text-gray-100">
           If the country of origin is not Ghana, please provide the following:
         </h3>

@@ -8,6 +8,8 @@ const CookieConsent = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    const showPreferences = () => setIsVisible(true);
+    window.addEventListener('show-cookie-preferences', showPreferences);
     // Check if user has already accepted cookies
     const cookieConsent = localStorage.getItem('cookieConsent');
     if (!cookieConsent) {
@@ -15,12 +17,17 @@ const CookieConsent = () => {
       const timer = setTimeout(() => {
         setIsVisible(true);
       }, 1500);
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener('show-cookie-preferences', showPreferences);
+      };
     }
+    return () => window.removeEventListener('show-cookie-preferences', showPreferences);
   }, []);
 
   const handleAccept = () => {
     localStorage.setItem('cookieConsent', 'accepted');
+    window.dispatchEvent(new Event('cookie-consent-changed'));
     setIsVisible(false);
   };
 
@@ -33,7 +40,7 @@ const CookieConsent = () => {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 p-4 animate-in slide-in-from-bottom-5 duration-300">
-      <div className="max-w-4xl mx-auto bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-4 md:p-6">
+      <div className="max-w-4xl mx-auto bg-white dark:bg-background border border-gray-200 dark:border-border rounded-lg shadow-lg p-4 md:p-6">
         <div className="flex items-start gap-4">
           <div className="hidden sm:flex items-center justify-center w-10 h-10 bg-cc-gold/10 rounded-full flex-shrink-0">
             <Cookie className="h-5 w-5 text-cc-gold" />
@@ -45,9 +52,8 @@ const CookieConsent = () => {
                 <h3 className="text-sm font-semibold text-cc-navy dark:text-white mb-1">
                   We use cookies
                 </h3>
-                <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
-                  We use cookies to enhance your browsing experience, analyze site traffic, and personalize content. 
-                  By clicking "Accept All", you consent to our use of cookies.{' '}
+                <p className="text-xs text-gray-600 dark:text-muted-foreground leading-relaxed">
+                  Essential storage keeps sign-in and security features working. With your permission, Google Analytics helps us understand site usage.{' '}
                   <Link to="/cookie-policy" className="text-cc-blue hover:underline">
                     Learn more
                   </Link>
@@ -68,7 +74,7 @@ const CookieConsent = () => {
                 size="sm"
                 className="bg-cc-navy hover:bg-cc-navy/90 text-white dark:bg-cc-gold dark:text-cc-navy dark:hover:bg-cc-gold/90"
               >
-                Accept All
+                Accept analytics
               </Button>
               <Button
                 onClick={handleDecline}
@@ -76,7 +82,7 @@ const CookieConsent = () => {
                 size="sm"
                 className="border-gray-300 dark:border-gray-600"
               >
-                Decline
+                Essential only
               </Button>
             </div>
           </div>

@@ -52,7 +52,7 @@ const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
           <span className="w-full border-t border-gray-300 dark:border-gray-600" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-white dark:bg-cc-navy px-2 text-gray-500 dark:text-gray-400">
+          <span className="bg-white dark:bg-card px-2 text-gray-500 dark:text-muted-foreground">
             Or {mode} with
           </span>
         </div>
@@ -64,7 +64,7 @@ const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
           variant="outline"
           onClick={() => handleSocialLogin('google')}
           disabled={loadingProvider !== null}
-          className="w-full dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
+          className="w-full dark:border-border dark:bg-card dark:hover:bg-gray-700"
         >
           {loadingProvider === 'google' ? (
             <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
@@ -79,7 +79,7 @@ const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
           variant="outline"
           onClick={() => handleSocialLogin('linkedin_oidc')}
           disabled={loadingProvider !== null}
-          className="w-full dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
+          className="w-full dark:border-border dark:bg-card dark:hover:bg-gray-700"
         >
           {loadingProvider === 'linkedin_oidc' ? (
             <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />

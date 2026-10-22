@@ -1,87 +1,99 @@
 
 import React from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { fixedIncomeData } from './mock-data';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useMarketData } from '@/contexts/MarketDataContext';
 
 const FixedIncomeChart: React.FC = () => {
   const { marketData } = useMarketData();
-  
-  // Filter to last 60 days
-  const sixtyDaysAgo = new Date();
-  sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
-  const recentData = marketData.fixedIncome.filter(item => new Date(item.date) >= sixtyDaysAgo);
-  
-  // Process market data for charting or use mock data
-  const chartData = recentData.length > 0 ? 
-    [...new Set(recentData.map(item => item.date))].map(date => {
-      const dateItems = recentData.filter(d => d.date === date);
+
+  const { chartData, latestYieldCurve, hasHistory, latestDate } = React.useMemo(() => {
+    const allValidData = marketData.fixedIncome.filter(item =>
+      item.date && item.ticker_symbol && Number.isFinite(Number(item.value))
+    );
+    const verifiedData = allValidData.filter(item => item.source === 'auto');
+    const validData = verifiedData.length > 0 ? verifiedData : allValidData;
+    const dates = [...new Set(validData.map(item => item.date))]
+      .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+    const recentDates = dates.slice(-12);
+    const tenorFor = (ticker: string | null | undefined) => {
+      const normalized = ticker?.toLowerCase().replace(/[^0-9]/g, '') ?? '';
+      if (normalized.startsWith('91')) return '91';
+      if (normalized.startsWith('182')) return '182';
+      if (normalized.startsWith('364')) return '364';
+      return null;
+    };
+    const historical = recentDates.map(date => {
+      const dateItems = validData.filter(item => item.date === date);
       return {
-        name: new Date(date).toLocaleDateString('en-GB', { month: 'short', day: 'numeric' }),
-        yield91: dateItems.find(i => i.ticker_symbol === '91-day')?.value,
-        yield182: dateItems.find(i => i.ticker_symbol === '182-day')?.value,
-        yield364: dateItems.find(i => i.ticker_symbol === '364-day')?.value
+        name: new Date(`${date}T00:00:00`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }),
+        yield91: dateItems.find(item => tenorFor(item.ticker_symbol) === '91')?.value,
+        yield182: dateItems.find(item => tenorFor(item.ticker_symbol) === '182')?.value,
+        yield364: dateItems.find(item => tenorFor(item.ticker_symbol) === '364')?.value,
       };
-    }) : fixedIncomeData;
-  
-  // Calculate min and max for the Y axis domain
-  const allValues = chartData.flatMap(item => [item.yield91, item.yield182, item.yield364].filter(Boolean));
-  const minValue = allValues.length ? Math.min(...allValues) * 0.98 : 18;
-  const maxValue = allValues.length ? Math.max(...allValues) * 1.02 : 25;
+    });
+    const newestDate = recentDates[recentDates.length - 1];
+    const newestItems = newestDate ? validData.filter(item => item.date === newestDate) : [];
+    const curve = [
+      { name: '91 days', yield: newestItems.find(item => tenorFor(item.ticker_symbol) === '91')?.value },
+      { name: '182 days', yield: newestItems.find(item => tenorFor(item.ticker_symbol) === '182')?.value },
+      { name: '364 days', yield: newestItems.find(item => tenorFor(item.ticker_symbol) === '364')?.value },
+    ].filter(point => point.yield !== undefined);
+
+    return {
+      chartData: historical,
+      latestYieldCurve: curve,
+      hasHistory: historical.length > 1,
+      latestDate: newestDate,
+    };
+  }, [marketData.fixedIncome]);
+
+  const displayedData = hasHistory ? chartData : latestYieldCurve;
+  const valueKeys = hasHistory ? ['yield91', 'yield182', 'yield364'] : ['yield'];
+  const allValues = displayedData.flatMap(item =>
+    valueKeys.map(key => Number(item[key as keyof typeof item])).filter(Number.isFinite)
+  );
+  const minYield = allValues.length ? Math.min(...allValues) : 0;
+  const maxYield = allValues.length ? Math.max(...allValues) : 10;
+  const padding = Math.max((maxYield - minYield) * 0.2, 0.5);
+  const domain: [number, number] = [
+    Math.max(0, Math.floor((minYield - padding) * 10) / 10),
+    Math.ceil((maxYield + padding) * 10) / 10,
+  ];
+
+  if (displayedData.length === 0) {
+    return (
+      <div className="flex h-[300px] items-center justify-center text-sm text-muted-foreground">
+        Fixed-income yields are not available yet.
+      </div>
+    );
+  }
   
   return (
     <div className="h-[300px]">
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart
-          data={chartData}
-          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+        <LineChart
+          data={displayedData}
+          margin={{ top: 18, right: 24, left: 10, bottom: 8 }}
         >
-          <defs>
-            <linearGradient id="color91" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#0A2342" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#0A2342" stopOpacity={0.1} />
-            </linearGradient>
-            <linearGradient id="color182" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#126872" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#126872" stopOpacity={0.1} />
-            </linearGradient>
-            <linearGradient id="color364" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#D4AF37" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#D4AF37" stopOpacity={0.1} />
-            </linearGradient>
-          </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-          <XAxis dataKey="name" />
-          <YAxis domain={[minValue, maxValue]} />
+          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+          <XAxis dataKey="name" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
+          <YAxis
+            domain={domain}
+            width={58}
+            tick={{ fill: 'hsl(var(--muted-foreground))' }}
+            tickFormatter={(value) => `${Number(value).toFixed(1)}%`}
+          />
           <Tooltip 
-            formatter={(value, name) => [`${value}%`, name]}
-            labelFormatter={(label) => `${label}`}
+            formatter={(value, name) => [`${Number(value).toFixed(3)}%`, name]}
+            labelFormatter={(label) => hasHistory ? label : `${label} · ${latestDate ? new Date(`${latestDate}T00:00:00`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : ''}`}
+            contentStyle={{ background: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--card-foreground))' }}
           />
-          <Area 
-            type="monotone" 
-            dataKey="yield91" 
-            name="91-Day T-Bill" 
-            stroke="#0A2342" 
-            fillOpacity={1} 
-            fill="url(#color91)" 
-          />
-          <Area 
-            type="monotone" 
-            dataKey="yield182" 
-            name="182-Day T-Bill" 
-            stroke="#126872" 
-            fillOpacity={1} 
-            fill="url(#color182)" 
-          />
-          <Area 
-            type="monotone" 
-            dataKey="yield364" 
-            name="364-Day Note" 
-            stroke="#D4AF37" 
-            fillOpacity={1} 
-            fill="url(#color364)" 
-          />
-        </AreaChart>
+          {hasHistory && <Legend />}
+          {hasHistory && <Line type="monotone" dataKey="yield91" name="91-Day T-Bill" stroke="hsl(var(--primary))" strokeWidth={3} dot={{ r: 4 }} connectNulls />}
+          {hasHistory && <Line type="monotone" dataKey="yield182" name="182-Day T-Bill" stroke="hsl(var(--secondary))" strokeWidth={3} dot={{ r: 4 }} connectNulls />}
+          {hasHistory && <Line type="monotone" dataKey="yield364" name="364-Day Note" stroke="hsl(var(--accent))" strokeWidth={3} dot={{ r: 4 }} connectNulls />}
+          {!hasHistory && <Line type="monotone" dataKey="yield" name="Latest auction yield" stroke="hsl(var(--accent))" strokeWidth={4} dot={{ r: 6, fill: 'hsl(var(--accent))' }} activeDot={{ r: 8 }} />}
+        </LineChart>
       </ResponsiveContainer>
     </div>
   );

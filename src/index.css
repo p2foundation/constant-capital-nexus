@@ -1,8 +1,7 @@
 
 /* Constant Capital Ghana Brand Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Optima:wght@400;700&family=Myriad+Pro:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Manrope:wght@400;500;600;700&display=swap');
 /* Fallback fonts for better web compatibility */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Source+Sans+Pro:wght@400;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -54,33 +53,33 @@
   }
 
   .dark {
-    --background: 215 25% 13%;
+    --background: 213 61% 11%;
     --foreground: 210 20% 98%;
 
-    --card: 215 28% 17%;
+    --card: 215 52% 16%;
     --card-foreground: 210 20% 98%;
 
-    --popover: 215 28% 17%;
+    --popover: 215 52% 16%;
     --popover-foreground: 210 20% 98%;
 
-    --primary: 210 20% 98%;
-    --primary-foreground: 215 25% 13%;
+    --primary: 30 89% 55%;
+    --primary-foreground: 213 61% 11%;
 
     /* Updated secondary color in dark mode */
     --secondary: 30 93% 55%;
     --secondary-foreground: 210 20% 98%;
 
-    --muted: 215 28% 23%;
+    --muted: 215 45% 20%;
     --muted-foreground: 210 20% 80%;
 
     /* Updated accent color in dark mode */
-    --accent: 30 93% 55%;
+    --accent: 30 89% 55%;
     --accent-foreground: 215 25% 13%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 20% 98%;
 
-    --border: 215 28% 25%;
+    --border: 215 40% 22%;
     --input: 215 28% 25%;
     --ring: 210 20% 80%;
     
@@ -98,6 +97,11 @@
 @layer base {
   * {
     @apply border-border;
+  }
+
+  /* Decorative glows and tickers must never cause sideways scrolling on phones */
+  html, body {
+    overflow-x: clip;
   }
 
   body {

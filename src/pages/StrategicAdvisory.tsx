@@ -18,7 +18,7 @@ const StrategicAdvisory = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen dark:bg-gray-950">
+    <div className="flex flex-col min-h-screen dark:bg-background">
       <Helmet>
         <title>Strategic Advisory | Corporate Finance | M&A Advisory | Constant Capital Ghana</title>
         <meta name="description" content="Strategic advisory services in Ghana including M&A advisory, corporate finance, capital raising, and business transformation. Expert guidance for growth and value creation." />

@@ -13,7 +13,7 @@ const TableWrapper: React.FC<TableWrapperProps> = ({
   action
 }) => {
   return (
-    <div className="bg-white dark:bg-gray-800 border rounded-md shadow-sm">
+    <div className="bg-white dark:bg-card border rounded-md shadow-sm">
       <div className="p-4 border-b flex items-center justify-between">
         <h3 className="text-lg font-semibold">{title}</h3>
         {action}

@@ -12,7 +12,7 @@ interface AuthContextType {
   profile: Profile | null;
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  signUp: (email: string, password: string, profileData: Partial<Profile>) => Promise<{ success: boolean; error?: string }>;
+  signUp: (email: string, password: string, profileData: Partial<Profile>) => Promise<{ success: boolean; error?: string; hasSession?: boolean }>;
   signOut: () => Promise<void>;
   updateProfile: (data: Partial<Profile>) => Promise<{ success: boolean; error?: string }>;
   isAdmin: boolean;
@@ -372,8 +372,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       }
       
+      if (data.session) {
+        toast.success('Account created successfully!');
+        return { success: true, hasSession: true };
+      }
+
       toast.success('Account created successfully! Please check your email to confirm your account.');
-      return { success: true };
+      return { success: true, hasSession: false };
     } catch (error: any) {
       const errorMessage = 'An error occurred during account creation. Please try again.';
       toast.error(errorMessage);

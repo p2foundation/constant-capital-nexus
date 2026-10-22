@@ -59,24 +59,24 @@ const MarketData = () => {
   }, [error, latestData]);
 
   return (
-    <div className="bg-white dark:bg-cc-navy/90 py-20">
+    <div className="bg-white dark:bg-card py-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-left mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold text-cc-navy dark:text-white mb-4">Market Data</h2>
-          <p className="max-w-2xl text-gray-600 dark:text-gray-300">
+          <p className="max-w-2xl text-gray-600 dark:text-muted-foreground">
             Track Ghanaian and West African market performance with our comprehensive data visualizations
           </p>
         </div>
         
-        <Card className="border-gray-100 shadow-md dark:bg-gray-800 dark:border-gray-700">
+        <Card className="border-gray-100 shadow-md dark:bg-card dark:border-border">
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle className="text-left dark:text-white">Market Performance</CardTitle>
-                <CardDescription className="text-left dark:text-gray-300">
+                <CardDescription className="text-left dark:text-muted-foreground">
                   Track key market indicators across different asset classes
                   {lastUpdated && (
-                    <span className={`block mt-1 text-sm ${isDataStale ? 'text-amber-600 dark:text-amber-400' : 'text-gray-500 dark:text-gray-400'}`}>
+                    <span className={`block mt-1 text-sm ${isDataStale ? 'text-amber-600 dark:text-amber-400' : 'text-gray-500 dark:text-muted-foreground'}`}>
                       Last updated: {lastUpdated}
                       {isDataStale && ' (Data may be outdated)'}
                     </span>
@@ -99,12 +99,12 @@ const MarketData = () => {
             {isLoading ? (
               <div className="flex flex-col items-center justify-center py-16">
                 <Loader2 className="h-8 w-8 animate-spin text-cc-navy dark:text-white" />
-                <p className="mt-4 text-gray-600 dark:text-gray-300">Loading market data...</p>
+                <p className="mt-4 text-gray-600 dark:text-muted-foreground">Loading market data...</p>
               </div>
             ) : error ? (
               <div className="flex flex-col items-center justify-center py-16">
                 <p className="text-red-500">Error loading market data</p>
-                <p className="mt-2 text-gray-600 dark:text-gray-300">{error.message}</p>
+                <p className="mt-2 text-gray-600 dark:text-muted-foreground">{error.message}</p>
               </div>
             ) : (
               <Tabs defaultValue="gse" className="w-full">

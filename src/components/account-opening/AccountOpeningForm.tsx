@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { CheckCircle, FileText, Download, Printer, Save, Clock } from 'lucide-react';
+import { CheckCircle, FileText, Printer, Save, Clock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAccountOpeningPersistence } from '@/hooks/useAccountOpeningPersistence';
+import { elementToPdf, StoredPdf } from '@/lib/accountDocuments';
 import PDFGenerator from './PDFGenerator';
+import SubmittedDocuments from './SubmittedDocuments';
+import { completion } from './requirements';
+import { Circle } from 'lucide-react';
 
 // Step components
 import InvestmentTypeStep from './steps/InvestmentTypeStep';
@@ -171,6 +175,10 @@ const AccountOpeningForm = () => {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPDFPreview, setShowPDFPreview] = useState<'CSD' | 'KYC' | null>(null);
+  const [renderForPdf, setRenderForPdf] = useState(false);
+  const [submitted, setSubmitted] = useState<StoredPdf[] | null>(null);
+  const csdRef = useRef<HTMLDivElement>(null);
+  const kycRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const { user } = useAuth();
   const {
@@ -189,6 +197,7 @@ const AccountOpeningForm = () => {
         const savedData = await loadApplication();
         if (savedData) {
           setFormData(savedData);
+          if (savedData._progress?.currentStep) setCurrentStep(Math.min(savedData._progress.currentStep, STEPS.length - 1));
           toast({
             title: "Progress Restored",
             description: "Your previous form progress has been loaded.",
@@ -202,17 +211,20 @@ const AccountOpeningForm = () => {
 
   // Auto-save on form data changes
   useEffect(() => {
-    if (user && !isLoading) {
-      saveApplication(formData);
+    if (user && !isLoading && !submitted && !isSubmitting) {
+      saveApplication(formData, currentStep);
     }
-  }, [formData, user, isLoading, saveApplication]);
+  }, [formData, currentStep, user, isLoading, saveApplication, submitted, isSubmitting]);
 
-  const progress = ((currentStep + 1) / STEPS.length) * 100;
+  const status = completion(formData);
+
+  const progress = completion(formData).percent;
   const CurrentStepComponent = STEPS[currentStep].component;
 
   const handleNext = () => {
     if (currentStep < STEPS.length - 1) {
       setCurrentStep(currentStep + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -231,16 +243,28 @@ const AccountOpeningForm = () => {
       });
       return;
     }
+    if (status.missing.length) {
+      toast({ title: "Application incomplete", description: `Still needed: ${status.missing.map((m) => m.label).join(', ')}`, variant: "destructive" });
+      setCurrentStep(status.missing[0].step);
+      return;
+    }
 
     setIsSubmitting(true);
+    setRenderForPdf(true);
     try {
-      const success = await submitApplication(formData);
-      if (success) {
-        // Redirect or show success state
-      }
+      // let the hidden forms mount
+      await new Promise((r) => setTimeout(r, 150));
+      const result = await submitApplication(formData, async () => {
+        const out: { type: 'CSD' | 'KYC'; blob: Blob }[] = [];
+        if (csdRef.current) out.push({ type: 'CSD', blob: await elementToPdf(csdRef.current) });
+        if (kycRef.current) out.push({ type: 'KYC', blob: await elementToPdf(kycRef.current) });
+        return out;
+      });
+      if (result) setSubmitted(result.pdfs);
     } catch (error) {
       console.error('Submission error:', error);
     } finally {
+      setRenderForPdf(false);
       setIsSubmitting(false);
     }
   };
@@ -274,7 +298,7 @@ const AccountOpeningForm = () => {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cc-navy mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-300">Loading your application...</p>
+          <p className="text-gray-600 dark:text-muted-foreground">Loading your application...</p>
         </div>
       </div>
     );
@@ -305,12 +329,36 @@ const AccountOpeningForm = () => {
     );
   }
 
+  if (submitted) {
+    return (
+      <div className="space-y-6">
+        <div className="text-center">
+          <CheckCircle className="h-12 w-12 text-primary mx-auto mb-3" />
+          <h2 className="text-2xl font-semibold text-foreground">Application submitted</h2>
+          <p className="text-muted-foreground mt-1">
+            Your CSD and KYC forms and uploaded documents are saved securely and have been sent to our trading team. Track the review from the Onboarding tab in your profile.
+          </p>
+        </div>
+        <SubmittedDocuments pdfs={submitted} />
+        <Button asChild variant="outline">
+          <a href="/profile">Track application status</a>
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
+      {renderForPdf && (
+        <div aria-hidden style={{ position: 'fixed', left: -10000, top: 0, width: 900 }}>
+          <div ref={csdRef}><PDFGenerator formData={formData} type="CSD" /></div>
+          <div ref={kycRef}><PDFGenerator formData={formData} type="KYC" /></div>
+        </div>
+      )}
       {/* Progress Bar */}
       <div className="space-y-2">
-        <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300">
-          <span>Step {currentStep + 1} of {STEPS.length}</span>
+        <div className="flex justify-between text-sm text-gray-600 dark:text-muted-foreground">
+          <span>Step {currentStep + 1} of {STEPS.length} · {STEPS[currentStep].title}</span>
           <div className="flex items-center space-x-4">
             <span>{Math.round(progress)}% Complete</span>
             {isSaving && (
@@ -342,6 +390,24 @@ const AccountOpeningForm = () => {
         )}
       </div>
 
+      {/* Requirements tracker */}
+      <details className="rounded-lg border border-border bg-muted/30 p-4" open={currentStep === STEPS.length - 1}>
+        <summary className="cursor-pointer text-sm font-medium text-foreground">
+          Requirements checklist — {status.reqs.length - status.missing.length} of {status.reqs.length} done
+        </summary>
+        <ul className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-1 text-sm">
+          {status.reqs.map((r) => (
+            <li key={r.key}>
+              <button type="button" onClick={() => setCurrentStep(r.step)}
+                className={`flex items-center gap-2 text-left hover:underline ${r.done ? 'text-muted-foreground' : 'text-foreground'}`}>
+                {r.done ? <CheckCircle className="h-4 w-4 text-primary shrink-0" /> : <Circle className="h-4 w-4 shrink-0" />}
+                {r.label} <span className="text-xs text-muted-foreground">· {STEPS[r.step].title}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </details>
+
       {/* Step Content */}
       <div className="min-h-[400px]">
         <CurrentStepComponent 
@@ -351,7 +417,7 @@ const AccountOpeningForm = () => {
       </div>
 
       {/* Navigation Buttons */}
-      <div className="flex justify-between pt-6 border-t border-gray-200 dark:border-gray-700">
+      <div className="flex justify-between pt-6 border-t border-gray-200 dark:border-border">
         <Button
           type="button"
           variant="outline"
@@ -385,7 +451,7 @@ const AccountOpeningForm = () => {
               <Button
                 type="button"
                 onClick={handleSubmit}
-                disabled={isSubmitting || !user}
+                disabled={isSubmitting || !user || status.missing.length > 0}
                 className="bg-cc-navy hover:bg-cc-blue text-white"
               >
                 {isSubmitting ? 'Submitting...' : 'Submit Application'}

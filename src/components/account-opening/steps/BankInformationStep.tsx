@@ -18,12 +18,12 @@ const BankInformationStep: React.FC<StepProps> = ({ formData, setFormData }) => 
         <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
           Bank Information of the Investor for Dividend, Interest and Maturity Disposal Instructions
         </h3>
-        <p className="text-sm text-gray-600 dark:text-gray-300">
+        <p className="text-sm text-gray-600 dark:text-muted-foreground">
           (For equity or shares the Bank information is optional)
         </p>
       </div>
 
-      <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+      <div className="p-4 bg-gray-50 dark:bg-card rounded-lg">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <Label htmlFor="bankName">Bank</Label>
@@ -69,7 +69,7 @@ const BankInformationStep: React.FC<StepProps> = ({ formData, setFormData }) => 
         </div>
       </div>
 
-      <div className="text-center text-sm text-gray-600 dark:text-gray-300">
+      <div className="text-center text-sm text-gray-600 dark:text-muted-foreground">
         This information will be used for processing dividend payments, interest payments, 
         and maturity proceeds for your investments.
       </div>

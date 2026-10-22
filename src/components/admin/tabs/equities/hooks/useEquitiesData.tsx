@@ -5,7 +5,9 @@ import { ProcessedEquitiesData } from '../types';
 import { processEquitiesData } from '../utils';
 import { usePendingChanges } from './usePendingChanges';
 import { saveDataToAPI } from './useEquitiesApi';
-import { prepareDataForSaving, prepareDataForDeletion } from './useEquitiesDataTransformers';
+import { prepareDataForSaving } from './useEquitiesDataTransformers';
+import { supabase } from '@/integrations/supabase/client';
+import { formatDateString } from '../utils';
 
 export const useEquitiesData = () => {
   const { marketData, refreshMarketData } = useMarketData();
@@ -28,11 +30,14 @@ export const useEquitiesData = () => {
       setDataLoading(true);
       console.log(`Deleting existing data point: ${symbol} for ${date}`);
       
-      // Prepare data for deletion
-      const updatedData = prepareDataForDeletion(processedData, date, symbol);
-      
-      const result = await saveDataToAPI(updatedData);
-      console.log("Delete operation result:", result);
+      if (!window.confirm(`Delete ${symbol.toUpperCase()} for ${date}? This removes the published record.`)) return;
+      const { error } = await supabase
+        .from('market_data')
+        .delete()
+        .eq('data_type', 'equity')
+        .eq('ticker_symbol', symbol.toUpperCase())
+        .eq('date', formatDateString(date));
+      if (error) throw error;
       
       // Refresh data after successful deletion
       await refreshMarketData();

@@ -43,7 +43,7 @@ const Settings = () => {
   };
   
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-cc-navy/95">
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-card">
       <Navbar />
       
       <div className="container mx-auto px-4 pt-20 pb-10 flex-grow">
@@ -289,7 +289,7 @@ const Settings = () => {
                     <div className="space-y-4">
                       <h3 className="text-lg font-medium">Current Plan</h3>
                       
-                      <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border">
+                      <div className="bg-gray-50 dark:bg-card p-4 rounded-lg border">
                         <div className="flex justify-between items-center">
                           <div>
                             <p className="font-medium">Pro Plan</p>
@@ -315,7 +315,7 @@ const Settings = () => {
                     <div className="space-y-4">
                       <h3 className="text-lg font-medium">Payment Method</h3>
                       
-                      <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border">
+                      <div className="bg-gray-50 dark:bg-card p-4 rounded-lg border">
                         <div className="flex justify-between items-center">
                           <div className="flex items-center gap-2">
                             <div className="bg-gray-200 dark:bg-gray-700 p-2 rounded">
@@ -340,15 +340,15 @@ const Settings = () => {
                       
                       <div className="border rounded-lg overflow-hidden">
                         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                          <thead className="bg-gray-50 dark:bg-gray-800">
+                          <thead className="bg-gray-50 dark:bg-card">
                             <tr>
-                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Date</th>
-                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Amount</th>
-                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
-                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Invoice</th>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider">Date</th>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider">Amount</th>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider">Status</th>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase tracking-wider">Invoice</th>
                             </tr>
                           </thead>
-                          <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-800">
+                          <tbody className="bg-white dark:bg-background divide-y divide-gray-200 dark:divide-gray-800">
                             <tr>
                               <td className="px-6 py-4 whitespace-nowrap text-sm">May 1, 2025</td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm">$199.00</td>

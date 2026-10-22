@@ -1,181 +1,120 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useAnalytics } from '@/hooks/useAnalytics';
-import { Button } from "@/components/ui/button";
-import { ArrowRight, Award, Building, Briefcase, Handshake, Globe } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { Card, CardContent } from "@/components/ui/card";
+import PageHero from '@/components/layout/PageHero';
+import { ArrowRight, Award, Building2, Handshake, Globe, Lightbulb, Target, ShieldCheck, Landmark, Database } from 'lucide-react';
+
+const values = [
+  { icon: Award, title: 'Excellence', text: 'Exceptional results and the highest standards in everything we do.' },
+  { icon: Handshake, title: 'Integrity', text: 'Transparency and honesty in every interaction.' },
+  { icon: Lightbulb, title: 'Innovation', text: 'New and better solutions for evolving client and market needs.' },
+  { icon: Globe, title: 'Client Focus', text: 'Long-term relationships built on trust and shared success.' },
+];
+
+const licences = [
+  { icon: ShieldCheck, title: 'SEC Ghana', text: 'Licensed broker-dealer and investment advisor.' },
+  { icon: Landmark, title: 'Ghana Stock Exchange', text: 'Licensed dealing member of the GSE.' },
+  { icon: Database, title: 'Central Securities Depository', text: 'Registered depository participant (DP).' },
+];
 
 const About = () => {
   useAnalytics();
-  
+
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex min-h-screen flex-col bg-background">
       <Navbar />
-      <main className="flex-1">
-        {/* Hero Section */}
-        <section className="bg-cc-navy text-white py-24 relative overflow-hidden">
-          <div className="absolute inset-0 opacity-10 bg-pattern dark:opacity-5"></div>
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="max-w-4xl mx-auto text-left">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 font-serif">
-                About Constant Capital
-              </h1>
-                <p className="text-lg md:text-xl text-gray-300 mb-10 max-w-3xl">
-                  Constant Capital (Ghana) Limited is a registered broker-dealer and investment advisor, licensed and regulated by the Securities and Exchange Commission (SEC). We are a licensed dealing member of the Ghana Stock Exchange (GSE) and a depository participant (DP) at the Central Securities Depository (CSD). We are committed to meeting the diverse needs of our international and local clients through the provision of a full array of innovative and customized financial solutions to global standards, connecting African opportunities with international capital.
-                </p>
-              <Link to="/leadership">
-                <Button className="bg-cc-gold hover:bg-cc-gold/90 text-white text-base">
-                  Meet Our Team
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
+      <main className="flex-1 pt-16">
+        <PageHero
+          eyebrow="About Constant Capital"
+          title={<>Connecting African <span className="text-accent">opportunity</span> with global capital</>}
+          description="Constant Capital (Ghana) Limited is a registered broker-dealer and investment advisor, delivering a full range of innovative, customised financial solutions to global standards for local and international clients."
+          primaryCta={{ label: 'Meet Our Team', to: '/leadership' }}
+          secondaryCta={{ label: 'Contact Us', to: '/contact' }}
+          icon={Building2}
+          highlights={licences.map((l) => `${l.title} — ${l.text}`)}
+        />
+
+        {/* Story */}
+        <section className="py-16 md:py-24">
+          <div className="container mx-auto grid items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+            <div className="relative">
+              <div className="absolute -inset-3 rounded-3xl bg-accent/10 blur-2xl" />
+              <img
+                src="/lovable-uploads/3722b840-57e0-4fc4-8378-9ee194fd4491.png"
+                alt="Constant Capital office"
+                loading="lazy"
+                className="relative w-full rounded-2xl border border-border object-cover shadow-2xl"
+              />
+            </div>
+            <div className="space-y-6">
+              <p className="text-sm font-semibold uppercase tracking-widest text-accent">Our story</p>
+              <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground">
+                A gateway to African markets for global investors
+              </h2>
+              <p className="leading-relaxed text-muted-foreground">
+                Founded in Ghana, Constant Capital has grown into a trusted gateway for international investment in West Africa.
+                Deep local market knowledge, global expertise and international partnerships let us connect local opportunities
+                with international capital, creating lasting value across borders.
+              </p>
+              <p className="leading-relaxed text-muted-foreground">
+                We serve clients worldwide seeking exposure to African markets, as well as local institutions and individuals —
+                always putting their interests first, whatever their location or size.
+              </p>
             </div>
           </div>
         </section>
 
-        {/* Introduction Section */}
-        <section className="py-16 md:py-24 bg-white dark:bg-cc-navy/80">
+        {/* Values */}
+        <section className="border-y border-border bg-card/40 py-16 md:py-24">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="mb-12 max-w-2xl">
+              <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-accent">What guides us</p>
+              <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground">Our core values</h2>
+            </div>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {values.map(({ icon: Icon, title, text }) => (
+                <div key={title} className="group rounded-2xl border border-border bg-card p-7 transition-all duration-300 hover:-translate-y-1 hover:border-accent/60 hover:shadow-xl">
+                  <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-accent/15 transition-colors group-hover:bg-accent">
+                    <Icon className="h-6 w-6 text-accent transition-colors group-hover:text-accent-foreground" />
+                  </div>
+                  <h3 className="mb-2 font-heading text-xl font-bold text-foreground">{title}</h3>
+                  <p className="text-sm leading-relaxed text-muted-foreground">{text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Vision & Mission */}
+        <section className="py-16 md:py-24">
+          <div className="container mx-auto grid gap-6 px-4 sm:px-6 md:grid-cols-2 lg:px-8">
+            {[
+              { icon: Target, title: 'Our Vision', text: 'To be the premier investment bank in Africa, known for excellence in financial services and for connecting African opportunities with global capital, setting the standard for innovation and integrity.' },
+              { icon: Building2, title: 'Our Mission', text: 'To provide innovative financial solutions that create lasting value for our clients, with the highest standards of integrity and professionalism, contributing to the growth of African capital markets.' },
+            ].map(({ icon: Icon, title, text }) => (
+              <div key={title} className="relative overflow-hidden rounded-2xl border border-border bg-card p-8 md:p-10">
+                <div className="absolute left-0 top-0 h-full w-1 bg-accent" />
+                <Icon className="mb-5 h-8 w-8 text-accent" />
+                <h2 className="mb-4 font-heading text-2xl font-bold text-foreground">{title}</h2>
+                <p className="text-lg leading-relaxed text-muted-foreground">{text}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* CTA */}
+        <section className="pb-20">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col items-start justify-between gap-6 rounded-3xl bg-accent p-8 md:flex-row md:items-center md:p-12">
               <div>
-                <h2 className="text-3xl font-bold text-cc-navy dark:text-white mb-6 font-serif">
-                  A Gateway to African Markets for Global Investors
-                </h2>
-                <p className="text-gray-700 dark:text-gray-300 mb-6">
-                  Founded in Ghana, Constant Capital has grown to become West Africa's premier gateway for international investment. Our deep 
-                  understanding of African markets, combined with global expertise and international partnerships, allows us to offer innovative 
-                  financial solutions that connect local opportunities with international capital, creating lasting value across borders.
-                </p>
-                <p className="text-gray-700 dark:text-gray-300">
-                  We serve clients from around the world seeking exposure to African markets, as well as local institutions and individuals. 
-                  Our commitment to international standards of integrity, transparency, and professional excellence ensures that all our clients' 
-                  interests come first, regardless of their location or size.
-                </p>
+                <h2 className="font-heading text-2xl md:text-3xl font-bold text-accent-foreground">Ready to grow your wealth?</h2>
+                <p className="mt-2 text-accent-foreground/80">Talk to our team about trading, research or strategic advice.</p>
               </div>
-              <div className="rounded-lg overflow-hidden shadow-xl">
-                <img 
-                  src="/lovable-uploads/3722b840-57e0-4fc4-8378-9ee194fd4491.png" 
-                  alt="Constant Capital Office" 
-                  className="w-full h-auto rounded-lg"
-                />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Values Section */}
-        <section className="py-16 md:py-24 bg-cc-light-blue dark:bg-cc-navy/70">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-left mb-12">
-              <h2 className="text-3xl font-bold text-cc-navy dark:text-white mb-4 font-serif">Our Core Values</h2>
-              <p className="text-gray-700 dark:text-gray-300 max-w-3xl">
-                These principles guide everything we do as we strive to be the premier investment banking firm connecting Africa with global capital markets.
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              <Card className="bg-white dark:bg-cc-navy/40 border-none shadow-md hover:shadow-lg transition-shadow duration-300">
-                <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-cc-gold/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Award className="w-8 h-8 text-cc-gold" />
-                  </div>
-                  <h3 className="text-xl font-bold text-cc-navy dark:text-white mb-2">Excellence</h3>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    We are committed to delivering exceptional results and maintaining the highest standards in everything we do.
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card className="bg-white dark:bg-cc-navy/40 border-none shadow-md hover:shadow-lg transition-shadow duration-300">
-                <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-cc-gold/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Handshake className="w-8 h-8 text-cc-gold" />
-                  </div>
-                  <h3 className="text-xl font-bold text-cc-navy dark:text-white mb-2">Integrity</h3>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    We uphold the highest ethical standards, ensuring transparency and honesty in all our interactions.
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card className="bg-white dark:bg-cc-navy/40 border-none shadow-md hover:shadow-lg transition-shadow duration-300">
-                <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-cc-gold/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Briefcase className="w-8 h-8 text-cc-gold" />
-                  </div>
-                  <h3 className="text-xl font-bold text-cc-navy dark:text-white mb-2">Innovation</h3>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    We constantly seek new and better solutions to meet the evolving needs of our clients and markets.
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card className="bg-white dark:bg-cc-navy/40 border-none shadow-md hover:shadow-lg transition-shadow duration-300">
-                <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-cc-gold/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Globe className="w-8 h-8 text-cc-gold" />
-                  </div>
-                  <h3 className="text-xl font-bold text-cc-navy dark:text-white mb-2">Client Focus</h3>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    We prioritize our clients' interests, building long-term relationships based on trust and mutual success.
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section>
-
-        {/* Vision & Mission Section - with new design */}
-        <section className="py-16 md:py-24 bg-white dark:bg-cc-navy/80">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid md:grid-cols-2 gap-16">
-              <div className="bg-gradient-to-br from-cc-light-blue to-white p-8 rounded-lg shadow-lg dark:from-cc-navy dark:to-cc-navy/90 dark:border dark:border-cc-gold/20">
-                <div className="flex items-center mb-6">
-                  <Building className="w-8 h-8 text-cc-gold mr-4" />
-                  <h2 className="text-2xl font-bold text-cc-navy dark:text-white font-serif">Our Vision</h2>
-                </div>
-                <p className="text-gray-700 dark:text-gray-300 text-lg">
-                  To be the premier investment bank in Africa, known for excellence in financial services and commitment to connecting African opportunities with global capital, setting the standard for innovation and integrity across international markets.
-                </p>
-              </div>
-              
-              <div className="bg-gradient-to-br from-cc-gray to-white p-8 rounded-lg shadow-lg dark:from-cc-navy dark:to-cc-navy/90 dark:border dark:border-cc-gold/20">
-                <div className="flex items-center mb-6">
-                  <Briefcase className="w-8 h-8 text-cc-gold mr-4" />
-                  <h2 className="text-2xl font-bold text-cc-navy dark:text-white font-serif">Our Mission</h2>
-                </div>
-                <p className="text-gray-700 dark:text-gray-300 text-lg">
-                  To provide innovative financial solutions that create lasting value for our clients while maintaining the highest standards of integrity and professionalism, contributing to the growth and development of African capital markets.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Call to Action */}
-        <section className="py-16 bg-cc-navy text-white relative overflow-hidden">
-          <div className="absolute inset-0 bg-pattern opacity-5"></div>
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-3xl font-bold mb-6 font-serif">Ready to Experience Financial Excellence?</h2>
-              <p className="text-gray-300 mb-8 text-lg">
-                Whether you're looking for investment opportunities, securities trading, or strategic financial advice, our team is ready to help you achieve your financial goals.
-              </p>
-              <div className="flex flex-col sm:flex-row justify-center gap-4">
-                <Link to="/leadership">
-                  <Button className="bg-white text-cc-navy hover:bg-gray-100 w-full sm:w-auto">
-                    Meet Our Team
-                  </Button>
-                </Link>
-                <Link to="/contact">
-                  <Button className="bg-cc-gold hover:bg-cc-gold/90 text-white w-full sm:w-auto">
-                    Contact Us
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </Link>
-              </div>
+              <Link to="/contact" className="inline-flex shrink-0 items-center rounded-xl bg-background px-7 py-3.5 font-bold text-foreground transition-transform hover:-translate-y-0.5">
+                Contact Us <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
             </div>
           </div>
         </section>

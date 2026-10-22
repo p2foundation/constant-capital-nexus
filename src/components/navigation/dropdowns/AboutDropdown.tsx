@@ -17,13 +17,13 @@ const AboutDropdown = () => {
         <div className="grid gap-3 p-4 w-[300px]">
           <Link to="/about" className="flex flex-col p-3 rounded-md hover:bg-cc-light-blue dark:hover:bg-cc-navy/80">
             <div className="font-medium text-cc-navy dark:text-white">Company</div>
-            <div className="text-sm text-gray-500 dark:text-gray-400">
+            <div className="text-sm text-gray-500 dark:text-muted-foreground">
               Learn about our history, mission and values
             </div>
           </Link>
           <Link to="/leadership" className="flex flex-col p-3 rounded-md hover:bg-cc-light-blue dark:hover:bg-cc-navy/80">
             <div className="font-medium text-cc-navy dark:text-white">Leadership</div>
-            <div className="text-sm text-gray-500 dark:text-gray-400">
+            <div className="text-sm text-gray-500 dark:text-muted-foreground">
               Meet our experienced management team
             </div>
           </Link>
@@ -32,7 +32,7 @@ const AboutDropdown = () => {
               Careers
               <span className="bg-cc-gold text-cc-navy text-[10px] px-1.5 py-0.5 rounded font-semibold">HIRING</span>
             </div>
-            <div className="text-sm text-gray-500 dark:text-gray-400">
+            <div className="text-sm text-gray-500 dark:text-muted-foreground">
               Join our team — explore open positions
             </div>
           </Link>

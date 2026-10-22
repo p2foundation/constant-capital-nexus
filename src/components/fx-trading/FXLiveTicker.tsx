@@ -27,9 +27,9 @@ const FXLiveTicker = () => {
   const duplicatedPairs = [...currencyPairs, ...currencyPairs];
   
   return (
-    <section className="bg-cc-navy border-y border-cc-gold/20 py-4 overflow-hidden">
+    <section className="bg-cc-navy border-y border-border py-4 overflow-hidden">
       <div className="flex items-center">
-        <div className="bg-cc-gold text-cc-navy px-6 py-2 font-semibold text-sm uppercase tracking-wide shrink-0 z-10">
+        <div className="bg-accent text-accent-foreground px-6 py-2 font-semibold text-sm uppercase tracking-wide shrink-0 z-10">
           Live FX Rates
         </div>
         

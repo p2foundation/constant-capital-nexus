@@ -13,11 +13,11 @@ const SecuritiesTrading = () => {
   useAnalytics();
   
   return (
-    <div className="flex flex-col min-h-screen dark:bg-gray-950">
+    <div className="flex flex-col min-h-screen dark:bg-background">
       <Helmet>
         <title>Securities Trading | Ghana Stock Exchange Trading | Constant Capital</title>
-        <meta name="description" content="Professional securities trading services for Ghana Stock Exchange (GSE) and African markets. SEC-licensed broker with advanced trading solutions and expert execution." />
-        <meta name="keywords" content="Ghana securities trading, GSE trading, Ghana Stock Exchange, equity trading Ghana, securities broker Ghana, institutional trading" />
+        <meta name="description" content="SEC-licensed securities trading and primary-dealer access for individual and institutional investors across Ghanaian and African markets." />
+        <meta name="keywords" content="Ghana securities trading, GSE trading, Ghana Stock Exchange, equity trading Ghana, securities broker Ghana, individual investor services, institutional trading, primary dealer Ghana" />
         <link rel="canonical" href="https://constantcap.com.gh/securities-trading" />
         <script type="application/ld+json">
           {JSON.stringify({

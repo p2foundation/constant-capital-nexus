@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { equitiesData } from './mock-data';
 import { useMarketData } from '@/contexts/MarketDataContext';
 
@@ -25,8 +25,7 @@ const EquitiesChart: React.FC = () => {
         }
         const entry = dateMap.get(dateKey);
         const symbol = item.ticker_symbol.toLowerCase();
-        const aliasMap: Record<string, string> = { eti: 'egh' };
-        const normalized = aliasMap[symbol] || symbol;
+        const normalized = symbol;
         const allowed = ['gcb', 'scb', 'egh', 'mtngh', 'total'];
         if (allowed.includes(normalized)) {
           entry.symbols.set(normalized, parseFloat((item.value as any).toString()));
@@ -92,80 +91,24 @@ const EquitiesChart: React.FC = () => {
   return (
     <div className="h-[300px]">
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart
+        <LineChart
           data={chartData}
           margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
         >
-          <defs>
-            <linearGradient id="colorGGB" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#0A2342" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#0A2342" stopOpacity={0.1} />
-            </linearGradient>
-            <linearGradient id="colorSCC" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#126872" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#126872" stopOpacity={0.1} />
-            </linearGradient>
-            <linearGradient id="colorETI" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#F2981D" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#F2981D" stopOpacity={0.1} />
-            </linearGradient>
-            <linearGradient id="colorMTN" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#FFCC02" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#FFCC02" stopOpacity={0.1} />
-            </linearGradient>
-            <linearGradient id="colorTOTAL" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#DC2626" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#DC2626" stopOpacity={0.1} />
-            </linearGradient>
-          </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+          
+          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
           <XAxis dataKey="name" />
-          <YAxis domain={[minValue, maxValue]} />
+          <YAxis domain={[Math.floor(minValue), Math.ceil(maxValue)]} tickFormatter={(v) => Number(v).toFixed(0)} />
           <Tooltip 
             formatter={(value, name) => [`GHS ${value}`, name]}
             labelFormatter={(label) => `${label}`}
           />
-          <Area 
-            type="monotone" 
-            dataKey="gcb" 
-            name="GCB Bank" 
-            stroke="#0A2342" 
-            fillOpacity={1} 
-            fill="url(#colorGGB)" 
-          />
-          <Area 
-            type="monotone" 
-            dataKey="scb" 
-            name="Standard Chartered" 
-            stroke="#126872" 
-            fillOpacity={1} 
-            fill="url(#colorSCC)" 
-          />
-          <Area 
-            type="monotone" 
-            dataKey="egh" 
-            name="Ecobank Ghana" 
-            stroke="#F2981D" 
-            fillOpacity={1} 
-            fill="url(#colorETI)" 
-          />
-          <Area 
-            type="monotone" 
-            dataKey="mtngh" 
-            name="MTN Ghana" 
-            stroke="#FFCC02" 
-            fillOpacity={1} 
-            fill="url(#colorMTN)" 
-          />
-          <Area 
-            type="monotone" 
-            dataKey="total" 
-            name="TotalEnergies Ghana" 
-            stroke="#DC2626" 
-            fillOpacity={1} 
-            fill="url(#colorTOTAL)" 
-          />
-        </AreaChart>
+          <Line type="monotone" dataKey="gcb" name="GCB Bank" stroke="#0A2342" strokeWidth={2} dot={false} connectNulls />
+          <Line type="monotone" dataKey="scb" name="Standard Chartered" stroke="#126872" strokeWidth={2} dot={false} connectNulls />
+          <Line type="monotone" dataKey="egh" name="Ecobank Ghana" stroke="#F2981D" strokeWidth={2} dot={false} connectNulls />
+          <Line type="monotone" dataKey="mtngh" name="MTN Ghana" stroke="#FFCC02" strokeWidth={2} dot={false} connectNulls />
+          <Line type="monotone" dataKey="total" name="TotalEnergies Ghana" stroke="#DC2626" strokeWidth={2} dot={false} connectNulls />
+        </LineChart>
       </ResponsiveContainer>
     </div>
   );

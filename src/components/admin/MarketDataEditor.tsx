@@ -25,25 +25,32 @@ const MarketDataEditor: React.FC<MarketDataEditorProps> = ({
     `Failed to load ${title.toLowerCase()} data`
   );
   
-  const [pendingDeletes, setPendingDeletes] = useState<number[]>([]);
+  const [pendingChanges, setPendingChanges] = useState<DataPoint[]>([]);
 
   const handleAddDataPoint = (dataPoint: DataPoint) => {
     const updatedData = [...data, dataPoint];
     setData(updatedData);
-    toast.success(`${title} data point added`);
+    setPendingChanges(previous => [...previous, dataPoint]);
+    toast.info(`${title} data point staged. Save changes to publish it.`);
   };
   
   const handleDeleteDataPoint = (index: number) => {
-    setPendingDeletes([...pendingDeletes, index]);
+    const pendingStartIndex = data.length - pendingChanges.length;
+    if (index < pendingStartIndex) {
+      toast.info('Published history is retained. Add a correction for the same date to replace its values.');
+      return;
+    }
     const updatedData = data.filter((_, i) => i !== index);
     setData(updatedData);
-    toast.success(`${title} data point deleted`);
+    setPendingChanges(previous => previous.filter((_, pendingIndex) => pendingIndex !== index - pendingStartIndex));
+    toast.info('Staged row removed.');
   };
   
   const handleSaveData = async () => {
     try {
       console.log(`Saving ${title} data...`);
-      await saveData(data);
+      await saveData(pendingChanges);
+      setPendingChanges([]);
       console.log(`${title} data saved successfully`);
       toast.success(`${title} data saved successfully`);
     } catch (error) {
@@ -57,7 +64,7 @@ const MarketDataEditor: React.FC<MarketDataEditorProps> = ({
   }
   
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <DataPointForm 
         dataFields={dataFields}
         showDatePicker={showDatePicker}
@@ -69,12 +76,14 @@ const MarketDataEditor: React.FC<MarketDataEditorProps> = ({
         dataFields={dataFields}
         showChangeColors={showChangeColors}
         onDeleteDataPoint={handleDeleteDataPoint}
+        pendingStartIndex={data.length - pendingChanges.length}
       />
       
       <SaveButton 
         title={title}
         isSaving={isSaving}
         onSave={handleSaveData}
+        disabled={pendingChanges.length === 0}
       />
     </div>
   );

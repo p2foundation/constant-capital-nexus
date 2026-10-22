@@ -106,8 +106,9 @@ const EquitiesDataForm: React.FC<EquitiesDataFormProps> = ({ onAddDataPoint }) =
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border">
-      <h3 className="text-lg font-semibold mb-4">Add Equities Data Point</h3>
+    <div className="rounded-lg border bg-muted/20 p-5">
+      <h3 className="font-heading text-base font-semibold">Add equity correction</h3>
+      <p className="mb-4 text-xs text-muted-foreground">Choose from all listed GSE companies. The saved price is protected as an analyst correction.</p>
       
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

@@ -9,18 +9,20 @@ interface TabHeaderProps {
 
 const TabHeader: React.FC<TabHeaderProps> = ({ tabs }) => {
   return (
-    <TabsList className="mb-6 flex flex-wrap">
+    <div className="mb-6 overflow-x-auto border-b">
+    <TabsList className="h-auto w-max min-w-full justify-start rounded-none bg-transparent p-0">
       {tabs.map((tab) => (
         <TabsTrigger 
           key={tab.id} 
           value={tab.id} 
-          className="flex items-center gap-2"
+          className="flex h-11 items-center gap-2 rounded-none border-b-2 border-transparent bg-transparent px-4 shadow-none data-[state=active]:border-primary data-[state=active]:bg-transparent"
         >
           {tab.icon}
           <span>{tab.label}</span>
         </TabsTrigger>
       ))}
     </TabsList>
+    </div>
   );
 };
 

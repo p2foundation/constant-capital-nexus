@@ -25,7 +25,7 @@ export const getChangeColorClass = (change: number): string => {
 };
 
 export const processEquitiesData = (data: any[]): ProcessedEquitiesData[] => {
-  const dateMap = new Map<string, Map<string, { value: number, change_percent: number }>>();
+  const dateMap = new Map<string, Map<string, { value: number, change_percent: number, source: string }>>();
   
   if (data && data.length > 0) {
     data.forEach(item => {
@@ -38,7 +38,8 @@ export const processEquitiesData = (data: any[]): ProcessedEquitiesData[] => {
           dateMap.get(dateStr)?.set(item.ticker_symbol.toLowerCase(), {
             value: parseFloat(item.value),
             // Store the actual change_percent value (positive or negative)
-            change_percent: parseFloat(item.change_percent || '0')
+            change_percent: parseFloat(item.change_percent || '0'),
+            source: item.source || 'unknown'
           });
         }
       }
@@ -55,6 +56,7 @@ export const processEquitiesData = (data: any[]): ProcessedEquitiesData[] => {
       entry[`${symbolLower}_change`] = data.change_percent;
       // Explicitly set the positive flag based on the actual value
       entry[`${symbolLower}_positive`] = data.change_percent >= 0;
+      entry[`${symbolLower}_source`] = data.source;
     });
     result.push(entry);
   });

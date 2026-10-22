@@ -71,7 +71,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
     <div className="space-y-2">
       <label className="text-sm font-medium">{label}</label>
       {description && (
-        <p className="text-xs text-gray-500 dark:text-gray-400">{description}</p>
+        <p className="text-xs text-gray-500 dark:text-muted-foreground">{description}</p>
       )}
       
       <div
@@ -86,7 +86,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
         onDrop={handleDrop}
       >
         <Upload className="mx-auto h-8 w-8 text-gray-400 mb-2" />
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+        <p className="text-sm text-gray-600 dark:text-muted-foreground mb-2">
           Drag and drop files here, or{' '}
           <button
             type="button"
@@ -115,7 +115,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
           {selectedFiles.map((file, index) => (
             <div
               key={index}
-              className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded"
+              className="flex items-center justify-between p-2 bg-gray-50 dark:bg-card rounded"
             >
               <div className="flex items-center space-x-2">
                 {getFileIcon(file)}

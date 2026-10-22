@@ -19,7 +19,7 @@ const ResearchDetailContent = ({ preview, content, isPremium = false }: Research
 
   return (
     <div className="space-y-6">
-      <div className="text-gray-600 dark:text-gray-300 font-medium italic border-l-4 border-cc-navy dark:border-cc-gold pl-4 py-3 bg-gray-50 dark:bg-gray-800/50 rounded-r-lg">
+      <div className="text-gray-600 dark:text-muted-foreground font-medium italic border-l-4 border-cc-navy dark:border-cc-gold pl-4 py-3 bg-gray-50 dark:bg-card rounded-r-lg">
         <div dangerouslySetInnerHTML={{ __html: formatPreviewText(preview) }} />
       </div>
       

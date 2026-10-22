@@ -1,214 +1,103 @@
-
 import React from 'react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
 import FileUpload from '../FileUpload';
 import { StepProps } from '../types';
+import { isNonResident } from '../requirements';
+
+const Done: React.FC<{ show?: boolean }> = ({ show }) =>
+  show ? <p className="text-xs text-primary mt-1">Already uploaded — upload again only to replace it.</p> : null;
 
 const ProofOfIdentityStep: React.FC<StepProps> = ({ formData, setFormData }) => {
-  const handleChange = (field: string, value: string) => {
-    setFormData({
-      ...formData,
-      [field]: value,
-    });
-  };
-
-  const handleFileUpload = (field: string, files: File[]) => {
-    setFormData({
-      ...formData,
-      [field]: files,
-    });
-  };
+  const set = (field: string, value: unknown) => setFormData({ ...formData, idType1: 'Ghana Card', [field]: value } as any);
+  const abroad = isNonResident(formData);
+  const up = formData._uploaded || {};
 
   return (
     <div className="space-y-6">
-      <div className="text-center">
-        <p className="text-gray-600 dark:text-gray-300">
-          Must be completed by the applicant. Please provide two forms of identification and a passport photo.
-        </p>
-      </div>
+      <p className="text-center text-muted-foreground">
+        Upload clear, readable photos or scans. Fields marked * are required.
+      </p>
 
-      {/* Passport Photo */}
-      <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-        <h3 className="text-lg font-medium mb-4 text-gray-900 dark:text-gray-100">
-          Passport Photo
-        </h3>
-        <FileUpload
-          label="Upload Passport Photo"
-          accept="image/*"
-          onFileSelect={(files) => handleFileUpload('passportPhoto', files)}
-          selectedFiles={formData.passportPhoto || []}
-          description="Upload a clear passport-sized photograph"
-        />
-      </div>
-
-      {/* Proof of Identity 1 */}
-      <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-        <h3 className="text-lg font-medium mb-4 text-gray-900 dark:text-gray-100">
-          Proof of Identity 1
-        </h3>
-        
-        <div className="space-y-4">
+      <section className="p-4 bg-muted/40 rounded-lg space-y-4">
+        <h3 className="text-lg font-medium text-foreground">Ghana Card *</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <Label className="text-base font-medium">ID Type</Label>
-            <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
-              {['Passport', 'National ID'].map((type) => (
-                <div key={type} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`idType1-${type}`}
-                    checked={formData.idType1 === type}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        handleChange('idType1', type);
-                      }
-                    }}
-                  />
-                  <Label htmlFor={`idType1-${type}`} className="text-sm font-normal">
-                    {type}
-                  </Label>
-                </div>
-              ))}
-            </div>
+            <Label htmlFor="idNumber1">Ghana Card number *</Label>
+            <Input id="idNumber1" value={formData.idNumber1} placeholder="GHA-000000000-0"
+              onChange={(e) => set('idNumber1', e.target.value.toUpperCase())} />
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="idNumber1">ID Number</Label>
-              <Input
-                id="idNumber1"
-                value={formData.idNumber1}
-                onChange={(e) => handleChange('idNumber1', e.target.value)}
-                placeholder="Enter ID number"
-                required
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="placeOfIssue1">Place of Issue</Label>
-              <Input
-                id="placeOfIssue1"
-                value={formData.placeOfIssue1}
-                onChange={(e) => handleChange('placeOfIssue1', e.target.value)}
-                placeholder="Enter place of issue"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="issueDate1">Issue Date</Label>
-              <Input
-                id="issueDate1"
-                type="date"
-                value={formData.issueDate1}
-                onChange={(e) => handleChange('issueDate1', e.target.value)}
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="expiringDate1">Expiring Date</Label>
-              <Input
-                id="expiringDate1"
-                type="date"
-                value={formData.expiringDate1}
-                onChange={(e) => handleChange('expiringDate1', e.target.value)}
-              />
-            </div>
-          </div>
-
-          <FileUpload
-            label="Upload ID Document Copy"
-            accept=".pdf,.jpg,.jpeg,.png"
-            onFileSelect={(files) => handleFileUpload('idDocument1', files)}
-            selectedFiles={formData.idDocument1 || []}
-            description="Upload a clear copy of your ID document"
-          />
-        </div>
-      </div>
-
-      {/* Proof of Identity 2 */}
-      <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-        <h3 className="text-lg font-medium mb-4 text-gray-900 dark:text-gray-100">
-          Proof of Identity 2
-        </h3>
-        
-        <div className="space-y-4">
           <div>
-            <Label className="text-base font-medium">ID Type</Label>
-            <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
-              {['Passport', 'National ID'].map((type) => (
-                <div key={type} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`idType2-${type}`}
-                    checked={formData.idType2 === type}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        handleChange('idType2', type);
-                      }
-                    }}
-                  />
-                  <Label htmlFor={`idType2-${type}`} className="text-sm font-normal">
-                    {type}
-                  </Label>
-                </div>
-              ))}
-            </div>
+            <Label htmlFor="issueDate1">Issue date</Label>
+            <Input id="issueDate1" type="date" value={formData.issueDate1} onChange={(e) => set('issueDate1', e.target.value)} />
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="idNumber2">ID Number</Label>
-              <Input
-                id="idNumber2"
-                value={formData.idNumber2}
-                onChange={(e) => handleChange('idNumber2', e.target.value)}
-                placeholder="Enter ID number"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="placeOfIssue2">Place of Issue</Label>
-              <Input
-                id="placeOfIssue2"
-                value={formData.placeOfIssue2}
-                onChange={(e) => handleChange('placeOfIssue2', e.target.value)}
-                placeholder="Enter place of issue"
-              />
-            </div>
+          <div>
+            <Label htmlFor="expiringDate1">Expiry date</Label>
+            <Input id="expiringDate1" type="date" value={formData.expiringDate1} onChange={(e) => set('expiringDate1', e.target.value)} />
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="issueDate2">Issue Date</Label>
-              <Input
-                id="issueDate2"
-                type="date"
-                value={formData.issueDate2}
-                onChange={(e) => handleChange('issueDate2', e.target.value)}
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="expiringDate2">Expiring Date</Label>
-              <Input
-                id="expiringDate2"
-                type="date"
-                value={formData.expiringDate2}
-                onChange={(e) => handleChange('expiringDate2', e.target.value)}
-              />
-            </div>
-          </div>
-
-          <FileUpload
-            label="Upload ID Document Copy"
-            accept=".pdf,.jpg,.jpeg,.png"
-            onFileSelect={(files) => handleFileUpload('idDocument2', files)}
-            selectedFiles={formData.idDocument2 || []}
-            description="Upload a clear copy of your second ID document"
-          />
         </div>
-      </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <FileUpload label="Ghana Card — front *" accept="image/*,.pdf"
+              onFileSelect={(f) => set('ghanaCardFront', f)} selectedFiles={formData.ghanaCardFront || []}
+              description="Photo of the front side" />
+            <Done show={up.ghanaCardFront && !formData.ghanaCardFront?.length} />
+          </div>
+          <div>
+            <FileUpload label="Ghana Card — back *" accept="image/*,.pdf"
+              onFileSelect={(f) => set('ghanaCardBack', f)} selectedFiles={formData.ghanaCardBack || []}
+              description="Photo of the back side" />
+            <Done show={up.ghanaCardBack && !formData.ghanaCardBack?.length} />
+          </div>
+        </div>
+      </section>
+
+      <section className="p-4 bg-muted/40 rounded-lg space-y-4">
+        <h3 className="text-lg font-medium text-foreground">
+          Passport {abroad ? '*' : '(only if you live abroad)'}
+        </h3>
+        {!abroad && (
+          <p className="text-sm text-muted-foreground">
+            You chose a resident status, so a passport isn't required. If you live outside Ghana, change your residential status on the Personal Information step.
+          </p>
+        )}
+        {abroad && (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label htmlFor="idNumber2">Passport number *</Label>
+                <Input id="idNumber2" value={formData.idNumber2}
+                  onChange={(e) => setFormData({ ...formData, idType2: 'Passport', idNumber2: e.target.value.toUpperCase() })} />
+              </div>
+              <div>
+                <Label htmlFor="placeOfIssue2">Place of issue</Label>
+                <Input id="placeOfIssue2" value={formData.placeOfIssue2} onChange={(e) => set('placeOfIssue2', e.target.value)} />
+              </div>
+              <div>
+                <Label htmlFor="expiringDate2">Expiry date</Label>
+                <Input id="expiringDate2" type="date" value={formData.expiringDate2} onChange={(e) => set('expiringDate2', e.target.value)} />
+              </div>
+            </div>
+            <FileUpload label="Passport bio-data page *" accept="image/*,.pdf"
+              onFileSelect={(f) => set('passportDocument', f)} selectedFiles={formData.passportDocument || []}
+              description="The page with your photo and details" />
+            <Done show={up.passportDocument && !formData.passportDocument?.length} />
+          </>
+        )}
+      </section>
+
+      <section className="p-4 bg-muted/40 rounded-lg space-y-3">
+        <h3 className="text-lg font-medium text-foreground">Passport photo *</h3>
+        <ul className="text-sm text-muted-foreground list-disc pl-5 space-y-1">
+          <li>Recent colour photo, head to chest, facing the camera</li>
+          <li>Plain light background, good lighting, no hat or sunglasses</li>
+          <li>On a phone you can take it now with your front camera</li>
+        </ul>
+        <FileUpload label="Upload or take passport photo" accept="image/*"
+          onFileSelect={(f) => set('passportPhoto', f)} selectedFiles={formData.passportPhoto || []}
+          description="JPG or PNG" />
+        <Done show={up.passportPhoto && !formData.passportPhoto?.length} />
+      </section>
     </div>
   );
 };

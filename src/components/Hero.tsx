@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useMarketData } from '@/contexts/MarketDataContext';
 import { marketSummaryAPI } from '@/services/api/marketSummary';
@@ -6,9 +5,8 @@ import HeroContent from './hero/HeroContent';
 import MarketSummaryCard from './market/MarketSummaryCard';
 
 const Hero = () => {
-  const { marketData, latestData, isLoading } = useMarketData();
-  
-  // Create market summary data from our context
+  const { latestData, isLoading } = useMarketData();
+
   const marketSummaryData = isLoading ? [] : marketSummaryAPI.processMarketDataToSummary({
     gse: latestData.gse,
     fx: latestData.fx,
@@ -17,25 +15,18 @@ const Hero = () => {
     equities: latestData.equities
   });
 
-  // Log the data for debugging
-  React.useEffect(() => {
-    if (!isLoading) {
-      console.log("Hero - Latest market data:", latestData);
-      console.log("Hero - Processed market summary:", marketSummaryData);
-    }
-  }, [latestData, isLoading, marketSummaryData]);
-
   return (
-    <section className="relative bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 min-h-screen flex items-center">
-      <div className="absolute inset-0 bg-pattern opacity-10"></div>
-      <div className="relative z-10 w-full pt-20 pb-16 sm:pt-24 sm:pb-20 lg:pt-32 lg:pb-32">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+    <section className="relative overflow-hidden bg-background">
+      <div className="relative mx-auto max-w-7xl px-6 pt-28 pb-20 sm:px-12 lg:px-16 lg:pt-32">
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
+          <div className="lg:col-span-7">
             <HeroContent />
-            <MarketSummaryCard 
-              isLoading={isLoading} 
-              marketSummaryData={marketSummaryData}
-            />
+          </div>
+          <div className="lg:col-span-5">
+            <div className="relative overflow-hidden rounded-3xl border border-border bg-card p-2 shadow-2xl">
+              <div className="pointer-events-none absolute -right-16 -top-16 h-32 w-32 rounded-full bg-accent/10 blur-3xl" aria-hidden="true" />
+              <MarketSummaryCard isLoading={isLoading} marketSummaryData={marketSummaryData} />
+            </div>
           </div>
         </div>
       </div>

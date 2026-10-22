@@ -27,14 +27,6 @@ export function useApiData<T>(
       setIsLoading(true);
       setError(null);
       
-      // For development without actual API
-      if (process.env.NODE_ENV === 'development' && !process.env.USE_REAL_API) {
-        await new Promise(resolve => setTimeout(resolve, 500));
-        setData(initialData);
-        setIsLoading(false);
-        return;
-      }
-      
       const response = await fetchFn();
       setData(response);
     } catch (err) {
@@ -52,22 +44,15 @@ export function useApiData<T>(
       setIsSaving(true);
       setError(null);
       
-      // For development without actual API
-      if (process.env.NODE_ENV === 'development' && !process.env.USE_REAL_API) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setData(updatedData);
-        toast.success("Data saved successfully");
-        setIsSaving(false);
-        return;
-      }
-      
       await updateFn(updatedData);
-      setData(updatedData);
+      const persistedData = await fetchFn();
+      setData(persistedData);
       toast.success("Data saved successfully");
     } catch (err) {
       console.error("Error saving data:", err);
       setError("Failed to save data");
       toast.error("Failed to save changes");
+      throw err;
     } finally {
       setIsSaving(false);
     }

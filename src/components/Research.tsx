@@ -45,7 +45,7 @@ const Research = () => {
   };
 
   return (
-    <div className="py-20 dark:bg-cc-navy/95" id="research">
+    <div className="py-20 dark:bg-card" id="research">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row gap-12 items-start">
           <ResearchSectionSidebar />

@@ -10,7 +10,7 @@ interface LeaderCardProps {
 
 const LeaderCard: React.FC<LeaderCardProps> = ({ leader, onClick }) => {
   return (
-    <Card className="overflow-hidden border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl transition-all cursor-pointer bg-white dark:bg-gray-800 hover:scale-105" onClick={onClick}>
+    <Card className="overflow-hidden border border-gray-200 dark:border-border shadow-lg hover:shadow-xl transition-all cursor-pointer bg-white dark:bg-card hover:scale-105" onClick={onClick}>
       <div className="aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700">
         <img
           src={leader.imageSrc}

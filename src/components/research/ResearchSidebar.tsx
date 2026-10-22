@@ -44,7 +44,7 @@ const ResearchSidebar: React.FC = () => {
         <Card>
           <CardContent className="pt-6">
             <h3 className="font-medium text-lg mb-4">Research Access</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+            <p className="text-sm text-gray-600 dark:text-muted-foreground mb-4">
               Log in to access our premium research reports and market insights. For clients with investment accounts.
             </p>
             <Button asChild className="w-full">
@@ -63,15 +63,15 @@ const ResearchSidebar: React.FC = () => {
             <FileText className="h-5 w-5 mr-2 text-cc-gold" />
             Premium Research Reports
           </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+          <p className="text-sm text-gray-600 dark:text-muted-foreground mb-4">
             Access our latest market research, GSE analysis and investment insights. Premium subscription required.
           </p>
           <ul className="space-y-3 text-sm">
             {sampleReports.map((report, index) => (
               <li key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                 <div className="flex-1 min-w-0">
-                  <span className="text-gray-700 dark:text-gray-300 font-medium block">{report.name}</span>
-                  <span className="text-xs text-gray-500 dark:text-gray-400">{report.description}</span>
+                  <span className="text-gray-700 dark:text-muted-foreground font-medium block">{report.name}</span>
+                  <span className="text-xs text-gray-500 dark:text-muted-foreground">{report.description}</span>
                 </div>
                 {user && hasPremiumAccess ? (
                   <Button 
@@ -98,7 +98,7 @@ const ResearchSidebar: React.FC = () => {
               </p>
             </div>
           )}
-          <div className="mt-4 text-xs text-gray-500 dark:text-gray-400">
+          <div className="mt-4 text-xs text-gray-500 dark:text-muted-foreground">
             Research reports provide comprehensive market analysis and investment insights for the Ghana Stock Exchange.
           </div>
         </CardContent>

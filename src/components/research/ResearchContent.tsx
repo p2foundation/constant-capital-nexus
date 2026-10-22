@@ -63,7 +63,7 @@ const ResearchContent: React.FC<ResearchContentProps> = ({
 
   return (
     <Tabs value={currentTab} onValueChange={onTabChange} className="w-full">
-      <TabsList className="mb-6">
+      <TabsList className="mb-6 h-auto w-full justify-start overflow-x-auto flex-nowrap sm:w-auto">
         <TabsTrigger value="featured">Featured</TabsTrigger>
         <TabsTrigger value="equities">Equities</TabsTrigger>
         <TabsTrigger value="fixedincome">Fixed Income</TabsTrigger>
@@ -127,7 +127,7 @@ const ResearchContent: React.FC<ResearchContentProps> = ({
         ) : (
           <div className="text-center py-12">
             <FileText className="mx-auto h-12 w-12 text-gray-300 dark:text-gray-600" />
-            <p className="mt-4 text-gray-500 dark:text-gray-400">No reports found in this category.</p>
+            <p className="mt-4 text-gray-500 dark:text-muted-foreground">No reports found in this category.</p>
           </div>
         )}
       </TabsContent>

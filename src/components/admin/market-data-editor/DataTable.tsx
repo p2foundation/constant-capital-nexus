@@ -26,13 +26,15 @@ interface DataTableProps {
   dataFields: DataField[];
   showChangeColors: boolean;
   onDeleteDataPoint: (index: number) => void;
+  pendingStartIndex: number;
 }
 
 const DataTable: React.FC<DataTableProps> = ({
   data,
   dataFields,
   showChangeColors,
-  onDeleteDataPoint
+  onDeleteDataPoint,
+  pendingStartIndex
 }) => {
   // Filter out hidden fields for display
   const visibleFields = dataFields.filter(field => field.type !== 'hidden');
@@ -108,9 +110,9 @@ const DataTable: React.FC<DataTableProps> = ({
   };
 
   return (
-    <div className="max-h-80 overflow-y-auto border rounded-md">
+    <div className="max-h-[32rem] overflow-auto rounded-lg border">
       <Table>
-        <TableHeader>
+        <TableHeader className="sticky top-0 z-10 bg-muted/80 backdrop-blur">
           <TableRow>
             {visibleFields.map(field => (
               <TableHead key={field.name}>{field.label}</TableHead>
@@ -136,9 +138,11 @@ const DataTable: React.FC<DataTableProps> = ({
                     size="sm"
                     onClick={() => onDeleteDataPoint(index)}
                     className="flex gap-1 items-center"
+                    disabled={index < pendingStartIndex}
+                    title={index < pendingStartIndex ? 'Add a correction for this date to preserve the audit history' : 'Remove this staged row'}
                   >
                     <Trash2 className="h-4 w-4" />
-                    Delete
+                     Remove
                   </Button>
                 </div>
               </TableCell>

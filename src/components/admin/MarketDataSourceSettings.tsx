@@ -9,9 +9,10 @@ import { supabase } from '@/integrations/supabase/client';
 
 interface MarketDataSourceSettingsProps {
   onDataSourceChange?: (source: string) => void;
+  compact?: boolean;
 }
 
-export default function MarketDataSourceSettings({ onDataSourceChange }: MarketDataSourceSettingsProps) {
+export default function MarketDataSourceSettings({ onDataSourceChange, compact = false }: MarketDataSourceSettingsProps) {
   const [currentSource, setCurrentSource] = useState<string>('manual');
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
@@ -28,33 +29,36 @@ export default function MarketDataSourceSettings({ onDataSourceChange }: MarketD
       setIsLoading(true);
       
       // Get market data source setting
-      const { data: sourceData } = await supabase
+      const { data: sourceData, error: sourceError } = await supabase
         .from('settings')
         .select('value')
         .eq('key', 'market_data_source')
-        .single();
+        .maybeSingle();
+      if (sourceError) throw sourceError;
 
       if (sourceData?.value) {
         setCurrentSource(sourceData.value as string);
       }
 
       // Get auto sync setting
-      const { data: autoSyncData } = await supabase
+      const { data: autoSyncData, error: autoSyncError } = await supabase
         .from('settings')
         .select('value')
         .eq('key', 'market_data_auto_sync')
-        .single();
+        .maybeSingle();
+      if (autoSyncError) throw autoSyncError;
 
       if (autoSyncData?.value) {
         setAutoSync(autoSyncData.value as boolean);
       }
 
       // Get last fetch time
-      const { data: lastFetchData } = await supabase
+      const { data: lastFetchData, error: lastFetchError } = await supabase
         .from('settings')
         .select('value')
         .eq('key', 'market_data_last_fetch')
-        .single();
+        .maybeSingle();
+      if (lastFetchError) throw lastFetchError;
 
       if (lastFetchData?.value) {
         setLastFetchTime(lastFetchData.value as string);
@@ -62,6 +66,7 @@ export default function MarketDataSourceSettings({ onDataSourceChange }: MarketD
 
     } catch (error) {
       console.error('Error loading settings:', error);
+      toast.error('Could not load market source settings');
     } finally {
       setIsLoading(false);
     }
@@ -158,35 +163,13 @@ export default function MarketDataSourceSettings({ onDataSourceChange }: MarketD
     }
   };
 
-  const getSourceDisplayName = (source: string) => {
-    switch (source) {
-      case 'financial_modeling_prep':
-        return 'Financial Modeling Prep';
-      case 'yahoo_finance':
-        return 'Yahoo Finance';
-      case 'gse_official':
-        return 'GSE Official API';
-      case 'manual':
-        return 'Manual Entry';
-      default:
-        return source;
-    }
-  };
+  const getSourceDisplayName = (source: string) =>
+    source === 'manual' ? 'Manual Entry' : 'Live Ghana sources';
 
-  const getSourceDescription = (source: string) => {
-    switch (source) {
-      case 'financial_modeling_prep':
-        return 'Professional financial data with real-time updates and comprehensive market coverage';
-      case 'yahoo_finance':
-        return 'Free financial data service with good coverage of major markets and currencies';
-      case 'gse_official':
-        return 'Official Ghana Stock Exchange data with real-time quotes and comprehensive market coverage';
-      case 'manual':
-        return 'Manual data entry by admin users with full control over all market data';
-      default:
-        return '';
-    }
-  };
+  const getSourceDescription = (source: string) =>
+    source === 'manual'
+      ? 'Manual data entry by admin users with full control over all market data'
+      : 'Real published figures: GSE share prices and GSE-CI (Ghana Stock Exchange), T-bill rates (Bank of Ghana), cedi rates (ExchangeRate-API). Eurobond yields have no free live source and must be entered manually.';
 
   if (isLoading) {
     return (
@@ -200,17 +183,17 @@ export default function MarketDataSourceSettings({ onDataSourceChange }: MarketD
   }
 
   return (
-    <Card>
+    <Card className={compact ? 'shadow-sm' : undefined}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Settings className="h-5 w-5" />
-          Market Data Source Settings
+          {compact ? 'Data source control' : 'Market Data Source Settings'}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         
         {/* Current Status */}
-        <div className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+        <div className="flex flex-wrap items-center gap-3 rounded-lg border bg-muted/30 p-4">
           <div className="flex items-center gap-2">
             <Database className="h-4 w-4" />
             <span className="text-sm font-medium">Current Source:</span>
@@ -219,14 +202,15 @@ export default function MarketDataSourceSettings({ onDataSourceChange }: MarketD
             {getSourceDisplayName(currentSource)}
           </Badge>
           {autoSync && currentSource !== 'manual' && (
-            <Badge variant="outline" className="text-green-600">
+            <Badge variant="outline" className="text-primary">
               Auto-sync ON
             </Badge>
           )}
         </div>
 
         {/* Source Selection */}
-        <div className="space-y-3">
+        <div className={compact ? 'grid gap-4 lg:grid-cols-[minmax(240px,0.8fr)_1.2fr]' : 'space-y-3'}>
+          <div className="space-y-3">
           <label className="text-sm font-medium">Data Source</label>
           <Select value={currentSource} onValueChange={handleSourceChange}>
             <SelectTrigger>
@@ -239,27 +223,16 @@ export default function MarketDataSourceSettings({ onDataSourceChange }: MarketD
                   Manual Entry
                 </div>
               </SelectItem>
-              <SelectItem value="financial_modeling_prep">
-                <div className="flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4" />
-                  Financial Modeling Prep
-                </div>
-              </SelectItem>
-              <SelectItem value="yahoo_finance">
-                <div className="flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4" />
-                  Yahoo Finance
-                </div>
-              </SelectItem>
               <SelectItem value="gse_official">
                 <div className="flex items-center gap-2">
                   <TrendingUp className="h-4 w-4" />
-                  GSE Official API
+                  Live Ghana sources (GSE, Bank of Ghana)
                 </div>
               </SelectItem>
             </SelectContent>
           </Select>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          </div>
+          <p className="text-sm text-muted-foreground">
             {getSourceDescription(currentSource)}
           </p>
         </div>
@@ -291,7 +264,7 @@ export default function MarketDataSourceSettings({ onDataSourceChange }: MarketD
             </div>
 
             {lastFetchTime && (
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 Last fetch: {new Date(lastFetchTime).toLocaleString()}
               </p>
             )}
@@ -300,8 +273,8 @@ export default function MarketDataSourceSettings({ onDataSourceChange }: MarketD
 
         {/* Manual Mode Info */}
         {currentSource === 'manual' && (
-          <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-            <p className="text-sm text-blue-800 dark:text-blue-300">
+          <div className="rounded-lg border bg-muted/30 p-4">
+            <p className="text-sm text-muted-foreground">
               <strong>Manual Mode:</strong> All market data will be managed through the admin interface. 
               Use the Market Data tab to add, edit, or delete data points manually.
             </p>
@@ -310,10 +283,11 @@ export default function MarketDataSourceSettings({ onDataSourceChange }: MarketD
 
         {/* API Mode Info */}
         {currentSource !== 'manual' && (
-          <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-            <p className="text-sm text-green-800 dark:text-green-300">
-              <strong>API Mode:</strong> Data is automatically fetched from {getSourceDisplayName(currentSource)}. 
-              You can still override individual data points manually through the Market Data tab.
+          <div className="rounded-lg border bg-muted/30 p-4">
+            <p className="text-sm text-muted-foreground">
+              <strong>Hybrid Mode:</strong> With auto-sync on, prices are fetched from {getSourceDisplayName(currentSource)} every
+              hour, 9am–5pm on weekdays. Anything you enter or upload in the Market Data tab is treated as a manual
+              correction and is never overwritten by the automatic feed.
             </p>
           </div>
         )}

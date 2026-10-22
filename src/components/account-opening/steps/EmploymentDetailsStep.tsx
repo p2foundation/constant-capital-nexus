@@ -75,7 +75,7 @@ const EmploymentDetailsStep: React.FC<StepProps> = ({ formData, setFormData }) =
       {/* Monthly Income Range */}
       <div>
         <Label className="text-base font-medium">Total Monthly Income Range</Label>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+        <p className="text-sm text-gray-600 dark:text-muted-foreground mb-3">
           NB: Income includes salary and other income/cash inflows
         </p>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
@@ -104,7 +104,7 @@ const EmploymentDetailsStep: React.FC<StepProps> = ({ formData, setFormData }) =
       </div>
 
       {/* Employer Information */}
-      <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+      <div className="p-4 bg-gray-50 dark:bg-card rounded-lg">
         <h3 className="text-lg font-medium mb-4 text-gray-900 dark:text-gray-100">
           Employer/Business/School Information
         </h3>

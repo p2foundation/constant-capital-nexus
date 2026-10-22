@@ -90,7 +90,7 @@ const ResetPassword = () => {
 
             <div className="space-y-3">
               <h4 className="font-medium text-gray-800 dark:text-gray-200">What to do next:</h4>
-              <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
+              <ul className="space-y-1 text-sm text-gray-600 dark:text-muted-foreground">
                 <li>• Check your inbox for an email from Constant Capital</li>
                 <li>• Look in your spam/junk folder if needed</li>
                 <li>• Click the "Reset Password" button in the email</li>

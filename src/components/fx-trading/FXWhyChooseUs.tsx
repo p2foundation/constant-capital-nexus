@@ -38,7 +38,7 @@ const features = [
 
 const FXWhyChooseUs = () => {
   return (
-    <section className="py-20 bg-white dark:bg-gray-950">
+    <section className="py-20 bg-background">
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left Content */}
@@ -47,11 +47,11 @@ const FXWhyChooseUs = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
           >
-            <span className="text-cc-gold font-medium text-sm uppercase tracking-wider">Why Choose Us</span>
-            <h2 className="text-3xl md:text-4xl font-bold text-cc-navy dark:text-white mt-2 mb-6">
+            <span className="text-accent font-medium text-sm uppercase tracking-wider">Why Choose Us</span>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-2 mb-6">
               Your Trusted Partner for Foreign Exchange
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-8">
+            <p className="text-gray-600 dark:text-muted-foreground mb-8">
               With our newly acquired FX license, we bring the same excellence and professionalism 
               that defines our securities trading to the foreign exchange market. Our team combines 
               deep market expertise with cutting-edge technology to deliver superior FX services.
@@ -59,21 +59,21 @@ const FXWhyChooseUs = () => {
             
             {/* Stats Grid */}
             <div className="grid grid-cols-2 gap-6">
-              <div className="bg-cc-gray dark:bg-gray-800 rounded-xl p-6">
-                <div className="text-4xl font-bold text-cc-gold mb-2">10+</div>
-                <div className="text-gray-600 dark:text-gray-400 text-sm">Years in Financial Markets</div>
+              <div className="bg-card rounded-xl p-6">
+                <div className="text-4xl font-bold text-accent mb-2">10+</div>
+                <div className="text-gray-600 dark:text-muted-foreground text-sm">Years in Financial Markets</div>
               </div>
-              <div className="bg-cc-gray dark:bg-gray-800 rounded-xl p-6">
-                <div className="text-4xl font-bold text-cc-gold mb-2">500+</div>
-                <div className="text-gray-600 dark:text-gray-400 text-sm">Corporate Clients Served</div>
+              <div className="bg-card rounded-xl p-6">
+                <div className="text-4xl font-bold text-accent mb-2">500+</div>
+                <div className="text-gray-600 dark:text-muted-foreground text-sm">Corporate Clients Served</div>
               </div>
-              <div className="bg-cc-gray dark:bg-gray-800 rounded-xl p-6">
-                <div className="text-4xl font-bold text-cc-gold mb-2">₵2B+</div>
-                <div className="text-gray-600 dark:text-gray-400 text-sm">Annual Trading Volume</div>
+              <div className="bg-card rounded-xl p-6">
+                <div className="text-4xl font-bold text-accent mb-2">₵2B+</div>
+                <div className="text-gray-600 dark:text-muted-foreground text-sm">Annual Trading Volume</div>
               </div>
-              <div className="bg-cc-gray dark:bg-gray-800 rounded-xl p-6">
-                <div className="text-4xl font-bold text-cc-gold mb-2">99.9%</div>
-                <div className="text-gray-600 dark:text-gray-400 text-sm">Order Execution Rate</div>
+              <div className="bg-card rounded-xl p-6">
+                <div className="text-4xl font-bold text-accent mb-2">99.9%</div>
+                <div className="text-gray-600 dark:text-muted-foreground text-sm">Order Execution Rate</div>
               </div>
             </div>
           </motion.div>
@@ -92,16 +92,16 @@ const FXWhyChooseUs = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="flex gap-4 p-4 rounded-xl bg-cc-gray dark:bg-gray-800 hover:bg-cc-gold/10 dark:hover:bg-cc-gold/10 transition-colors group"
+                className="flex gap-4 p-4 rounded-xl bg-card hover:bg-accent/5 dark:hover:bg-accent/5 transition-colors group"
               >
-                <div className="w-12 h-12 rounded-lg bg-cc-gold/20 flex items-center justify-center shrink-0 group-hover:bg-cc-gold/30 transition-colors">
-                  <feature.icon className="h-6 w-6 text-cc-gold" />
+                <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center shrink-0 group-hover:bg-accent/20 transition-colors">
+                  <feature.icon className="h-6 w-6 text-accent" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-cc-navy dark:text-white mb-1">
+                  <h3 className="font-semibold text-foreground mb-1">
                     {feature.title}
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm">
+                  <p className="text-gray-600 dark:text-muted-foreground text-sm">
                     {feature.description}
                   </p>
                 </div>

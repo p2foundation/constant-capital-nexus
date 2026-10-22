@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import PageHero from '@/components/layout/PageHero';
 import { jobListings, departments, jobTypes, workModes } from '@/data/careers';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -39,32 +40,16 @@ const Careers = () => {
       </Helmet>
       <Navbar />
 
-      {/* Hero */}
-      <section className="relative pt-20 pb-16 md:pt-28 md:pb-24 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-cc-navy via-cc-navy/95 to-cc-blue" />
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-cc-gold/30 rounded-full blur-3xl" />
-          <div className="absolute bottom-10 right-10 w-96 h-96 bg-cc-blue/40 rounded-full blur-3xl" />
-        </div>
-        <div className="container mx-auto px-4 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            className="text-center max-w-3xl mx-auto"
-          >
-            <Badge className="bg-cc-gold/20 text-cc-gold border-cc-gold/30 mb-4">
-              {activeCount} Open Position{activeCount !== 1 ? 's' : ''}
-            </Badge>
-            <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">
-              Build Your Career at <span className="text-cc-gold">Constant Capital</span>
-            </h1>
-            <p className="text-gray-300 text-lg md:text-xl max-w-2xl mx-auto">
-              Join one of Ghana's leading investment firms. We're looking for talented individuals who want to make an impact in financial services.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <div className="pt-16">
+        <PageHero
+          eyebrow={`${activeCount} Open Position${activeCount !== 1 ? 's' : ''}`}
+          title={<>Build your career at <span className="text-accent">Constant Capital</span></>}
+          description="Join one of Ghana's leading investment firms. We're looking for talented individuals who want to make an impact in financial services."
+          primaryCta={{ label: 'View open roles', to: '#open-positions' }}
+          icon={Briefcase}
+          highlights={['Fast-track career growth', 'Collaborative, high-trust team', 'SEC-licensed, stable firm', 'Work that is visible and valued']}
+        />
+      </div>
 
       {/* Culture Cards */}
       <section className="py-12 bg-muted/50">
@@ -83,7 +68,7 @@ const Careers = () => {
                 transition={{ delay: i * 0.1 }}
                 className="bg-card rounded-xl p-5 text-center border border-border shadow-sm"
               >
-                <item.icon className="w-8 h-8 text-cc-gold mx-auto mb-2" />
+                <item.icon className="w-8 h-8 text-accent mx-auto mb-2" />
                 <h3 className="font-semibold text-foreground text-sm">{item.title}</h3>
                 <p className="text-xs text-muted-foreground">{item.desc}</p>
               </motion.div>
@@ -93,7 +78,7 @@ const Careers = () => {
       </section>
 
       {/* Job Listings */}
-      <section className="py-12 md:py-16">
+      <section id="open-positions" className="scroll-mt-20 py-12 md:py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-8">Open Positions</h2>
 
@@ -148,17 +133,17 @@ const Careers = () => {
                 >
                   <Link
                     to={`/careers/${job.id}`}
-                    className="group block bg-card border border-border rounded-xl p-5 md:p-6 hover:border-cc-gold/50 hover:shadow-lg transition-all duration-300"
+                    className="group block bg-card border border-border rounded-xl p-5 md:p-6 hover:border-accent/50 hover:shadow-lg transition-all duration-300"
                   >
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2 flex-wrap">
                           {job.isFeatured && (
-                            <Badge className="bg-cc-gold/15 text-cc-gold border-cc-gold/30 text-[10px]">FEATURED</Badge>
+                            <Badge className="bg-accent/15 text-accent border-accent/30 text-[10px]">FEATURED</Badge>
                           )}
                           <Badge variant="outline" className="text-[10px]">{job.department}</Badge>
                         </div>
-                        <h3 className="text-lg md:text-xl font-bold text-foreground group-hover:text-cc-gold transition-colors">
+                        <h3 className="text-lg md:text-xl font-bold text-foreground group-hover:text-accent transition-colors">
                           {job.title}
                         </h3>
                         <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{job.summary}</p>
@@ -169,7 +154,7 @@ const Careers = () => {
                         </div>
                       </div>
                       <div className="flex items-center">
-                        <Button variant="outline" size="sm" className="group-hover:bg-cc-gold group-hover:text-cc-navy group-hover:border-cc-gold transition-all">
+                        <Button variant="outline" size="sm" className="group-hover:bg-accent group-hover:text-accent-foreground group-hover:border-accent transition-all">
                           View Details <ArrowRight className="w-4 h-4 ml-1" />
                         </Button>
                       </div>
@@ -188,7 +173,7 @@ const Careers = () => {
           <h2 className="text-2xl font-bold text-foreground mb-3">Don't See Your Role?</h2>
           <p className="text-muted-foreground mb-6">
             We're always looking for exceptional talent. Send your CV to{' '}
-            <a href="mailto:info@constantcap.com.gh?subject=General Application" className="text-cc-gold hover:underline font-medium">
+            <a href="mailto:info@constantcap.com.gh?subject=General Application" className="text-accent hover:underline font-medium">
               info@constantcap.com.gh
             </a>{' '}
             and we'll keep you in mind for future openings.

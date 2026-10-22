@@ -10,10 +10,10 @@ interface MarketChartProps {
 
 const MarketChart: React.FC<MarketChartProps> = ({ title, description, chart }) => {
   return (
-    <Card className="shadow-md dark:bg-cc-navy/80 dark:border-cc-gold/20 print:shadow-none print:break-inside-avoid">
+    <Card className="shadow-md dark:bg-card dark:border-cc-gold/20 print:shadow-none print:break-inside-avoid">
       <CardHeader>
         <CardTitle className="dark:text-white">{title}</CardTitle>
-        <CardDescription className="dark:text-gray-300">{description}</CardDescription>
+        <CardDescription className="dark:text-muted-foreground">{description}</CardDescription>
       </CardHeader>
       <CardContent>{chart}</CardContent>
     </Card>

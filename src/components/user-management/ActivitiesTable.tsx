@@ -112,7 +112,7 @@ const ActivitiesTable: React.FC<ActivitiesTableProps> = ({
                       {new Date(activity.timestamp).toLocaleString()}
                     </TableCell>
                     <TableCell>
-                      <code className="text-sm bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
+                      <code className="text-sm bg-gray-100 dark:bg-card px-2 py-1 rounded">
                         {activity.ip_address || 'N/A'}
                       </code>
                     </TableCell>

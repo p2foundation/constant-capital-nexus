@@ -24,8 +24,8 @@ const ResearchDetailHeader = ({
         <Badge variant="outline" className="text-xs font-normal capitalize">
           {type}
         </Badge>
-        <span className="text-xs text-gray-500 dark:text-gray-400">{date}</span>
-        {author && <span className="text-xs text-gray-500 dark:text-gray-400">• {author}</span>}
+        <span className="text-xs text-gray-500 dark:text-muted-foreground">{date}</span>
+        {author && <span className="text-xs text-gray-500 dark:text-muted-foreground">• {author}</span>}
         {isPremium && (
           <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-1 text-xs font-medium text-amber-800">
             Premium

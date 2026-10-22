@@ -16,11 +16,12 @@ export default function MarketDataRefreshButton({ onRefresh }: MarketDataRefresh
       setIsRefreshing(true);
       
       // Get current data source setting
-      const { data: sourceData } = await supabase
+      const { data: sourceData, error: sourceError } = await supabase
         .from('settings')
         .select('value')
         .eq('key', 'market_data_source')
-        .single();
+        .maybeSingle();
+      if (sourceError) throw sourceError;
       
       const dataSource = sourceData?.value as string || 'manual';
       
@@ -39,7 +40,8 @@ export default function MarketDataRefreshButton({ onRefresh }: MarketDataRefresh
       if (error) throw error;
 
       if (data?.success) {
-        toast.success(`Data refreshed successfully from ${dataSource === 'financial_modeling_prep' ? 'Financial Modeling Prep' : 'Yahoo Finance'}`);
+        await supabase.from('settings').upsert({ key: 'market_data_last_fetch', value: new Date().toISOString() });
+        toast.success(`Live Ghana sources synchronized: ${data.recordCount || 0} records received`);
         onRefresh?.();
       } else {
         throw new Error(data?.error || 'Refresh failed');

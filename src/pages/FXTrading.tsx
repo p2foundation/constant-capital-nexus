@@ -14,7 +14,7 @@ const FXTrading = () => {
   useAnalytics();
   
   return (
-    <div className="flex flex-col min-h-screen dark:bg-gray-950">
+    <div className="flex flex-col min-h-screen dark:bg-background">
       <Helmet>
         <title>FX Trading Services | Foreign Exchange | Constant Capital</title>
         <meta name="description" content="Licensed FX trading services in Ghana. Competitive exchange rates, institutional trading, hedging solutions, and expert forex advisory for businesses and institutions." />

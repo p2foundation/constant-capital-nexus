@@ -1,156 +1,133 @@
-
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Calculator } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { Separator } from '@/components/ui/separator';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { useAnalytics } from '@/hooks/useAnalytics';
+import { ghs, loadLatestTBillRates } from '@/lib/gseStocks';
+
+const TENORS = [91, 182, 364] as const;
+const num = (s: string) => { const n = parseFloat(s); return isFinite(n) ? n : 0; };
 
 const TBillCalculator = () => {
   useAnalytics();
-  
-  const [faceValue, setFaceValue] = useState<string>('10000');
-  const [interestRate, setInterestRate] = useState<string>('15');
-  const [term, setTerm] = useState<string>('91');
-  const [purchasePrice, setPurchasePrice] = useState<number>(0);
-  const [profit, setProfit] = useState<number>(0);
-  const [annualizedReturn, setAnnualizedReturn] = useState<number>(0);
-
-  const calculateTBill = () => {
-    const faceValueNum = parseFloat(faceValue);
-    const interestRateNum = parseFloat(interestRate);
-    const termDays = parseInt(term);
-    
-    if (isNaN(faceValueNum) || isNaN(interestRateNum) || isNaN(termDays)) {
-      return;
-    }
-    
-    // Calculate purchase price using the formula: Face Value × (1 - (Interest Rate × Term) / 36500)
-    const calculatedPurchasePrice = faceValueNum * (1 - (interestRateNum * termDays) / 36500);
-    const calculatedProfit = faceValueNum - calculatedPurchasePrice;
-    const calculatedAnnualReturn = (calculatedProfit / calculatedPurchasePrice) * (365 / termDays) * 100;
-    
-    setPurchasePrice(parseFloat(calculatedPurchasePrice.toFixed(2)));
-    setProfit(parseFloat(calculatedProfit.toFixed(2)));
-    setAnnualizedReturn(parseFloat(calculatedAnnualReturn.toFixed(2)));
-  };
+  const [mode, setMode] = useState<'invest' | 'face'>('invest');
+  const [amount, setAmount] = useState('10000');
+  const [term, setTerm] = useState<number>(91);
+  const [rate, setRate] = useState('');
+  const [live, setLive] = useState<Record<string, number>>({});
+  const [liveDate, setLiveDate] = useState<string>();
 
   useEffect(() => {
-    calculateTBill();
+    loadLatestTBillRates().then(({ rates, date }) => {
+      setLive(rates); setLiveDate(date);
+      if (rates['91-day']) setRate(String(rates['91-day']));
+    });
   }, []);
 
+  const pickTerm = (t: number) => {
+    setTerm(t);
+    const lr = live[`${t}-day`];
+    if (lr) setRate(String(lr));
+  };
+
+  const r = useMemo(() => {
+    const y = num(rate) / 100, factor = 1 + (y * term) / 364;
+    const principal = mode === 'invest' ? num(amount) : num(amount) / factor;
+    const maturity = principal * factor;
+    const interest = maturity - principal;
+    const discount = factor > 0 ? (y / factor) * 100 : 0;
+    const rollovers = 364 / term;
+    const yearValue = principal * Math.pow(factor, rollovers);
+    const effective = principal > 0 ? (yearValue / principal - 1) * 100 : 0;
+    const maturityDate = new Date(Date.now() + term * 864e5);
+    return { principal, maturity, interest, discount, yearValue, effective, maturityDate };
+  }, [mode, amount, term, rate]);
+
+  const liveLabel = liveDate ? new Date(liveDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : null;
+
   return (
-    <div className="flex flex-col min-h-screen dark:bg-gray-950">
+    <div className="flex min-h-screen flex-col bg-background">
       <Navbar />
-      <main className="flex-1 container mx-auto px-4 py-8 mt-16">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold text-center text-cc-navy dark:text-white mb-8">
-            Treasury Bill Calculator
-          </h1>
-          
-          <div className="grid gap-6 md:grid-cols-1">
-            <Card>
-              <CardHeader className="bg-cc-navy dark:bg-cc-navy/80 text-white">
-                <CardTitle className="flex items-center">
-                  <Calculator className="mr-2 h-5 w-5" /> 
-                  T-Bill Investment Calculator
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-6">
-                <div className="grid gap-6 md:grid-cols-2">
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="faceValue">Face Value (GHS)</Label>
-                      <Input
-                        id="faceValue"
-                        type="number"
-                        value={faceValue}
-                        onChange={(e) => setFaceValue(e.target.value)}
-                        placeholder="10,000"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="interestRate">Interest Rate (% p.a.)</Label>
-                      <Input
-                        id="interestRate"
-                        type="number"
-                        value={interestRate}
-                        onChange={(e) => setInterestRate(e.target.value)}
-                        placeholder="15"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="term">Term</Label>
-                      <Select 
-                        defaultValue={term}
-                        onValueChange={(value) => setTerm(value)}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select term" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectItem value="91">91 days</SelectItem>
-                            <SelectItem value="182">182 days</SelectItem>
-                            <SelectItem value="364">364 days</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    
-                    <Button 
-                      onClick={calculateTBill}
-                      className="w-full bg-cc-gold text-cc-navy hover:bg-cc-gold/90 dark:bg-cc-gold dark:text-cc-navy dark:hover:bg-cc-gold/90"
-                    >
-                      Calculate
-                    </Button>
-                  </div>
-                  
-                  <div className="bg-gray-50 p-4 rounded-lg dark:bg-gray-800/50">
-                    <h3 className="text-lg font-medium mb-4 text-cc-navy dark:text-white">Results</h3>
-                    <Table>
-                      <TableBody>
-                        <TableRow>
-                          <TableCell className="font-medium">Purchase Price (You Pay)</TableCell>
-                          <TableCell className="text-right">GHS {purchasePrice.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="font-medium">Interest Earned</TableCell>
-                          <TableCell className="text-right text-green-600">GHS {profit.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="font-medium">Annualized Return</TableCell>
-                          <TableCell className="text-right">{annualizedReturn}%</TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                    
-                    {/* Final Total Highlight */}
-                    <div className="mt-4 p-4 bg-cc-navy dark:bg-cc-navy/90 rounded-lg">
-                      <div className="flex justify-between items-center">
-                        <span className="text-white font-medium">Maturity Value (You Receive)</span>
-                        <span className="text-cc-gold text-xl font-bold">
-                          GHS {parseFloat(faceValue || '0').toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
-                        </span>
-                      </div>
-                      <p className="text-gray-300 text-xs mt-1">After {term} days</p>
-                    </div>
-                  </div>
+      <main className="container mx-auto mt-16 flex-1 px-4 py-12">
+        <div className="mx-auto max-w-5xl">
+          <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-accent">Calculators</p>
+          <h1 className="font-heading mb-3 text-3xl font-bold text-foreground md:text-4xl">Treasury bill calculator</h1>
+          <p className="mb-8 max-w-2xl text-muted-foreground">
+            See what you pay, what you earn and what you receive at maturity on Government of Ghana treasury bills.
+            {liveLabel && <> Rates are from the Bank of Ghana auction of <span className="font-medium text-foreground">{liveLabel}</span>.</>}
+          </p>
+
+          <div className="grid gap-6 lg:grid-cols-5">
+            <div className="space-y-5 rounded-2xl border border-border bg-card p-6 lg:col-span-3">
+              <div className="space-y-1.5">
+                <Label>I want to</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  {([['invest', 'Invest an amount'], ['face', 'Receive an amount']] as const).map(([v, l]) => (
+                    <button key={v} type="button" onClick={() => setMode(v)}
+                      className={`rounded-lg border px-3 py-2 text-sm font-medium transition ${mode === v ? 'border-accent bg-accent text-accent-foreground' : 'border-border text-foreground hover:border-accent/50'}`}>
+                      {l}
+                    </button>
+                  ))}
                 </div>
-              </CardContent>
-              <CardFooter className="bg-gray-50 border-t dark:bg-gray-800/30 dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400 flex flex-col items-start py-4">
-                <p>Note: T-Bills are short-term government securities sold at a discount and redeemed at face value.</p>
-                <p>Formula: Purchase Price = Face Value × (1 - (Interest Rate × Term (days)) / 36500)</p>
-              </CardFooter>
-            </Card>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label>Tenor</Label>
+                <div className="grid grid-cols-3 gap-2">
+                  {TENORS.map((t) => (
+                    <button key={t} type="button" onClick={() => pickTerm(t)}
+                      className={`rounded-lg border px-3 py-3 text-left transition ${term === t ? 'border-accent bg-accent/10' : 'border-border hover:border-accent/50'}`}>
+                      <span className="block text-sm font-semibold text-foreground">{t} days</span>
+                      <span className="block text-xs text-muted-foreground">{live[`${t}-day`] ? `${live[`${t}-day`].toFixed(2)}% p.a.` : '—'}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-1.5">
+                  <Label htmlFor="amount">{mode === 'invest' ? 'Amount to invest (GH₵)' : 'Amount to receive at maturity (GH₵)'}</Label>
+                  <Input id="amount" type="number" inputMode="decimal" min="0" value={amount} onChange={(e) => setAmount(e.target.value)} />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="rate">Interest rate (% per year)</Label>
+                  <Input id="rate" type="number" inputMode="decimal" min="0" step="0.0001" value={rate} onChange={(e) => setRate(e.target.value)} />
+                  <p className="text-xs text-muted-foreground">Pre-filled with the latest auction rate — you can change it</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-4 lg:col-span-2">
+              <div className="rounded-2xl border border-border bg-card p-6">
+                <h2 className="font-heading mb-4 flex items-center gap-2 text-lg font-semibold text-foreground">
+                  <Calculator className="h-5 w-5 text-accent" /> Your results
+                </h2>
+                <dl className="space-y-3 text-sm">
+                  {[
+                    ['You pay today', ghs(r.principal)],
+                    ['Interest earned', ghs(r.interest)],
+                    ['Discount rate', `${r.discount.toFixed(4)}%`],
+                    ['Maturity date', r.maturityDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })],
+                    ...(term < 364 ? [['If rolled over for a year', `${ghs(r.yearValue)} (${r.effective.toFixed(2)}%)`]] : []),
+                  ].map(([k, v]) => (
+                    <div key={k} className="flex justify-between gap-4 border-b border-border pb-2 last:border-0">
+                      <dt className="text-muted-foreground">{k}</dt>
+                      <dd className="text-right font-medium text-foreground">{v}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+              <div className="rounded-2xl bg-accent p-6 text-accent-foreground">
+                <p className="text-sm font-medium opacity-90">Maturity value (you receive)</p>
+                <p className="font-heading text-3xl font-bold">{ghs(r.maturity)}</p>
+                <p className="mt-1 text-xs opacity-90">After {term} days</p>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Uses the Bank of Ghana method: maturity value = amount × (1 + rate × days ÷ 364). The rollover figure assumes the same rate at every rollover. For illustration only.
+              </p>
+            </div>
           </div>
         </div>
       </main>

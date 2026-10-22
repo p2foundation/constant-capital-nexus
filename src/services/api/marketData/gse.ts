@@ -17,6 +17,7 @@ export const gseAPI = {
   },
   
   updateData: async (data: any) => {
-    return await updateMarketData('gse', data, processMarketDataForDB);
+    const records = data.map((item: any) => ({ ...item, date: item.date || item.name }));
+    return await updateMarketData('gse', records, processMarketDataForDB);
   }
 };

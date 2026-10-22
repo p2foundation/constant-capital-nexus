@@ -18,7 +18,7 @@ interface FAQCategoryProps {
 
 const FAQCategory = ({ title, icon: Icon, questions, categoryIndex }: FAQCategoryProps) => {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+    <div className="bg-white dark:bg-card rounded-lg shadow-lg p-6">
       <div className="flex items-center mb-6">
         <Icon className="h-6 w-6 text-cc-gold mr-3" />
         <h3 className="text-xl font-bold text-cc-navy dark:text-white">{title}</h3>

@@ -1,57 +1,49 @@
-
 import React from 'react';
-import { Calendar, ChartLine, Download, TrendingUp } from 'lucide-react';
+import { Calendar, ChartLine, Download, FileSpreadsheet, List, TrendingUp } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+
+export type ReportView = 'instruments' | 'charts' | 'summary';
 
 interface ReportHeaderProps {
   reportDate: string;
-  selectedView: 'charts' | 'summary';
-  onChangeView: (view: 'charts' | 'summary') => void;
+  selectedView: ReportView;
+  onChangeView: (view: ReportView) => void;
+  onExportPdf: () => void;
+  onExportCsv: () => void;
+  instrumentCount: number;
 }
 
-const ReportHeader: React.FC<ReportHeaderProps> = ({ 
-  reportDate, 
-  selectedView, 
-  onChangeView 
-}) => {
-  return (
-    <div className="pt-16 md:pt-20"> {/* Added padding to the top to account for the fixed navbar */}
-      <h1 className="text-4xl md:text-5xl font-bold text-cc-navy dark:text-white mb-2">Market Report</h1>
-      <div className="flex items-center mb-8 text-gray-600 dark:text-gray-300">
-        <Calendar className="h-4 w-4 mr-2" />
-        <span>Report date: {reportDate}</span>
+const views: { id: ReportView; label: string; icon: React.ElementType }[] = [
+  { id: 'instruments', label: 'All instruments', icon: List },
+  { id: 'summary', label: 'Summary', icon: TrendingUp },
+  { id: 'charts', label: 'Charts', icon: ChartLine },
+];
+
+const ReportHeader: React.FC<ReportHeaderProps> = ({
+  reportDate, selectedView, onChangeView, onExportPdf, onExportCsv, instrumentCount,
+}) => (
+  <div className="pt-24 md:pt-28">
+    <p className="text-sm font-medium uppercase tracking-widest text-primary">Research</p>
+    <h1 className="mt-2 font-heading text-4xl font-bold text-foreground md:text-5xl">Market Report</h1>
+    <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-sm text-muted-foreground">
+      <span className="inline-flex items-center"><Calendar className="mr-2 h-4 w-4" />Data as at {reportDate}</span>
+      <span>{instrumentCount} instruments tracked</span>
+    </div>
+
+    <div className="mt-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div className="inline-flex flex-wrap gap-1 rounded-lg border border-border bg-muted/40 p-1">
+        {views.map(({ id, label, icon: Icon }) => (
+          <Button key={id} size="sm" variant={selectedView === id ? 'default' : 'ghost'} onClick={() => onChangeView(id)}>
+            <Icon className="mr-2 h-4 w-4" />{label}
+          </Button>
+        ))}
       </div>
-      
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-        <div className="flex space-x-3">
-          <Button 
-            variant="outline" 
-            onClick={() => onChangeView('charts')} 
-            className={selectedView === 'charts' ? 'bg-cc-light-blue dark:bg-cc-navy' : ''}
-          >
-            <ChartLine className="h-4 w-4 mr-2" />
-            Charts View
-          </Button>
-          <Button 
-            variant="outline" 
-            onClick={() => onChangeView('summary')} 
-            className={selectedView === 'summary' ? 'bg-cc-light-blue dark:bg-cc-navy' : ''}
-          >
-            <TrendingUp className="h-4 w-4 mr-2" />
-            Summary View
-          </Button>
-          <Button 
-            variant="default" 
-            className="bg-cc-navy hover:bg-cc-navy/90 dark:bg-cc-gold dark:hover:bg-cc-gold/90"
-            onClick={() => window.print()}
-          >
-            <Download className="h-4 w-4 mr-2" />
-            Export PDF
-          </Button>
-        </div>
+      <div className="flex flex-wrap gap-2">
+        <Button onClick={onExportPdf}><Download className="mr-2 h-4 w-4" />Download PDF report</Button>
+        <Button variant="outline" onClick={onExportCsv}><FileSpreadsheet className="mr-2 h-4 w-4" />Export CSV</Button>
       </div>
     </div>
-  );
-};
+  </div>
+);
 
 export default ReportHeader;

@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "12.2.3 (519615d)"
+    PostgrestVersion: "12.2.3"
   }
   public: {
     Tables: {
@@ -41,6 +41,63 @@ export type Database = {
           status?: Database["public"]["Enums"]["application_status"]
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      career_applications: {
+        Row: {
+          cover_letter: string
+          created_at: string
+          current_position: string | null
+          email: string
+          expected_salary: string | null
+          full_name: string
+          heard_from: string | null
+          id: string
+          job_id: string
+          job_title: string
+          linkedin_url: string | null
+          notice_period: string | null
+          phone: string
+          portfolio_url: string | null
+          status: string
+          years_experience: string | null
+        }
+        Insert: {
+          cover_letter: string
+          created_at?: string
+          current_position?: string | null
+          email: string
+          expected_salary?: string | null
+          full_name: string
+          heard_from?: string | null
+          id?: string
+          job_id: string
+          job_title: string
+          linkedin_url?: string | null
+          notice_period?: string | null
+          phone: string
+          portfolio_url?: string | null
+          status?: string
+          years_experience?: string | null
+        }
+        Update: {
+          cover_letter?: string
+          created_at?: string
+          current_position?: string | null
+          email?: string
+          expected_salary?: string | null
+          full_name?: string
+          heard_from?: string | null
+          id?: string
+          job_id?: string
+          job_title?: string
+          linkedin_url?: string | null
+          notice_period?: string | null
+          phone?: string
+          portfolio_url?: string | null
+          status?: string
+          years_experience?: string | null
         }
         Relationships: []
       }
@@ -249,6 +306,7 @@ export type Database = {
           data_type: string
           date: string
           id: string
+          source: string
           ticker_symbol: string | null
           updated_at: string | null
           value: number
@@ -260,6 +318,7 @@ export type Database = {
           data_type: string
           date: string
           id?: string
+          source?: string
           ticker_symbol?: string | null
           updated_at?: string | null
           value: number
@@ -271,6 +330,7 @@ export type Database = {
           data_type?: string
           date?: string
           id?: string
+          source?: string
           ticker_symbol?: string | null
           updated_at?: string | null
           value?: number
@@ -927,12 +987,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -956,11 +1016,11 @@ export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -981,11 +1041,11 @@ export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -1006,11 +1066,11 @@ export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -1023,11 +1083,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
