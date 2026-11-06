@@ -87,7 +87,7 @@ const UserTable: React.FC<UserTableProps> = ({
   const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
 
   return (
-    <Card>
+    <Card className="min-w-0">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Users className="h-5 w-5" />
@@ -98,9 +98,9 @@ const UserTable: React.FC<UserTableProps> = ({
         </CardDescription>
         
         <div className="flex flex-col sm:flex-row gap-4 mt-4">
-          <div className="flex-1">
+          <div className="min-w-0 flex-1">
             <div className="relative">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search users by name, email, or company..."
                 value={searchTerm}
@@ -110,7 +110,7 @@ const UserTable: React.FC<UserTableProps> = ({
             </div>
           </div>
           <Select value={selectedRole} onValueChange={setSelectedRole}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-full sm:w-[180px] sm:shrink-0">
               <SelectValue placeholder="Filter by role" />
             </SelectTrigger>
             <SelectContent>
@@ -127,23 +127,32 @@ const UserTable: React.FC<UserTableProps> = ({
       </CardHeader>
       
       <CardContent>
-        <div className="rounded-md border">
-          <Table>
+        <div className="min-w-0 overflow-hidden rounded-md border">
+          <Table className="min-w-[1216px] table-fixed">
+            <colgroup>
+              <col className="w-[26%]" />
+              <col className="w-[21%]" />
+              <col className="w-[13%]" />
+              <col className="w-[12%]" />
+              <col className="w-[14%]" />
+              <col className="w-[9%]" />
+              <col className="w-[5%]" />
+            </colgroup>
             <TableHeader>
-              <TableRow>
+              <TableRow className="bg-muted/40 [&>th]:whitespace-nowrap">
                 <TableHead>User</TableHead>
                 <TableHead>Company</TableHead>
                 <TableHead>Role</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Confirmation</TableHead>
                 <TableHead>Last Sign In</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead className="px-2 text-center">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {paginatedUsers.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8 text-gray-500">
+                  <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
                     No users found matching your criteria.
                   </TableCell>
                 </TableRow>
@@ -151,24 +160,24 @@ const UserTable: React.FC<UserTableProps> = ({
                 paginatedUsers.map((user) => (
                   <TableRow key={user.id}>
                     <TableCell>
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-cc-gold flex items-center justify-center text-white font-medium">
+                      <div className="flex min-w-0 items-center gap-3">
+                        <div className="w-8 h-8 shrink-0 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-medium">
                           {user.first_name?.charAt(0) || user.email?.charAt(0) || 'U'}
                         </div>
-                        <div>
-                          <div className="font-medium">
+                        <div className="min-w-0">
+                          <div className="font-medium break-words">
                             {user.first_name && user.last_name 
                               ? `${user.first_name} ${user.last_name}`
                               : user.email}
                           </div>
-                          <div className="text-sm text-gray-500">{user.email}</div>
+                          <div className="text-sm text-muted-foreground break-all">{user.email}</div>
                         </div>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div>
+                      <div className="space-y-1 break-words">
                         <div className="font-medium">{user.company || 'N/A'}</div>
-                        <div className="text-sm text-gray-500">{user.position || 'N/A'}</div>
+                        <div className="text-sm text-muted-foreground">{user.position || 'N/A'}</div>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -176,7 +185,7 @@ const UserTable: React.FC<UserTableProps> = ({
                         value={user.role || 'User'}
                         onValueChange={(value) => onUpdateRole(user.id, value)}
                       >
-                        <SelectTrigger className="w-[120px]">
+                        <SelectTrigger className="w-full" aria-label={`Role for ${user.first_name || user.email}`}>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -190,13 +199,14 @@ const UserTable: React.FC<UserTableProps> = ({
                       </Select>
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-col items-start gap-2">
                         {user.is_active ? (
-                          <Badge className="bg-green-100 text-green-800">Active</Badge>
+                          <Badge variant="secondary">Active</Badge>
                         ) : (
-                          <Badge className="bg-red-100 text-red-800">Inactive</Badge>
+                          <Badge variant="outline" className="text-destructive">Inactive</Badge>
                         )}
                         <Switch
+                          aria-label={`Active status for ${user.first_name || user.email}`}
                           checked={user.is_active}
                           onCheckedChange={() => onToggleUserStatus(user.id)}
                         />
@@ -205,23 +215,23 @@ const UserTable: React.FC<UserTableProps> = ({
                     <TableCell>
                       <div className="flex items-center gap-2">
                         {user.email_confirmed_at ? (
-                          <div className="flex items-center gap-1 text-green-600">
-                            <CheckCircle className="h-4 w-4" />
+                          <div className="flex items-center gap-1.5 text-foreground">
+                            <CheckCircle className="h-4 w-4 shrink-0" />
                             <span className="text-sm">Email Confirmed</span>
                           </div>
                         ) : user.manual_confirmation_date ? (
-                          <div className="flex items-center gap-1 text-blue-600">
-                            <UserCheck className="h-4 w-4" />
+                          <div className="flex items-center gap-1.5 text-foreground">
+                            <UserCheck className="h-4 w-4 shrink-0" />
                             <span className="text-sm">Manually Confirmed</span>
                           </div>
                         ) : (
-                          <div className="flex items-center gap-2">
-                            <Badge variant="outline" className="text-orange-600">Pending</Badge>
+                          <div className="flex flex-col items-start gap-2">
+                            <Badge variant="outline">Pending</Badge>
                             <Button
                               size="sm"
                               variant="outline"
                               onClick={() => onManuallyConfirmUser(user.id)}
-                              className="text-xs"
+                              className="h-auto min-h-8 whitespace-normal text-left text-xs"
                             >
                               Manually Authorize
                             </Button>
@@ -230,17 +240,17 @@ const UserTable: React.FC<UserTableProps> = ({
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-1 text-sm text-gray-500">
-                        <Clock className="h-3 w-3" />
+                      <div className="flex items-center gap-1 whitespace-nowrap text-xs text-muted-foreground">
+                        <Clock className="h-3 w-3 shrink-0" />
                         {user.last_sign_in_at 
                           ? new Date(user.last_sign_in_at).toLocaleDateString()
                           : 'Never'}
                       </div>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="px-2 text-center">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm">
+                          <Button variant="ghost" size="icon" aria-label={`Actions for ${user.first_name || user.email}`}>
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
@@ -257,7 +267,7 @@ const UserTable: React.FC<UserTableProps> = ({
                           </DropdownMenuItem>
                           <DropdownMenuItem 
                             onClick={() => onDeleteUser(user.id)}
-                            className="text-red-600 focus:text-red-600"
+                            className="text-destructive focus:text-destructive"
                           >
                             <Trash2 className="h-4 w-4 mr-2" />
                             Delete User

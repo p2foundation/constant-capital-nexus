@@ -27,12 +27,24 @@ Deno.serve(async (req) => {
   const apiKey = Deno.env.get("LOVABLE_API_KEY");
   if (!apiKey) return json(500, { error: "AI is not configured." });
 
-  let body: { title?: string; type?: string; content?: string };
+  let body: { title?: string; type?: string; content?: string; mode?: string; images?: unknown };
   try { body = await req.json(); } catch { return json(400, { error: "Invalid request." }); }
   const content = (body.content ?? "").trim();
-  if (content.length < 100) return json(400, { error: "Add at least a paragraph of report content first." });
+  const images = Array.isArray(body.images)
+    ? body.images.filter((i): i is string => typeof i === "string" && i.startsWith("data:image/") && i.length < 8_000_000).slice(0, 4)
+    : [];
+  if (body.mode === "scan") {
+    if (!images.length && content.length < 100) return json(400, { error: "The document has no readable content to scan." });
+  } else if (content.length < 100) return json(400, { error: "Add at least a paragraph of report content first." });
 
-  const prompt = `You are an equity research editor at Constant Capital, a Ghanaian investment bank.
+  const titlePrompt = `You are a research editor at Constant Capital, a Ghanaian investment bank.
+Suggest ONE clear, specific headline (max 14 words) for this research report. Plain text, no quotes, no trailing period. Do not invent numbers.
+
+Type: ${body.type ?? ""}
+Report:
+${content.slice(0, 20000)}`;
+
+  const summaryPrompt = `You are an equity research editor at Constant Capital, a Ghanaian investment bank.
 Write a reader-facing preview for this research report.
 Format exactly:
 - One opening sentence (max 35 words) stating the core view.
@@ -44,6 +56,24 @@ Type: ${body.type ?? ""}
 Report:
 ${content.slice(0, 40000)}`;
 
+  const scanPrompt = `You are a research editor at Constant Capital, a Ghanaian investment bank. Scan this research document${images.length ? " (page images attached)" : ""} and write a clear public-facing summary that helps ordinary investors quickly understand it.
+Format exactly (plain text, no markdown headings):
+- One opening sentence (max 35 words) with the core view.
+- "Key details:" then 4-7 bullets starting with "• " covering the most important figures, dates, prices, yields, recommendations or targets found in the document.
+- "What it means for investors:" one short sentence.
+Use only facts in the document; never invent numbers. Under 170 words.${images.length ? `
+After the summary, output a line containing exactly ===FULL TEXT=== and then transcribe the readable text of the pages faithfully.` : ""}
+
+Title: ${body.title ?? ""}
+Type: ${body.type ?? ""}
+${content ? `Document text:\n${content.slice(0, 40000)}` : ""}`;
+
+  const input = body.mode === "scan"
+    ? (images.length
+      ? [{ role: "user", content: [{ type: "input_text", text: scanPrompt }, ...images.map((u) => ({ type: "input_image", image_url: u }))] }]
+      : scanPrompt)
+    : body.mode === "title" ? titlePrompt : summaryPrompt;
+
   const gateway = createLovableAiGatewayRunIdFetch(getLovableAiGatewayRunId(req));
   try {
     const upstream = await gateway.fetch("https://ai.gateway.lovable.dev/v1/responses", {
@@ -52,7 +82,7 @@ ${content.slice(0, 40000)}`;
       headers: { "Content-Type": "application/json", "Lovable-API-Key": apiKey, "X-Lovable-AIG-SDK": "fetch" },
       body: JSON.stringify({
         model: "openai/gpt-6-astra",
-        input: prompt,
+        input,
         stream: true,
         store: false,
         reasoning: { effort: "low", summary: "auto" },

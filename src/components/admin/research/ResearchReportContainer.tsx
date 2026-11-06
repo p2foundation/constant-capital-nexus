@@ -76,6 +76,7 @@ const ResearchReportContainer: React.FC<ResearchReportContainerProps> = ({
           reports={reports}
           onEdit={handleEditReport}
           onDelete={handleDeleteReport}
+          onReviewed={handleRetry}
           formatDate={formatDate}
           currentPage={currentPage}
           totalPages={totalPages}

@@ -9,6 +9,7 @@ interface ResearchReportsListProps {
   reports: ResearchReport[];
   onEdit: (report: ResearchReport) => void;
   onDelete: (id: string) => void;
+  onReviewed?: () => void;
   formatDate: (dateString: string) => string;
   currentPage: number;
   totalPages: number;
@@ -22,6 +23,7 @@ const ResearchReportsList = ({
   reports,
   onEdit,
   onDelete,
+  onReviewed,
   formatDate,
   currentPage,
   totalPages,
@@ -45,6 +47,7 @@ const ResearchReportsList = ({
         reports={reports}
         onEdit={onEdit}
         onDelete={onDelete}
+        onReviewed={onReviewed}
         formatDate={formatDate}
         isFiltering={isFiltering}
       />

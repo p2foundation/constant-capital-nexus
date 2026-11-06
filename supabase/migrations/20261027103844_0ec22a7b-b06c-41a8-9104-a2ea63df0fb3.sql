@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.enforce_report_review() FROM PUBLIC, anon, authenticated;

@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useRef } from 'react';
+import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -6,6 +6,7 @@ import { FormData } from '@/components/account-opening/types';
 import { completion } from '@/components/account-opening/requirements';
 import { debounce } from 'lodash';
 import { stripFiles, sanitizeLoaded, uploadPendingFiles, uploadPdf, StoredPdf, StoredDocuments } from '@/lib/accountDocuments';
+import { createSaveQueue } from '@/lib/accountSaveConcurrency';
 
 export interface SubmitResult { applicationId: string; pdfs: StoredPdf[]; emailed: boolean }
 
@@ -14,6 +15,7 @@ export const useAccountOpeningPersistence = () => {
   const idRef = useRef<string | null>(null);
   const progressRef = useRef<FormData['_progress']>({});
   const uploadedRef = useRef<Record<string, string>>({});
+  const saveQueue = useRef(createSaveQueue());
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuth();
@@ -47,7 +49,7 @@ export const useAccountOpeningPersistence = () => {
   }, [user]);
 
   /** Saves answers, uploads newly picked files and records progress. */
-  const persist = useCallback(async (formData: FormData, currentStep = 0, extra: Record<string, unknown> = {}): Promise<string> => {
+  const persist = useCallback((formData: FormData, currentStep = 0, extra: Record<string, unknown> = {}): Promise<string> => saveQueue.current(async () => {
     if (!user) throw new Error('Not signed in');
     const now = new Date().toISOString();
     let id = idRef.current;
@@ -61,7 +63,14 @@ export const useAccountOpeningPersistence = () => {
       setId(data.id);
       id = data.id;
     }
-    uploadedRef.current = await uploadPendingFiles(user.id, id!, { ...formData, _uploaded: uploadedRef.current });
+    if (!id) throw new Error('Application could not be created');
+    // A failed photo upload must not prevent text answers from being saved.
+    let uploadError: unknown;
+    try {
+      uploadedRef.current = await uploadPendingFiles(user.id, id, { ...formData, _uploaded: uploadedRef.current });
+    } catch (error) {
+      uploadError = error;
+    }
     const withUploads = { ...formData, _uploaded: uploadedRef.current };
     const { percent, missing } = completion(withUploads);
     const prev = progressRef.current || {};
@@ -74,10 +83,11 @@ export const useAccountOpeningPersistence = () => {
     const { error } = await supabase
       .from('account_opening_applications')
       .update({ form_data: { ...stripFiles(withUploads), _progress: progressRef.current, ...extra } as any })
-      .eq('id', id!);
+      .eq('id', id);
     if (error) throw error;
-    return id!;
-  }, [user]);
+    if (uploadError) throw uploadError;
+    return id;
+  }), [user]);
 
   const saveApplication = useCallback(async (formData: FormData, step?: number) => {
     if (!user) return;
@@ -93,6 +103,8 @@ export const useAccountOpeningPersistence = () => {
   }, [user, persist, toast]);
 
   const debouncedSave = useMemo(() => debounce((fd: FormData, step?: number) => { saveApplication(fd, step); }, 2000), [saveApplication]);
+  // Flush (not cancel) so edits typed in the final debounce window are saved if the applicant leaves the page.
+  useEffect(() => () => { debouncedSave.flush(); }, [debouncedSave]);
 
   const submitApplication = useCallback(async (
     formData: FormData,

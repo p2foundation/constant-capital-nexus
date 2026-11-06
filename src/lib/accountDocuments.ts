@@ -2,6 +2,7 @@ import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { supabase } from '@/integrations/supabase/client';
 import type { FormData } from '@/components/account-opening/types';
+import { createUploadCache } from './accountSaveConcurrency';
 
 export const DOCUMENTS_BUCKET = 'account-documents';
 
@@ -46,7 +47,7 @@ async function upload(path: string, body: Blob, contentType: string) {
   return path;
 }
 
-const uploadedFiles = new WeakMap<File, string>();
+const uploadOnce = createUploadCache();
 
 /** Upload any newly selected files now (so they survive a reload); returns field -> path of the latest file. */
 export async function uploadPendingFiles(userId: string, appId: string, formData: FormData): Promise<Record<string, string>> {
@@ -55,11 +56,9 @@ export async function uploadPendingFiles(userId: string, appId: string, formData
     const files = (formData as any)[field] as File[] | undefined;
     const file = Array.isArray(files) ? files[0] : undefined;
     if (!(file instanceof File)) continue;
-    let path = uploadedFiles.get(file);
-    if (!path) {
-      path = await upload(`${userId}/${appId}/${field}-${Date.now()}-${safeName(file.name)}`, file, file.type || 'application/octet-stream');
-      uploadedFiles.set(file, path);
-    }
+    const path = await uploadOnce(file, `${userId}/${appId}/${field}`, () =>
+      upload(`${userId}/${appId}/${field}-${Date.now()}-${safeName(file.name)}`, file, file.type || 'application/octet-stream'),
+    );
     out[field] = path;
   }
   return out;

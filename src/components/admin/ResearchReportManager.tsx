@@ -34,6 +34,7 @@ const ResearchReportManager = () => {
     isLoading, 
     error, 
     createReport, 
+    updateReport,
     deleteReport, 
     fetchReports, 
     totalCount 
@@ -42,7 +43,8 @@ const ResearchReportManager = () => {
     limit: REPORTS_PER_PAGE,
     page: currentPage,
     searchQuery: searchQuery,
-    reportType: filterType !== "all" ? filterType : undefined
+    reportType: filterType !== "all" ? filterType : undefined,
+    includeUnpublished: true
   });
 
   // Calculate total pages when reports or total count changes
@@ -73,6 +75,7 @@ const ResearchReportManager = () => {
       content: string;
       author: string;
       isPremium: boolean;
+      status: 'draft' | 'pending_review';
     },
     files: File[],
     coverImage: File | null
@@ -83,23 +86,25 @@ const ResearchReportManager = () => {
         return;
       }
       
-      // Create new report
-      const result = await createReport(
-        {
-          title: reportData.title,
-          type: reportData.type, 
-          date: reportData.date,
-          preview: reportData.preview,
-          content: reportData.content,
-          author: reportData.author,
-          is_premium: reportData.isPremium
-        },
-        files,
-        coverImage || undefined
-      );
-      
+      const payload = {
+        title: reportData.title,
+        type: reportData.type,
+        date: reportData.date,
+        preview: reportData.preview,
+        content: reportData.content,
+        author: reportData.author,
+        is_premium: reportData.isPremium,
+        status: reportData.status,
+      } as any;
+      const result = editingReport
+        ? await updateReport(editingReport.id, payload, files, coverImage || undefined)
+        : await createReport(payload, files, coverImage || undefined);
+      if (result.success && reportData.status === 'pending_review') {
+        toast.info('Sent for approval — a manager other than you must approve it before it goes live.');
+      }
+
       if (result.success) {
-        // Reset form
+        setEditingReport(null);
         setIsSheetOpen(false);
         
         // If we're not on page 1, go back to page 1 to see the new report

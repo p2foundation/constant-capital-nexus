@@ -515,6 +515,13 @@ export type Database = {
           id: string
           is_premium: boolean
           preview: string
+          review_note: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          reviewed_by_name: string | null
+          status: string
+          submitted_by: string | null
+          submitted_by_name: string | null
           title: string
           type: string
           updated_at: string | null
@@ -527,6 +534,13 @@ export type Database = {
           id?: string
           is_premium?: boolean
           preview: string
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reviewed_by_name?: string | null
+          status?: string
+          submitted_by?: string | null
+          submitted_by_name?: string | null
           title: string
           type: string
           updated_at?: string | null
@@ -539,6 +553,13 @@ export type Database = {
           id?: string
           is_premium?: boolean
           preview?: string
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reviewed_by_name?: string | null
+          status?: string
+          submitted_by?: string | null
+          submitted_by_name?: string | null
           title?: string
           type?: string
           updated_at?: string | null

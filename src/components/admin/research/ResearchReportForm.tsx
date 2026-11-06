@@ -24,6 +24,7 @@ interface ResearchReportFormProps {
       content: string;
       author: string;
       isPremium: boolean;
+      status: 'draft' | 'pending_review';
     },
     files: File[],
     coverImage: File | null
@@ -49,6 +50,8 @@ const ResearchReportForm = ({
   const [files, setFiles] = useState<File[]>([]);
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const submitIntent = React.useRef<'draft' | 'pending_review'>('pending_review');
   
   // Auto-populate author field when form opens for new reports
   useEffect(() => {
@@ -65,7 +68,7 @@ const ResearchReportForm = ({
     if (editingReport) {
       setTitle(editingReport.title);
       setType(editingReport.type);
-      setDate(editingReport.date);
+      setDate((editingReport.date || '').slice(0, 10));
       setPreview(editingReport.preview);
       setContent(editingReport.content || '');
       setAuthor(editingReport.author || '');
@@ -78,10 +81,9 @@ const ResearchReportForm = ({
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!title || !type || !preview) {
-      return; // Validation is handled by parent component
-    }
-    
+    if (!title || !type || !preview || saving) return;
+    setSaving(true);
+    try {
     await onSubmit(
       {
         title,
@@ -90,11 +92,15 @@ const ResearchReportForm = ({
         preview,
         content,
         author,
-        isPremium
+        isPremium,
+        status: submitIntent.current
       },
       files,
       coverImage
     );
+    } finally {
+      setSaving(false);
+    }
   };
 
   const resetForm = () => {
@@ -129,7 +135,10 @@ const ResearchReportForm = ({
           content={content}
           setContent={setContent}
           title={title}
+          setTitle={setTitle}
           type={type}
+          files={files}
+          setFiles={setFiles}
         />
         
         <AuthorSettings
@@ -151,6 +160,9 @@ const ResearchReportForm = ({
         <FormActions
           isEditing={!!editingReport}
           onCancel={onCancel}
+          saving={saving}
+          reviewNote={editingReport?.status === 'rejected' ? editingReport.review_note : null}
+          onIntent={(i) => { submitIntent.current = i; }}
         />
       </form>
     </ScrollArea>

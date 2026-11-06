@@ -10,6 +10,7 @@ import PDFGenerator from './PDFGenerator';
 import SubmittedDocuments from './SubmittedDocuments';
 import { completion } from './requirements';
 import { Circle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 // Step components
 import InvestmentTypeStep from './steps/InvestmentTypeStep';
@@ -181,6 +182,7 @@ const AccountOpeningForm = () => {
   const kycRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const {
     loadApplication,
     saveApplication,
@@ -220,6 +222,18 @@ const AccountOpeningForm = () => {
 
   const progress = completion(formData).percent;
   const CurrentStepComponent = STEPS[currentStep].component;
+
+  // Basics done = investment type + names; after that, applicants may leave and resume later.
+  const canFinishLater = !!formData.investmentType && !!formData.firstName?.trim() && !!formData.surname?.trim();
+
+  const handleFinishLater = () => {
+    toast({
+      title: "Progress saved",
+      description: `You're ${Math.round(progress)}% done. Upload remaining documents any time from Profile → Onboarding.`,
+    });
+    // Pending debounced save is flushed on unmount.
+    navigate('/profile?tab=onboarding');
+  };
 
   const handleNext = () => {
     if (currentStep < STEPS.length - 1) {
@@ -390,6 +404,14 @@ const AccountOpeningForm = () => {
         )}
       </div>
 
+      {!canFinishLater && (
+        <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 text-sm text-foreground">
+          <strong>Just the basics for now.</strong> Choose your investment type and fill in your personal information, then you can
+          continue exploring the site. ID photos, signature and other documents can be added later from{' '}
+          <span className="font-medium">Profile → Onboarding</span>.
+        </div>
+      )}
+
       {/* Requirements tracker */}
       <details className="rounded-lg border border-border bg-muted/30 p-4" open={currentStep === STEPS.length - 1}>
         <summary className="cursor-pointer text-sm font-medium text-foreground">
@@ -427,7 +449,12 @@ const AccountOpeningForm = () => {
           Previous
         </Button>
 
-        <div className="flex space-x-2">
+        <div className="flex flex-wrap justify-end gap-2">
+          {canFinishLater && currentStep < STEPS.length - 1 && (
+            <Button type="button" variant="outline" onClick={handleFinishLater}>
+              Save &amp; finish later
+            </Button>
+          )}
           {currentStep === STEPS.length - 1 ? (
             <>
               <Button

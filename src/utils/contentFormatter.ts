@@ -62,7 +62,7 @@ const parseContentSections = (content: string): FormatSection[] => {
         });
         break;
       
-      case 'summary': {
+      case 'summary':
         const summaryTitle = extractSummaryTitle(block);
         sections.push({
           type: 'summary',
@@ -70,7 +70,6 @@ const parseContentSections = (content: string): FormatSection[] => {
           content: block.replace(new RegExp(`^${summaryTitle}:?\\s*`, 'i'), '').trim()
         });
         break;
-      }
       
       case 'quote':
         sections.push({
@@ -86,7 +85,7 @@ const parseContentSections = (content: string): FormatSection[] => {
         });
         break;
       
-      default: {
+      default:
         // Split long paragraphs into smaller, readable chunks
         const paragraphs = splitIntoParagraphs(block);
         paragraphs.forEach(paragraph => {
@@ -98,7 +97,6 @@ const parseContentSections = (content: string): FormatSection[] => {
           }
         });
         break;
-      }
     }
   }
   
@@ -120,7 +118,7 @@ const splitIntoIntelligentBlocks = (content: string): string[] => {
   ];
   
   // Split by double line breaks first
-  const sections = content.split(/\n\s*\n/).filter(section => section.trim());
+  let sections = content.split(/\n\s*\n/).filter(section => section.trim());
   
   // Further split sections that contain multiple topics
   const refinedSections: string[] = [];
@@ -174,7 +172,7 @@ const detectBlockType = (block: string): string => {
   if (trimmed.startsWith('#') || 
       (trimmed.length > 3 && trimmed.length < 100 && 
        trimmed === trimmed.toUpperCase() && 
-       /^[A-Z\s:&-]+$/.test(trimmed))) {
+       /^[A-Z\s:&\-]+$/.test(trimmed))) {
     return 'header';
   }
   

@@ -25,6 +25,13 @@ export interface ResearchReport {
   is_premium: boolean;
   created_at: string;
   updated_at: string;
+  status?: 'draft' | 'pending_review' | 'published' | 'rejected';
+  submitted_by?: string | null;
+  reviewed_by?: string | null;
+  reviewed_at?: string | null;
+  review_note?: string | null;
+  submitted_by_name?: string | null;
+  reviewed_by_name?: string | null;
 }
 
 export interface ReportFile {

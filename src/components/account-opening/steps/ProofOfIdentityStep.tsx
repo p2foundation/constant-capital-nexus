@@ -40,13 +40,13 @@ const ProofOfIdentityStep: React.FC<StepProps> = ({ formData, setFormData }) => 
           <div>
             <FileUpload label="Ghana Card — front *" accept="image/*,.pdf"
               onFileSelect={(f) => set('ghanaCardFront', f)} selectedFiles={formData.ghanaCardFront || []}
-              description="Photo of the front side" />
+              description="Photo of the front side" tips={["Lay the card flat on a dark surface", "All four corners visible, no glare or fingers", "Text must be readable"]} />
             <Done show={up.ghanaCardFront && !formData.ghanaCardFront?.length} />
           </div>
           <div>
             <FileUpload label="Ghana Card — back *" accept="image/*,.pdf"
               onFileSelect={(f) => set('ghanaCardBack', f)} selectedFiles={formData.ghanaCardBack || []}
-              description="Photo of the back side" />
+              description="Photo of the back side" tips={["Lay the card flat on a dark surface", "All four corners visible, no glare or fingers", "Text must be readable"]} />
             <Done show={up.ghanaCardBack && !formData.ghanaCardBack?.length} />
           </div>
         </div>
@@ -80,7 +80,7 @@ const ProofOfIdentityStep: React.FC<StepProps> = ({ formData, setFormData }) => 
             </div>
             <FileUpload label="Passport bio-data page *" accept="image/*,.pdf"
               onFileSelect={(f) => set('passportDocument', f)} selectedFiles={formData.passportDocument || []}
-              description="The page with your photo and details" />
+              description="The page with your photo and details" tips={["Open the passport fully, photo page facing up", "Include the two code lines at the bottom"]} />
             <Done show={up.passportDocument && !formData.passportDocument?.length} />
           </>
         )}
@@ -95,7 +95,7 @@ const ProofOfIdentityStep: React.FC<StepProps> = ({ formData, setFormData }) => 
         </ul>
         <FileUpload label="Upload or take passport photo" accept="image/*"
           onFileSelect={(f) => set('passportPhoto', f)} selectedFiles={formData.passportPhoto || []}
-          description="JPG or PNG" />
+          description="JPG or PNG" tips={["Face the camera, head to chest in frame", "Plain light background, good light, no hat or sunglasses"]} />
         <Done show={up.passportPhoto && !formData.passportPhoto?.length} />
       </section>
     </div>

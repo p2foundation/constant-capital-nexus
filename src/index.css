@@ -183,3 +183,13 @@
 .research-content li {
   margin-bottom: 0.5rem;
 }
+
+/* Large desktop monitors (22"–27"): scale type/spacing and widen the content column */
+@media (min-width: 1800px) {
+  html { font-size: 17px; }
+  .container, .max-w-7xl { max-width: 1600px; }
+}
+@media (min-width: 2400px) {
+  html { font-size: 19px; }
+  .container, .max-w-7xl { max-width: 1960px; }
+}

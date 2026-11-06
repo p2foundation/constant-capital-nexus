@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff, User, Mail, Lock } from 'lucide-react';
 import {
   FormField,
@@ -39,6 +39,9 @@ const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({ form }) => {
 
   const passwordValue = form.watch('password') || '';
   const passwordStrength = getPasswordStrength(passwordValue);
+  const [passwordFocused, setPasswordFocused] = useState(false);
+  // Show the checklist while typing; keep it after leaving only if something is still missing.
+  const showRequirements = passwordFocused || (passwordValue.length > 0 && passwordStrength < 5);
 
   const strengthColors = [
     'bg-destructive',
@@ -197,6 +200,8 @@ const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({ form }) => {
                       type={showPassword ? 'text' : 'password'}
                       placeholder="Create a strong password"
                       {...field}
+                      onFocus={() => setPasswordFocused(true)}
+                      onBlur={() => { setPasswordFocused(false); field.onBlur(); }}
                       className="pl-10 pr-12 h-12 bg-background/50 border-muted focus:border-primary transition-colors"
                     />
                     <Button
@@ -279,11 +284,15 @@ const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({ form }) => {
         </motion.div>
 
         {/* Password Requirements */}
+        <AnimatePresence initial={false}>
+        {showRequirements && (
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="bg-muted/30 p-4 rounded-lg"
+          key="pw-reqs"
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          transition={{ duration: 0.2 }}
+          className="bg-muted/30 p-4 rounded-lg overflow-hidden"
         >
           <h4 className="text-sm font-medium text-foreground mb-2">Password Requirements:</h4>
           <ul className="text-xs text-muted-foreground space-y-1">
@@ -309,6 +318,8 @@ const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({ form }) => {
             </li>
           </ul>
         </motion.div>
+        )}
+        </AnimatePresence>
       </div>
     </Form>
   );

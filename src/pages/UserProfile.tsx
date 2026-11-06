@@ -64,7 +64,10 @@ const UserProfile = () => {
   const { profile, updateProfile, isLoading: authLoading, user } = useAuth();
   const [isUpdating, setIsUpdating] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('profile');
+  const [activeTab, setActiveTab] = useState(() => {
+    const t = new URLSearchParams(window.location.search).get('tab');
+    return t && ['profile', 'onboarding', 'settings', 'activity'].includes(t) ? t : 'profile';
+  });
   const [isEditing, setIsEditing] = useState(false);
 
   const form = useForm<ProfileFormValues>({

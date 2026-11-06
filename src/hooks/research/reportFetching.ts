@@ -11,6 +11,7 @@ export async function fetchReportsList(
   reportType?: string,
   fetchPremiumContent = false,
   searchQuery = '',
+  includeUnpublished = false,
 ) {
   try {
     // First, count the total number of reports (for pagination)
@@ -28,6 +29,8 @@ export async function fetchReportsList(
       countQuery = countQuery.eq('is_premium', false as any);
     }
     
+    if (!includeUnpublished) countQuery = countQuery.eq('status', 'published' as any);
+
     // Add search filter if provided
     if (searchQuery) {
       countQuery = countQuery.or(`title.ilike.%${searchQuery}%,preview.ilike.%${searchQuery}%,author.ilike.%${searchQuery}%`);
@@ -56,6 +59,8 @@ export async function fetchReportsList(
       query = query.eq('is_premium', false as any);
     }
     
+    if (!includeUnpublished) query = query.eq('status', 'published' as any);
+
     // Add search filter if provided
     if (searchQuery) {
       query = query.or(`title.ilike.%${searchQuery}%,preview.ilike.%${searchQuery}%,author.ilike.%${searchQuery}%`);

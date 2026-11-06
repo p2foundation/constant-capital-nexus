@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   CardDescription,
   CardHeader,
@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Plus, BarChart3 } from "lucide-react";
+import { Plus, BarChart3, Maximize2, Minimize2 } from "lucide-react";
 import { Link } from 'react-router-dom';
 import { ResearchReport } from '@/types/supabase';
 
@@ -26,6 +26,7 @@ const ResearchReportHeader: React.FC<ResearchReportHeaderProps> = ({
   editingReport,
   children,
 }) => {
+  const [fullPage, setFullPage] = useState(false);
   return (
     <CardHeader className="flex flex-row items-center justify-between">
       <div>
@@ -52,13 +53,25 @@ const ResearchReportHeader: React.FC<ResearchReportHeaderProps> = ({
               <Plus className="mr-2 h-4 w-4" /> Add Report
             </Button>
           </SheetTrigger>
-          <SheetContent className="w-[90%] sm:max-w-2xl overflow-y-auto">
-            <SheetHeader>
+          <SheetContent
+            className={`overflow-y-auto transition-[width,max-width] duration-300 ${fullPage ? "w-full sm:max-w-none" : "w-[90%] sm:max-w-2xl"}`}
+          >
+            <SheetHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pr-8">
               <SheetTitle>
                 {editingReport ? "Edit Research Report" : "Add New Research Report"}
               </SheetTitle>
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                onClick={() => setFullPage((v) => !v)}
+                aria-label={fullPage ? "Exit full page" : "Open full page"}
+              >
+                {fullPage ? <Minimize2 className="h-4 w-4 mr-1" /> : <Maximize2 className="h-4 w-4 mr-1" />}
+                {fullPage ? "Exit full page" : "Full page"}
+              </Button>
             </SheetHeader>
-            {children}
+            <div className={fullPage ? "mx-auto max-w-5xl" : undefined}>{children}</div>
           </SheetContent>
         </Sheet>
       </div>

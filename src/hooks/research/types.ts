@@ -7,6 +7,7 @@ export interface UseResearchReportsProps {
   page?: number;
   reportType?: string;
   searchQuery?: string;
+  includeUnpublished?: boolean;
 }
 
 export interface ReportResult {

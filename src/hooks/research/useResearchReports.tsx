@@ -11,7 +11,8 @@ export function useResearchReports({
   limit = 10,
   page = 1,
   reportType,
-  searchQuery = ''
+  searchQuery = '',
+  includeUnpublished = false
 }: UseResearchReportsProps = {}): UseResearchReportsReturn {
   const [reports, setReports] = useState<ResearchReport[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -25,7 +26,7 @@ export function useResearchReports({
   // Fetch reports on component mount and when dependencies change
   useEffect(() => {
     fetchReports();
-  }, [fetchPremiumContent, limit, page, reportType, profile, searchQuery]);
+  }, [fetchPremiumContent, limit, page, reportType, profile, searchQuery, includeUnpublished]);
   
   const fetchReports = async () => {
     try {
@@ -39,7 +40,8 @@ export function useResearchReports({
         reportType,
         // Only fetch premium if user has permission
         fetchPremiumContent && !!profile,
-        searchQuery
+        searchQuery,
+        includeUnpublished
       );
       
       setReports(fetchedReports);
